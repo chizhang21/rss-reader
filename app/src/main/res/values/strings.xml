@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">Ashley</string>
     <string name="ic_action_add">Add</string>
+    <string name="empty_manage_list_view">Press the add button to add a feed</string>
+    <!-- Add/Edit feed dialog titles. -->
+    <string name="dialog_title_add">Add feed</string>
+    <string name="dialog_title_edit">Edit feed</string>
+    <!-- Add/Edit feed dialog EditText hints. -->
+    <string name="dialog_feed_url_hint">Url</string>
+    <string name="dialog_feed_tag_hint">Tags</string>
+    <!-- Add/Edit feed dialog button texts. -->
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_accept">Accept</string>
+    <string name="dialog_checking">Checking…</string>
 </resources>

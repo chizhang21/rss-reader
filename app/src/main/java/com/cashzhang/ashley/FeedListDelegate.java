@@ -1,5 +1,6 @@
 package com.cashzhang.ashley;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
@@ -10,6 +11,9 @@ import android.widget.ListView;
 
 import uk.co.senab.actionbarpulltorefresh.library.viewdelegates.ViewDelegate;
 
+import static android.content.ContentValues.TAG;
+import static com.cashzhang.ashley.Constants.s_fragmentFeeds;
+
 
 class FeedListDelegate implements ViewDelegate {
     @Override
@@ -18,7 +22,7 @@ class FeedListDelegate implements ViewDelegate {
 
       /* First we check whether we're scrolled to the top of current page. */
         if (null != s_fragmentFeeds) {
-            AbsListView absListView = getCurrentTagListView();
+            AbsListView absListView = s_fragmentFeeds.getListView();
 
             if (0 == absListView.getCount()) {
                 ready = true;
@@ -36,10 +40,8 @@ class FeedListDelegate implements ViewDelegate {
                 }
             }
         }
+        Log.d(TAG, "isReadyForPull: " + ready);
         return ready;
     }
 
-    private static ListView getCurrentTagListView() {
-        return MainFragment.getTagListView();
-    }
 }
