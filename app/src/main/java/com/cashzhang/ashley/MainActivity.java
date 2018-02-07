@@ -7,7 +7,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.cashzhang.ashley.Constants.hideFragments;
+import static com.cashzhang.ashley.Constants.s_drawerLayout;
+import static com.cashzhang.ashley.Constants.s_fragmentDrawer;
+import static com.cashzhang.ashley.Constants.s_fragmentManager;
 import static com.cashzhang.ashley.Constants.saveInitialConstants;
+import static com.cashzhang.ashley.Constants.setTopOffset;
+
+import com.cashzhang.ashley.Constants;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,24 +43,17 @@ public class MainActivity extends AppCompatActivity {
         ObjectIO readItemReader = new ObjectIO(this, READ_ITEMS);
         Collection<Long> readItemsFromFile = (Collection<Long>) readItemReader.read();
 
-        if(null != readItemsFromFile)
+        /*if(null != readItemsFromFile)
         {
             mReadItemTimes.addAll(readItemsFromFile);
-        }
+        }*/
 
-        s_fragmentDrawer.setUp(s_drawerLayout);
+//        s_fragmentDrawer.setUp(s_drawerLayout);
 
         setTopOffset(this);
 
         if(null == savedInstanceState)
         {
-            // Create and hide the fragments that go inside the content frame.
-            if(!canFitTwoFragments())
-            {
-                hideFragments(s_fragmentWeb);
-            }
-
-            hideFragments(s_fragmentFavourites, s_fragmentManage, s_fragmentSettings);
             s_fragmentManager.executePendingTransactions();
         }
     }

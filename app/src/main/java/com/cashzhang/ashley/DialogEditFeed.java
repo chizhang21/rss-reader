@@ -50,17 +50,17 @@ class DialogEditFeed extends Dialog {
 //        tagEdit.setAdapter(new ArrayAdapter<String>(m_activity, oneLine, tags));
         tagEdit.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
-        /*final IndexItem oldItem;
+        final IndexItem oldItem;
 
         // If this is an edit dialog, set the EditTexts and save the old information.
         if (-1 != m_pos) {
             oldItem = m_activity.m_index.get(m_pos);
 
             ((TextView) findViewById(R.id.dialog_url)).setText(oldItem.m_url);
-            ((TextView) findViewById(R.id.dialog_tags)).setText(Utilities.formatTags(oldItem.m_tags));
+//            ((TextView) findViewById(R.id.dialog_tags)).setText(Utilities.formatTags(oldItem.m_tags));
         } else {
             oldItem = null;
-        }*/
+        }
 
         final Dialog dialog = this;
 
