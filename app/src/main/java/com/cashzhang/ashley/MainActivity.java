@@ -20,9 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     public List<IndexItem> m_index;
     boolean m_showMenuItems = true;
-    static final String READ_ITEMS = "read_items.txt";
     static final String INDEX = "index.txt";
-    static final String FAVOURITES = "favourites.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,18 +37,9 @@ public class MainActivity extends AppCompatActivity {
             m_index = new ArrayList<IndexItem>();
         }
 
-        // Load the read items to the tags Adapter.
-        ObjectIO readItemReader = new ObjectIO(this, READ_ITEMS);
-        Collection<Long> readItemsFromFile = (Collection<Long>) readItemReader.read();
-
-        /*if(null != readItemsFromFile)
-        {
-            mReadItemTimes.addAll(readItemsFromFile);
-        }*/
-
 //        s_fragmentDrawer.setUp(s_drawerLayout);
 
-        setTopOffset(this);
+//        setTopOffset(this);
 
         if(null == savedInstanceState)
         {

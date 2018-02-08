@@ -13,8 +13,11 @@ import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -89,7 +92,7 @@ class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
     private static boolean isValidFeed(CharSequence urlString) {
         boolean isValid = false;
         try {
-            XmlPullParser parser = Utilities.createXmlParser(urlString.toString());
+            XmlPullParser parser = createXmlParser(urlString.toString());
 
             parser.next();
             int eventType = parser.getEventType();
@@ -105,6 +108,18 @@ class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
             // TODO
         }
         return isValid;
+    }
+
+    private static XmlPullParser createXmlParser(CharSequence urlString) throws IOException, XmlPullParserException
+    {
+        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+        factory.setNamespaceAware(true);
+        XmlPullParser parser = factory.newPullParser();
+
+        URL url = new URL(urlString.toString());
+        InputStream inputStream = url.openStream();
+        parser.setInput(inputStream, null);
+        return parser;
     }
 
     private String[] formatUserTagsInput(CharSequence userInputTags) {
@@ -183,16 +198,15 @@ class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
             }
 
          /* Must update the tags first. */
-            PagerAdapterTags.run(m_activity);
-            AsyncNavigationAdapter.run(m_activity);
-            AsyncManageAdapter.run(m_activity);
+//            PagerAdapterTags.run(m_activity);
+//            AsyncNavigationAdapter.run(m_activity);
 
             String text = context.getString(R.string.toast_added_feed, result.m_url);
             Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
             toast.show();
 
          /* Save the index file to disk so the ServiceUpdate can load it. */
-            ObjectIO out = new ObjectIO(m_activity, FeedsActivity.INDEX);
+            ObjectIO out = new ObjectIO(m_activity, MainActivity.INDEX);
             out.write(m_activity.m_index);
 
             m_dialog.dismiss();

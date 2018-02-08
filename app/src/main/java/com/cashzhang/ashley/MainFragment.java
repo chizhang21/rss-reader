@@ -48,10 +48,10 @@ public class MainFragment extends ListFragment {
 
         @Override
         public void onRefreshStarted(View view) {
+            Log.d(TAG, "onRefreshStarted: ");
             Intent intent = new Intent(m_activity, ServiceUpdate.class);
             //intent.putExtra(EXTRA_PAGE_NAME, s_viewPager.getCurrentItem());
             m_activity.startService(intent);
-            Log.d(TAG, "onRefreshStarted: ");
         }
     }
 
@@ -59,27 +59,12 @@ public class MainFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        /*MainActivity activity = (MainActivity) getActivity();
-        PullToRefreshLayout layout = (PullToRefreshLayout) inflater.inflate(R.layout.feed_list, container, false);
 
-        Options.Builder optionsBuilder = Options.create();
-        optionsBuilder.scrollDistance(PULL_DISTANCE);
-        Options options = optionsBuilder.build();
-
-        // Create the ActionBarPullToRefresh object using its SetupWizard.
-        ActionBarPullToRefresh.SetupWizard setup = ActionBarPullToRefresh.from(activity);
-        setup.allChildrenArePullable();
-        setup.options(options);
-        setup.useViewDelegate(ListView.class, new FeedListDelegate());
-        setup.listener(new RefreshListener(activity));
-        setup.setup(layout);
-
-        return layout;*/
         Log.d(TAG, "onCreateView: ");
-        View view = inflater.inflate(R.layout.list_view, container, false);
-        TextView emptyView = (TextView) view.findViewById(android.R.id.empty);
+        PullToRefreshLayout layout = (PullToRefreshLayout) inflater.inflate(R.layout.feed_list, container, false);
+        TextView emptyView = (TextView) layout.findViewById(android.R.id.empty);
         emptyView.setText(R.string.empty_manage_list_view);
-        return view;
+        return layout;
     }
 
     @Override
@@ -106,8 +91,8 @@ public class MainFragment extends ListFragment {
 
                 // We need to mark the ListView and it's Empty View as pullable
                 // This is because they are not dirent children of the ViewGroup
-                .theseChildrenArePullable(getListView(), getListView().getEmptyView())
-
+                //.theseChildrenArePullable(getListView(), getListView().getEmptyView())
+                .allChildrenArePullable()
                 // We can now complete the setup as desired
                 .listener(new RefreshListener(activity))
                 .useViewDelegate(ListView.class, new FeedListDelegate())
