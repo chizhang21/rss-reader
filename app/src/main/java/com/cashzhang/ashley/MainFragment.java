@@ -3,6 +3,8 @@ package com.cashzhang.ashley;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ListFragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -37,7 +40,6 @@ public class MainFragment extends ListFragment {
     private final static String TAG = "ashley-rss";
     private static final float PULL_DISTANCE = 0.5F;
     private PullToRefreshLayout mPullToRefreshLayout;
-    static ListView listViewForDele = null;
 
     private static class RefreshListener implements OnRefreshListener {
         private final MainActivity m_activity;
@@ -50,7 +52,6 @@ public class MainFragment extends ListFragment {
         public void onRefreshStarted(View view) {
             Log.d(TAG, "onRefreshStarted: ");
             Intent intent = new Intent(m_activity, ServiceUpdate.class);
-            //intent.putExtra(EXTRA_PAGE_NAME, s_viewPager.getCurrentItem());
             m_activity.startService(intent);
         }
     }
@@ -111,7 +112,7 @@ public class MainFragment extends ListFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_feeds, menu);
+        inflater.inflate(R.menu.feeds_menu, menu);
     }
 
     @Override
@@ -119,7 +120,6 @@ public class MainFragment extends ListFragment {
 
         switch (item.getItemId()) {
             case R.id.add_feed:
-//                newGame();
                 MainActivity activity = (MainActivity) getActivity();
                 Dialog dialog = DialogEditFeed.newInstance(activity, -1);
                 dialog.show();

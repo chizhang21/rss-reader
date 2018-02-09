@@ -7,6 +7,7 @@ package com.cashzhang.ashley;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +31,8 @@ class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
     private final Dialog m_dialog;
     private final IndexItem m_oldIndexItem;
     private final MainActivity m_activity;
+
+    private final static String TAG = "ashley-rss";
 
     private AsyncCheckFeed(MainActivity activity, Dialog dialog, IndexItem oldIndexItem) {
         m_dialog = dialog;
@@ -92,7 +95,7 @@ class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
     private static boolean isValidFeed(CharSequence urlString) {
         boolean isValid = false;
         try {
-            XmlPullParser parser = createXmlParser(urlString.toString());
+            XmlPullParser parser = Constants.createXmlParser(urlString.toString());
 
             parser.next();
             int eventType = parser.getEventType();
@@ -110,17 +113,6 @@ class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
         return isValid;
     }
 
-    private static XmlPullParser createXmlParser(CharSequence urlString) throws IOException, XmlPullParserException
-    {
-        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-        factory.setNamespaceAware(true);
-        XmlPullParser parser = factory.newPullParser();
-
-        URL url = new URL(urlString.toString());
-        InputStream inputStream = url.openStream();
-        parser.setInput(inputStream, null);
-        return parser;
-    }
 
     private String[] formatUserTagsInput(CharSequence userInputTags) {
         String inputTags = userInputTags.toString();
@@ -190,22 +182,17 @@ class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
         } else {
          /* Create the csv. */
             int oldPos = m_activity.m_index.indexOf(m_oldIndexItem);
-
+            Log.d(TAG, "onPostExecute: oldPos = " + oldPos);
             if (-1 == oldPos) {
                 m_activity.m_index.add(result);
             } else {
                 m_activity.m_index.set(oldPos, result);
             }
 
-         /* Must update the tags first. */
-//            PagerAdapterTags.run(m_activity);
-//            AsyncNavigationAdapter.run(m_activity);
-
             String text = context.getString(R.string.toast_added_feed, result.m_url);
             Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
             toast.show();
 
-         /* Save the index file to disk so the ServiceUpdate can load it. */
             ObjectIO out = new ObjectIO(m_activity, MainActivity.INDEX);
             out.write(m_activity.m_index);
 

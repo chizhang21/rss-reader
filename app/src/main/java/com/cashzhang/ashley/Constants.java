@@ -12,6 +12,14 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewConfiguration;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 /**
  * Created by zhangchi on 2018/2/6.
  */
@@ -23,7 +31,8 @@ public class Constants {
     static MainFragment s_fragmentFeeds;
     static FragmentManager s_fragmentManager;
     static DrawerLayout s_drawerLayout;
-    static FragmentNavigationDrawer s_fragmentDrawer;
+    static int s_eightDp;
+//    static FragmentNavigationDrawer s_fragmentDrawer;
 
 
     static void saveInitialConstants(MainActivity activity) {
@@ -32,24 +41,18 @@ public class Constants {
         s_fragmentManager = activity.getFragmentManager();
         s_fragmentFeeds = (MainFragment) s_fragmentManager.findFragmentById(R.id.main_fragment);
         s_drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
-        s_fragmentDrawer = (FragmentNavigationDrawer) s_fragmentManager.findFragmentById(R.id.fragment_navigation_drawer);
+//        s_fragmentDrawer = (FragmentNavigationDrawer) s_fragmentManager.findFragmentById(R.id.fragment_navigation_drawer);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    static
-    void setTopOffset(Activity activity)
-    {
+    static void setTopOffset(Activity activity) {
         setTopOffset(activity, s_activity.findViewById(android.R.id.content));
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    static
-    void setTopOffset(Activity activity, View view)
-    {
-        if(Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT)
-        {
-            if(!ViewConfiguration.get(activity).hasPermanentMenuKey())
-            {
+    static void setTopOffset(Activity activity, View view) {
+        if (Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT) {
+            if (!ViewConfiguration.get(activity).hasPermanentMenuKey()) {
                 TypedValue value = new TypedValue();
 
                 Resources.Theme theme = activity.getTheme();
@@ -77,6 +80,17 @@ public class Constants {
             transaction.show(fragment);
         }
         transaction.commit();
+    }
+
+    public static XmlPullParser createXmlParser(CharSequence urlString) throws IOException, XmlPullParserException {
+        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+        factory.setNamespaceAware(true);
+        XmlPullParser parser = factory.newPullParser();
+
+        URL url = new URL(urlString.toString());
+        InputStream inputStream = url.openStream();
+        parser.setInput(inputStream, null);
+        return parser;
     }
 
 }

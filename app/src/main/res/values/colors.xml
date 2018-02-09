@@ -6,6 +6,8 @@
     <color name="item_separator">#ffcbcbcb</color>
     <color name="transparent">#00000000</color>
     <color name="item_title_color">#ff58585b</color>
+    <color name="item_link_color">#ff777777</color>
+    <color name="item_description_color">#ff5a5a5d</color>
     <drawable name="divider_tag_list">@color/item_separator</drawable>
     <drawable name="transparent">@color/transparent</drawable>
 </resources>
