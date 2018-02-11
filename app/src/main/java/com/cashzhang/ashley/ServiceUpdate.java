@@ -72,6 +72,10 @@ public class ServiceUpdate extends IntentService {
             .getDisplayMetrics().heightPixels);
     private static final float USABLE_WIDTH_TEXT = FAKE_WIDTH - (Constants.s_eightDp << 1);
 
+    public ServiceUpdate() {
+        super("ServiceUpdate");
+    }
+
     public ServiceUpdate(String name) {
         super(name);
     }

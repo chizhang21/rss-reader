@@ -7,10 +7,12 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.res.Resources;
 import android.os.Build;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.ListView;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -19,6 +21,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 
 /**
  * Created by zhangchi on 2018/2/6.
@@ -31,17 +35,24 @@ public class Constants {
     static MainFragment s_fragmentFeeds;
     static FragmentManager s_fragmentManager;
     static DrawerLayout s_drawerLayout;
+    static ListView s_listView;
     static int s_eightDp;
+    static PullToRefreshLayout s_pullToRefreshLayout;
 //    static FragmentNavigationDrawer s_fragmentDrawer;
 
 
     static void saveInitialConstants(MainActivity activity) {
         s_activity = activity;
         s_resources = activity.getResources();
+        s_listView = activity.findViewById(R.id.llist);
         s_fragmentManager = activity.getFragmentManager();
         s_fragmentFeeds = (MainFragment) s_fragmentManager.findFragmentById(R.id.main_fragment);
         s_drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
 //        s_fragmentDrawer = (FragmentNavigationDrawer) s_fragmentManager.findFragmentById(R.id.fragment_navigation_drawer);
+    }
+
+    static void saveViews() {
+        s_pullToRefreshLayout = (PullToRefreshLayout) s_listView.getParent();
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)

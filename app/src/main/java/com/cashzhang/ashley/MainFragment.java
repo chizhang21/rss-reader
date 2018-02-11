@@ -117,14 +117,18 @@ public class MainFragment extends ListFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        MainActivity me_activity = (MainActivity) getActivity();
         switch (item.getItemId()) {
             case R.id.add_feed:
                 MainActivity activity = (MainActivity) getActivity();
                 Dialog dialog = DialogEditFeed.newInstance(activity, -1);
                 dialog.show();
-                Log.d(TAG, "onOptionsItemSelected: ");
-
+                Log.d(TAG, "add feed: ");
+                return true;
+            case R.id.refresh:
+                Intent intent = new Intent(me_activity, ServiceUpdate.class);
+                me_activity.startService(intent);
+                Log.d(TAG, "refresh: ");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
