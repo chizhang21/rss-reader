@@ -7,8 +7,10 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.res.Resources;
 import android.os.Build;
+import android.support.v4.text.TextDirectionHeuristicsCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -37,6 +39,7 @@ public class Constants {
     static DrawerLayout s_drawerLayout;
     static ListView s_listView;
     static int s_eightDp;
+    static DisplayMetrics s_displayMetrics;
     static PullToRefreshLayout s_pullToRefreshLayout;
 //    static FragmentNavigationDrawer s_fragmentDrawer;
 
@@ -46,8 +49,10 @@ public class Constants {
         s_resources = activity.getResources();
         s_listView = activity.findViewById(R.id.llist);
         s_fragmentManager = activity.getFragmentManager();
+        s_displayMetrics = s_resources.getDisplayMetrics();
         s_fragmentFeeds = (MainFragment) s_fragmentManager.findFragmentById(R.id.main_fragment);
         s_drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
+        s_eightDp = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8.0F, s_displayMetrics));
 //        s_fragmentDrawer = (FragmentNavigationDrawer) s_fragmentManager.findFragmentById(R.id.fragment_navigation_drawer);
     }
 
@@ -104,4 +109,7 @@ public class Constants {
         return parser;
     }
 
+    static boolean isTextRtl(CharSequence c) {
+        return TextDirectionHeuristicsCompat.FIRSTSTRONG_LTR.isRtl(c, 0, c.length() - 1);
+    }
 }

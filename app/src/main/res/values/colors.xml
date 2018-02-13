@@ -10,4 +10,6 @@
     <color name="item_description_color">#ff5a5a5d</color>
     <drawable name="divider_tag_list">@color/item_separator</drawable>
     <drawable name="transparent">@color/transparent</drawable>
+    <color name="holo_light_pressed">#ffdddddd</color>
+    <color name="holo_light_checked">#ffcfe9f3</color>
 </resources>

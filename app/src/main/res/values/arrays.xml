@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="time_initials">
+        <item>y</item>
+        <item>d</item>
+        <item>h</item>
+        <item>m</item>
+    </string-array>
+
+</resources>

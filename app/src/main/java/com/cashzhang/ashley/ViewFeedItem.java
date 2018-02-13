@@ -148,7 +148,7 @@ public class ViewFeedItem extends View {
     }
 
     float drawBase(Canvas canvas) {
-        boolean rtl = Utilities.isTextRtl(m_item.m_title);
+        boolean rtl = Constants.isTextRtl(m_item.m_title);
         //TODO
         float verticalPosition = m_paints[0].getTextSize() + s_eightDp;
 
@@ -185,7 +185,7 @@ public class ViewFeedItem extends View {
 
     void drawDes(Canvas canvas, float verticalPos) {
         if (!m_item.m_desLines[0].isEmpty()) {
-            boolean rtl = Utilities.isTextRtl(m_item.m_desLines[0]);
+            boolean rtl = Constants.isTextRtl(m_item.m_desLines[0]);
             //TODO
             m_paints[2].setTextAlign(rtl ? Paint.Align.RIGHT : Paint.Align.LEFT);
             int horizontalPos = rtl ? SCREEN - s_eightDp : s_eightDp;
