@@ -14,7 +14,6 @@ import java.util.List;
 
 import static com.cashzhang.ashley.Constants.s_activity;
 import static com.cashzhang.ashley.Constants.s_fragmentManager;
-import static com.cashzhang.ashley.Constants.s_pullToRefreshLayout;
 import static com.cashzhang.ashley.Constants.saveInitialConstants;
 import static com.cashzhang.ashley.Constants.saveViews;
 
@@ -29,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             if (null != s_activity) {
 //                AsyncNavigationAdapter.run(s_activity);
-                s_pullToRefreshLayout.setRefreshComplete();
+
             }
         }
     };

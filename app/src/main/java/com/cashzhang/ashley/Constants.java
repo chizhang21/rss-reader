@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 
 /**
  * Created by zhangchi on 2018/2/6.
@@ -40,7 +39,6 @@ public class Constants {
     static ListView s_listView;
     static int s_eightDp;
     static DisplayMetrics s_displayMetrics;
-    static PullToRefreshLayout s_pullToRefreshLayout;
 //    static FragmentNavigationDrawer s_fragmentDrawer;
 
 
@@ -57,7 +55,7 @@ public class Constants {
     }
 
     static void saveViews() {
-        s_pullToRefreshLayout = (PullToRefreshLayout) s_listView.getParent();
+
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
