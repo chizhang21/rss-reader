@@ -45,7 +45,7 @@ public class Constants {
     static void saveInitialConstants(MainActivity activity) {
         s_activity = activity;
         s_resources = activity.getResources();
-        s_listView = activity.findViewById(R.id.llist);
+        s_listView = activity.findViewById(R.id.l_list);
         s_fragmentManager = activity.getFragmentManager();
         s_displayMetrics = s_resources.getDisplayMetrics();
         s_fragmentFeeds = (MainFragment) s_fragmentManager.findFragmentById(R.id.main_fragment);

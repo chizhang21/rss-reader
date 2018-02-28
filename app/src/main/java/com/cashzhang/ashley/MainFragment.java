@@ -17,20 +17,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import java.util.zip.Inflater;
-
-import static com.cashzhang.ashley.Constants.s_fragmentFeeds;
-import static com.cashzhang.ashley.Constants.s_fragmentManager;
 
 /**
  * Created by hadoop on 02/02/2018.
  */
 
-public class MainFragment extends ListFragment {
+public class MainFragment extends Fragment {
 
     private final static String TAG = "ashley-rss";
     private static final float PULL_DISTANCE = 0.5F;
@@ -42,8 +38,8 @@ public class MainFragment extends ListFragment {
         super.onCreateView(inflater, container, savedInstanceState);
 
         Log.d(TAG, "onCreateView: ");
-        View layout = inflater.inflate(R.layout.feed_list, container, false);
-        TextView emptyView = (TextView) layout.findViewById(android.R.id.empty);
+        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.feed_list, container, false);
+        TextView emptyView = (TextView) layout.findViewById(R.id.empty_text);
         emptyView.setText(R.string.empty_manage_list_view);
         return layout;
     }
