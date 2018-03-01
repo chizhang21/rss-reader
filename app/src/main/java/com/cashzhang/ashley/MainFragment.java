@@ -1,5 +1,6 @@
 package com.cashzhang.ashley;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ListFragment;
@@ -22,6 +23,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by hadoop on 02/02/2018.
  */
@@ -31,6 +34,24 @@ public class MainFragment extends Fragment {
     private final static String TAG = "ashley-rss";
     private static final float PULL_DISTANCE = 0.5F;
 
+    private String[] listString = new String[] {
+            "CS",
+            "EE"
+    };
+
+    private ArrayList<String> listData;
+
+    LListAdapter listAdapter = null;
+    ListView listView = null;
+    Activity mActivity;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = activity;
+        Log.d(TAG, "onAttach: ");
+
+    }
 
     @Nullable
     @Override
@@ -38,9 +59,19 @@ public class MainFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
 
         Log.d(TAG, "onCreateView: ");
-        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.feed_list, container, false);
-        TextView emptyView = (TextView) layout.findViewById(R.id.empty_text);
-        emptyView.setText(R.string.empty_manage_list_view);
+        View layout = inflater.inflate(R.layout.feed_list, container, false);
+//        TextView emptyView = (TextView) layout.findViewById(R.id.empty_text);
+//        emptyView.setText(R.string.empty_manage_list_view);
+
+        listView = (ListView) layout.findViewById(R.id.l_list);
+
+        listData = new ArrayList<String>();
+        for (int i = 0; i < listString.length; i ++) {
+            Log.d(TAG, "onCreate: listData add: " + listString[i]);
+            listData.add(listString[i]);
+        }
+        listAdapter = new LListAdapter(mActivity, listData);
+        listView.setAdapter(listAdapter);
         return layout;
     }
 
@@ -48,7 +79,6 @@ public class MainFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
     }
 
     @Override
@@ -68,8 +98,11 @@ public class MainFragment extends Fragment {
                 Log.d(TAG, "add feed: ");
                 return true;
             case R.id.refresh:
-                Intent intent = new Intent(me_activity, ServiceUpdate.class);
-                me_activity.startService(intent);
+//                Intent intent = new Intent(me_activity, ServiceUpdate.class);
+//                me_activity.startService(intent);
+                //
+
+                //
                 Log.d(TAG, "refresh: ");
                 return true;
             default:
