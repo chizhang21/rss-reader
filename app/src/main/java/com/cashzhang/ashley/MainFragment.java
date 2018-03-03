@@ -34,9 +34,13 @@ public class MainFragment extends Fragment {
     private final static String TAG = "ashley-rss";
     private static final float PULL_DISTANCE = 0.5F;
 
-    private String[] listString = new String[] {
+    private String[] titleString = new String[] {
             "CS",
             "EE"
+    };
+    private String[] infoString = new String[] {
+            "CS info",
+            "EE info"
     };
 
     private ArrayList<String> listData;
@@ -66,9 +70,9 @@ public class MainFragment extends Fragment {
         listView = (ListView) layout.findViewById(R.id.l_list);
 
         listData = new ArrayList<String>();
-        for (int i = 0; i < listString.length; i ++) {
-            Log.d(TAG, "onCreate: listData add: " + listString[i]);
-            listData.add(listString[i]);
+        for (int i = 0; i < titleString.length; i ++) {
+            Log.d(TAG, "onCreate: listData add: " + titleString[i]);
+            listData.add(titleString[i]);
         }
         listAdapter = new LListAdapter(mActivity, listData);
         listView.setAdapter(listAdapter);

@@ -20,7 +20,7 @@ public class LListAdapter extends BaseAdapter {
     private LayoutInflater layoutInflater;
 
     public final class Component {
-        public ImageView image;
+//        public ImageView image;
         public TextView title;
         public TextView info;
     }
@@ -51,7 +51,7 @@ public class LListAdapter extends BaseAdapter {
         if (convertView == null) {
             component = new Component();
             convertView = layoutInflater.inflate(R.layout.feed_item, null);
-            component.image = (ImageView) convertView.findViewById(R.id.image);
+//            component.image = (ImageView) convertView.findViewById(R.id.image);
             component.title = (TextView) convertView.findViewById(R.id.title);
             component.info = (TextView) convertView.findViewById(R.id.info);
             convertView.setTag(component);
