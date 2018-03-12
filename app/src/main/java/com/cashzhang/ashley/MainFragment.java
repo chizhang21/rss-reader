@@ -7,6 +7,7 @@ import android.app.ListFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -23,7 +24,13 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
+
+import static com.cashzhang.ashley.Constants.s_activity;
 
 /**
  * Created by hadoop on 02/02/2018.
@@ -49,10 +56,27 @@ public class MainFragment extends Fragment {
     ListView listView = null;
     Activity mActivity;
 
+    private final BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (null != s_activity) {
+                Log.d(TAG, "onReceive:");
+                try {
+                    readFromFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mActivity = activity;
+        activity.registerReceiver(m_broadcastReceiver, new IntentFilter(ServiceUpdate.BROADCAST_ACTION));
         Log.d(TAG, "onAttach: ");
 
     }
@@ -102,8 +126,8 @@ public class MainFragment extends Fragment {
                 Log.d(TAG, "add feed: ");
                 return true;
             case R.id.refresh:
-//                Intent intent = new Intent(me_activity, ServiceUpdate.class);
-//                me_activity.startService(intent);
+                Intent intent = new Intent(me_activity, ServiceUpdate.class);
+                me_activity.startService(intent);
                 //
 
                 //
@@ -117,5 +141,29 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    public void readFromFile() throws IOException, ClassNotFoundException {
+        String contentFile = null;
+        ObjectIO reader = new ObjectIO(getActivity(), MainActivity.INDEX);
+        Iterable<IndexItem> indexItems = (Iterable<IndexItem>) reader.read();
+        for (IndexItem indexItem : indexItems){
+            contentFile = Long.toString(indexItem.m_uid);
+        }
+
+        ObjectIO contentReader = new ObjectIO(getActivity(), contentFile);
+        Log.d(TAG, "readFromFile: " + contentReader.read());
+        Map<Long, FeedItem> mapFromFile = (TreeMap<Long, FeedItem>) contentReader.read();
+
+        Iterator<TreeMap.Entry<Long, FeedItem>> entries = mapFromFile.entrySet().iterator();
+
+        while (entries.hasNext()) {
+            Map.Entry<Long, FeedItem> entry = entries.next();
+            Log.d(TAG, "readFromFile: " + "Key = " + entry.getKey() + ", Value = " + entry.getValue().getTitle());
+//            FeedItem fi = (FeedItem) entry.getValue();
+//            String string = fi.getTitle();
+
+        }
+
     }
 }

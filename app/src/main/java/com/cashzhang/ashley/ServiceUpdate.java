@@ -1,4 +1,3 @@
-/*
 package com.cashzhang.ashley;
 
 import android.app.IntentService;
@@ -15,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.format.Time;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Patterns;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -45,6 +45,7 @@ import java.util.regex.Pattern;
 public class ServiceUpdate extends IntentService {
     public static final String BROADCAST_ACTION = "com.cashzhang.serviceupdate.handle";
     public static final String ITEM_LIST = "-item_list.txt";
+    private final static String TAG = "ashley-rss";
 
     private static class Tags {
         static final String LINK = "link";
@@ -160,18 +161,18 @@ public class ServiceUpdate extends IntentService {
                         link = getContent(parser);
                     }
                     feedItem.m_url = link;
-                    feedItem.m_urlTrimmed = fitToScreen(resources, link, 1, 0.0F);
+                    //feedItem.m_urlTrimmed = fitToScreen(resources, link, 1, 0.0F);
                 } else if (tag.equals(Tags.PUBLISHED) || tag.equals(Tags.PUB_DATE)) {
-                    setPublishedTime(feedItem, getContent(parser), tag);
+                    //setPublishedTime(feedItem, getContent(parser), tag);
                 } else if (tag.equals(Tags.TITLE)) {
-                    feedItem.m_title = fitToScreen(resources, getContent(parser).trim(), 0, timeSpace);
+                    //feedItem.m_title = fitToScreen(resources, getContent(parser).trim(), 0, timeSpace);
                 } else if (tag.equals(Tags.CONTENT) || tag.equals(Tags.DESCRIPTION)) {
                     String content = getContent(parser);
                     feedItem.m_content = content;
 
-                    parseHtmlForImage(this, content, feedItem);
+                    //parseHtmlForImage(this, content, feedItem);
                     content = Patterns.CDATA.matcher(content).replaceAll("").trim();
-                    setDesLines(resources, feedItem, content);
+                    //setDesLines(resources, feedItem, content);
                 }
             } else if (XmlPullParser.END_TAG == eventType) {
                 String tag = parser.getName();
@@ -188,6 +189,7 @@ public class ServiceUpdate extends IntentService {
         // Write the map to file.
         ObjectIO out = new ObjectIO(this, contentFile);
         out.write(map);
+        Log.d(TAG, "parseFeed: out.write(map)");
 
         // Write the key set to file. Wrapped in a set because TreeMap#KeySet is not serializable.
         Set<Long> set = new HashSet<Long>(map.keySet());
@@ -207,7 +209,7 @@ public class ServiceUpdate extends IntentService {
         return null == content ? "" : content;
     }
 
-    private static String fitToScreen(Resources resources, String content, int ind, float extra) {
+    /*private static String fitToScreen(Resources resources, String content, int ind, float extra) {
         // ind == 0 is the title, ind == 1 is the link.
         int size = 0 == ind ? R.dimen.item_title_size : R.dimen.item_link_size;
         int color = 0 == ind ? R.color.item_title_color : R.color.item_link_color;
@@ -364,10 +366,9 @@ public class ServiceUpdate extends IntentService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 }
 
 
 
-*/

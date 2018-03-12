@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     public List<IndexItem> m_index;
     static final String INDEX = "index.txt";
 
-    private final BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
+    /*private final BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (null != s_activity) {
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
-    };
+    };*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

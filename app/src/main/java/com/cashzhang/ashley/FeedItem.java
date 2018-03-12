@@ -42,4 +42,11 @@ public class FeedItem implements Serializable {
         m_desLines = (String[]) in.readObject();
         m_time = in.readLong();
     }
+
+    public String getTitle() throws IOException, ClassNotFoundException {
+        return m_title;
+    }
+    public String getContent() throws IOException, ClassNotFoundException {
+        return m_content;
+    }
 }
