@@ -161,6 +161,7 @@ public class ServiceUpdate extends IntentService {
                         link = getContent(parser);
                     }
                     feedItem.m_url = link;
+                    Log.d(TAG, "parseFeed: url" + feedItem.m_url);
                     //feedItem.m_urlTrimmed = fitToScreen(resources, link, 1, 0.0F);
                 } else if (tag.equals(Tags.PUBLISHED) || tag.equals(Tags.PUB_DATE)) {
                     //setPublishedTime(feedItem, getContent(parser), tag);
@@ -168,10 +169,11 @@ public class ServiceUpdate extends IntentService {
                     //feedItem.m_title = fitToScreen(resources, getContent(parser).trim(), 0, timeSpace);
                 } else if (tag.equals(Tags.CONTENT) || tag.equals(Tags.DESCRIPTION)) {
                     String content = getContent(parser);
-                    feedItem.m_content = content;
-
+//                    feedItem.m_content = content;
+//                    Log.d(TAG, "parseFeed: content" + feedItem.m_content);
                     //parseHtmlForImage(this, content, feedItem);
                     content = Patterns.CDATA.matcher(content).replaceAll("").trim();
+                    feedItem.m_content = content;
                     //setDesLines(resources, feedItem, content);
                 }
             } else if (XmlPullParser.END_TAG == eventType) {
