@@ -184,7 +184,7 @@ public class MainFragment extends Fragment {
             e.printStackTrace();
         }
         for (Object obj : set) {
-            Log.d(TAG, "readKeySet value: " + mapFromFile.get(obj).toString());
+            Log.d(TAG, "readKeySet value: " + mapFromFile.get(obj).m_title.toString());
         }
     }
 }

@@ -155,6 +155,8 @@ public class ServiceUpdate extends IntentService {
                 } else if (tag.equals(Tags.PUBLISHED) || tag.equals(Tags.PUB_DATE)) {
                     setPublishedTime(feedItem, getContent(parser), tag);
                 } else if (tag.equals(Tags.TITLE)) {
+                    String title = getContent(parser);
+                    feedItem.m_title = title;
                 } else if (tag.equals(Tags.CONTENT) || tag.equals(Tags.DESCRIPTION)) {
                     String content = getContent(parser);
                     content = Patterns.CDATA.matcher(content).replaceAll("").trim();
