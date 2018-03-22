@@ -1,18 +1,9 @@
 package com.cashzhang.ashley;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.cashzhang.ashley.Constants.s_activity;
 import static com.cashzhang.ashley.Constants.s_fragmentManager;
 import static com.cashzhang.ashley.Constants.saveInitialConstants;
 import static com.cashzhang.ashley.Constants.saveViews;
@@ -23,15 +14,6 @@ public class MainActivity extends AppCompatActivity {
     public List<IndexItem> m_index;
     static final String INDEX = "index.txt";
 
-    /*private final BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (null != s_activity) {
-//                AsyncNavigationAdapter.run(s_activity);
-
-            }
-        }
-    };*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -24,13 +24,19 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import static com.cashzhang.ashley.Constants.s_activity;
+import static com.cashzhang.ashley.ServiceUpdate.ITEM_LIST;
 
 /**
  * Created by hadoop on 02/02/2018.
@@ -41,11 +47,11 @@ public class MainFragment extends Fragment {
     private final static String TAG = "ashley-rss";
     private static final float PULL_DISTANCE = 0.5F;
 
-    private String[] titleString = new String[] {
+    private String[] titleString = new String[]{
             "CS",
             "EE"
     };
-    private String[] infoString = new String[] {
+    private String[] infoString = new String[]{
             "CS info",
             "EE info"
     };
@@ -94,7 +100,7 @@ public class MainFragment extends Fragment {
         listView = (ListView) layout.findViewById(R.id.l_list);
 
         listData = new ArrayList<String>();
-        for (int i = 0; i < titleString.length; i ++) {
+        for (int i = 0; i < titleString.length; i++) {
             Log.d(TAG, "onCreate: listData add: " + titleString[i]);
             listData.add(titleString[i]);
         }
@@ -128,9 +134,8 @@ public class MainFragment extends Fragment {
             case R.id.refresh:
                 Intent intent = new Intent(me_activity, ServiceUpdate.class);
                 me_activity.startService(intent);
-                //
+                //TODO
 
-                //
                 Log.d(TAG, "refresh: ");
                 return true;
             default:
@@ -144,26 +149,43 @@ public class MainFragment extends Fragment {
     }
 
     public void readFromFile() throws IOException, ClassNotFoundException {
-        String contentFile = null;
+
         ObjectIO reader = new ObjectIO(getActivity(), MainActivity.INDEX);
         Iterable<IndexItem> indexItems = (Iterable<IndexItem>) reader.read();
-        for (IndexItem indexItem : indexItems){
-            contentFile = Long.toString(indexItem.m_uid);
+
+        for (IndexItem indexItem : indexItems) {
+            try {
+                readKeySet(Long.toString(indexItem.m_uid));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+    }
 
-        ObjectIO contentReader = new ObjectIO(getActivity(), contentFile);
-        Log.d(TAG, "readFromFile: " + contentReader.read());
-        Map<Long, FeedItem> mapFromFile = (TreeMap<Long, FeedItem>) contentReader.read();
+    private void readKeySet(String uid) {
+        Log.d(TAG, "readKeySet: uid = " + uid);
 
-        Iterator<TreeMap.Entry<Long, FeedItem>> entries = mapFromFile.entrySet().iterator();
+        ObjectIO reader = new ObjectIO(getActivity(), uid + ITEM_LIST);
+        ObjectIO mapReader = new ObjectIO(getActivity(), uid);
 
-        while (entries.hasNext()) {
-            Map.Entry<Long, FeedItem> entry = entries.next();
-            Log.d(TAG, "readFromFile: " + "Key = " + entry.getKey() + ", Value = " + entry.getValue().getTitle());
-//            FeedItem fi = (FeedItem) entry.getValue();
-//            String string = fi.getTitle();
-
+        HashSet<Long> set = null;
+        try {
+            set = (HashSet<Long>) reader.read();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        Log.d(TAG, "readKeySet set: " + set.toString());
+        Log.d(TAG, "readKeySet size: " + set.size());
 
+        TreeMap<Long, FeedItem> mapFromFile = null;
+        try {
+            mapFromFile = (TreeMap<Long, FeedItem>) mapReader.read();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        for (Object obj : set) {
+            Log.d(TAG, "readKeySet value: " + mapFromFile.get(obj).toString());
+        }
     }
 }
+
