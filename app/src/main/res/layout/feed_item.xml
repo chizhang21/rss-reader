@@ -22,10 +22,10 @@
             android:textColor="#666872" />
     </LinearLayout>
 
-    <TextView
+    <!--<TextView
         android:id="@+id/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#666872" />
+        android:textColor="#666872" />-->
 
 </LinearLayout>

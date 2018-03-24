@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -47,15 +48,6 @@ public class MainFragment extends Fragment {
     private final static String TAG = "ashley-rss";
     private static final float PULL_DISTANCE = 0.5F;
 
-    private String[] titleString = new String[]{
-            "CS",
-            "EE"
-    };
-    private String[] infoString = new String[]{
-            "CS info",
-            "EE info"
-    };
-
     private ArrayList<String> listData;
 
     LListAdapter listAdapter = null;
@@ -75,6 +67,14 @@ public class MainFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
+        }
+    };
+    private AdapterView.OnItemClickListener listViewClickListener = new AdapterView.OnItemClickListener() {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Log.d(TAG, "onItemClick: " + position);
+
         }
     };
 
@@ -100,12 +100,15 @@ public class MainFragment extends Fragment {
         listView = (ListView) layout.findViewById(R.id.l_list);
 
         listData = new ArrayList<String>();
+        /*
         for (int i = 0; i < titleString.length; i++) {
             Log.d(TAG, "onCreate: listData add: " + titleString[i]);
             listData.add(titleString[i]);
         }
-        listAdapter = new LListAdapter(mActivity, listData);
+        listAdapter = new LListAdapter(mActivity, listData);*/
+        listAdapter = new LListAdapter(mActivity);
         listView.setAdapter(listAdapter);
+        listView.setOnItemClickListener(listViewClickListener);
         return layout;
     }
 
@@ -123,7 +126,6 @@ public class MainFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        MainActivity me_activity = (MainActivity) getActivity();
         switch (item.getItemId()) {
             case R.id.add_feed:
                 MainActivity activity = (MainActivity) getActivity();
@@ -132,8 +134,8 @@ public class MainFragment extends Fragment {
                 Log.d(TAG, "add feed: ");
                 return true;
             case R.id.refresh:
-                Intent intent = new Intent(me_activity, ServiceUpdate.class);
-                me_activity.startService(intent);
+                Intent intent = new Intent(getActivity(), ServiceUpdate.class);
+                getActivity().startService(intent);
                 //TODO
 
                 Log.d(TAG, "refresh: ");
@@ -153,11 +155,13 @@ public class MainFragment extends Fragment {
         ObjectIO reader = new ObjectIO(getActivity(), MainActivity.INDEX);
         Iterable<IndexItem> indexItems = (Iterable<IndexItem>) reader.read();
 
-        for (IndexItem indexItem : indexItems) {
-            try {
-                readKeySet(Long.toString(indexItem.m_uid));
-            } catch (Exception e) {
-                e.printStackTrace();
+        if (indexItems != null) {
+            for (IndexItem indexItem : indexItems) {
+                try {
+                    readKeySet(Long.toString(indexItem.m_uid));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -183,8 +187,14 @@ public class MainFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        for (Object obj : set) {
-            Log.d(TAG, "readKeySet value: " + mapFromFile.get(obj).m_title.toString());
+
+        if (set != null) {
+            listData.clear();
+            for (Object obj : set) {
+                listData.add(mapFromFile.get(obj).m_title.toString());
+                Log.d(TAG, "readKeySet value: " + mapFromFile.get(obj).m_title.toString());
+            }
+            listAdapter.refreshData(listData);
         }
     }
 }

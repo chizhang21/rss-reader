@@ -87,21 +87,21 @@ public class ServiceUpdate extends IntentService {
         ObjectIO reader = new ObjectIO(this, MainActivity.INDEX);
         Iterable<IndexItem> indexItems = (Iterable<IndexItem>) reader.read();
 
-        // Download and parse each feed in the index.
-        for (IndexItem indexItem : indexItems) {
-            try {
-                parseFeed(indexItem.m_url, indexItem.m_uid);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
+        if (indexItems != null) {
+            // Download and parse each feed in the index.
+            for (IndexItem indexItem : indexItems) {
+                try {
+                    parseFeed(indexItem.m_url, indexItem.m_uid);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (XmlPullParserException e) {
+                    e.printStackTrace();
+                }
             }
         }
-
         // Update the Activity.
         Intent broadcast = new Intent(BROADCAST_ACTION);
         sendBroadcast(broadcast);
-
         stopSelf();
     }
 

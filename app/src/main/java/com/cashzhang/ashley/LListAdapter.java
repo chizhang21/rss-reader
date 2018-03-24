@@ -1,6 +1,7 @@
 package com.cashzhang.ashley;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,12 @@ public class LListAdapter extends BaseAdapter {
 
     private ArrayList<String> arrayListData;
     private LayoutInflater layoutInflater;
+    private final static String TAG = "ashley-rss";
 
     public final class Component {
 //        public ImageView image;
         public TextView title;
-        public TextView info;
+//        public TextView info;
     }
 
     public LListAdapter(Context context, ArrayList<String> listData) {
@@ -30,14 +32,23 @@ public class LListAdapter extends BaseAdapter {
         this.layoutInflater = LayoutInflater.from(context);
     }
 
+    public LListAdapter(Context context) {
+        this.layoutInflater = LayoutInflater.from(context);
+    }
+
+    public void refreshData(ArrayList<String> listData) {
+        arrayListData = listData;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
-        return arrayListData.size();
+        return ((arrayListData == null) ? 0 :arrayListData.size());
     }
 
     @Override
     public Object getItem(int i) {
-        return arrayListData.get(i);
+        return ((arrayListData == null) ? null : arrayListData.get(i));
     }
 
     @Override
@@ -53,15 +64,15 @@ public class LListAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.feed_item, null);
 //            component.image = (ImageView) convertView.findViewById(R.id.image);
             component.title = (TextView) convertView.findViewById(R.id.title);
-            component.info = (TextView) convertView.findViewById(R.id.info);
+//            component.info = (TextView) convertView.findViewById(R.id.info);
             convertView.setTag(component);
         } else {
             component = (Component) convertView.getTag();
         }
-
-        component.title.setText((String) arrayListData.get(position));
-        component.info.setText((String) arrayListData.get(position));
+        component.title.setText((arrayListData == null) ? null : arrayListData.get(position));
+//        component.info.setText((String) arrayListData.get(position));
 
         return convertView;
     }
+
 }

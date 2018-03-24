@@ -54,10 +54,6 @@ public class Constants {
 //        s_fragmentDrawer = (FragmentNavigationDrawer) s_fragmentManager.findFragmentById(R.id.fragment_navigation_drawer);
     }
 
-    static void saveViews() {
-
-    }
-
     @TargetApi(Build.VERSION_CODES.KITKAT)
     static void setTopOffset(Activity activity) {
         setTopOffset(activity, s_activity.findViewById(android.R.id.content));

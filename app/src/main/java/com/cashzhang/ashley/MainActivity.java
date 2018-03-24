@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import static com.cashzhang.ashley.Constants.s_fragmentManager;
 import static com.cashzhang.ashley.Constants.saveInitialConstants;
-import static com.cashzhang.ashley.Constants.saveViews;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -38,12 +37,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        registerReceiver(m_broadcastReceiver, new IntentFilter(ServiceUpdate.BROADCAST_ACTION));
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        saveViews();
     }
 }
