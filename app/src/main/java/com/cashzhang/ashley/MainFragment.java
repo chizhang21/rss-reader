@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -117,14 +118,11 @@ public class MainFragment extends Fragment {
                 MainActivity activity = (MainActivity) getActivity();
                 Dialog dialog = DialogEditFeed.newInstance(activity, -1);
                 dialog.show();
-                Log.d(TAG, "add feed: ");
+                Log.d(TAG, "add feed.");
                 return true;
             case R.id.refresh:
                 Intent intent = new Intent(getActivity(), ServiceUpdate.class);
                 getActivity().startService(intent);
-                //TODO
-
-                Log.d(TAG, "refresh: ");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -134,12 +132,19 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        //refresh when fragment crated.
+        Intent intent = new Intent(getActivity(), ServiceUpdate.class);
+        getActivity().startService(intent);
     }
 
     AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Log.d(TAG, "onItemClick: " + position + " url: " + getUrl(position));
+            // 1. call system browser
+            /*Uri uri = Uri.parse(getUrl(position));
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);*/
+            // 2. use WebView
             //TODO
         }
     };

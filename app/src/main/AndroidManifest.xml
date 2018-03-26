@@ -21,6 +21,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".DetailPage"/>
+
         <service
             android:name=".ServiceUpdate"
             android:enabled="true"
