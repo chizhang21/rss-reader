@@ -39,8 +39,6 @@ public class Constants {
     static ListView s_listView;
     static int s_eightDp;
     static DisplayMetrics s_displayMetrics;
-//    static FragmentNavigationDrawer s_fragmentDrawer;
-
 
     static void saveInitialConstants(MainActivity activity) {
         s_activity = activity;
@@ -51,45 +49,14 @@ public class Constants {
         s_fragmentFeeds = (MainFragment) s_fragmentManager.findFragmentById(R.id.main_fragment);
         s_drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
         s_eightDp = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8.0F, s_displayMetrics));
-//        s_fragmentDrawer = (FragmentNavigationDrawer) s_fragmentManager.findFragmentById(R.id.fragment_navigation_drawer);
-    }
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    static void setTopOffset(Activity activity) {
-        setTopOffset(activity, s_activity.findViewById(android.R.id.content));
-    }
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    static void setTopOffset(Activity activity, View view) {
-        if (Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT) {
-            if (!ViewConfiguration.get(activity).hasPermanentMenuKey()) {
-                TypedValue value = new TypedValue();
-
-                Resources.Theme theme = activity.getTheme();
-                theme.resolveAttribute(android.R.attr.actionBarSize, value, true);
-                int actionBar = s_resources.getDimensionPixelSize(value.resourceId);
-                int resourceId = s_resources.getIdentifier("status_bar_height", "dimen", "android");
-                int statusBar = s_resources.getDimensionPixelSize(resourceId);
-
-                view.setPadding(0, actionBar + statusBar, 0, 0);
-            }
-        }
     }
 
     static void hideFragments(Fragment... fragments) {
-        FragmentTransaction transaction = s_fragmentManager.beginTransaction();
-        for (Fragment fragment : fragments) {
-            transaction.hide(fragment);
-        }
-        transaction.commit();
+
     }
 
     static void showFragments(Fragment... fragments) {
-        FragmentTransaction transaction = s_fragmentManager.beginTransaction();
-        for (Fragment fragment : fragments) {
-            transaction.show(fragment);
-        }
-        transaction.commit();
+
     }
 
     public static XmlPullParser createXmlParser(CharSequence urlString) throws IOException, XmlPullParserException {
@@ -101,9 +68,5 @@ public class Constants {
         InputStream inputStream = url.openStream();
         parser.setInput(inputStream, null);
         return parser;
-    }
-
-    static boolean isTextRtl(CharSequence c) {
-        return TextDirectionHeuristicsCompat.FIRSTSTRONG_LTR.isRtl(c, 0, c.length() - 1);
     }
 }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * Created by zhangchi on 2018/2/28.
  */
 
-public class LListAdapter extends BaseAdapter implements AdapterView.OnItemClickListener{
+public class LListAdapter extends BaseAdapter {
 
     private ArrayList<String> arrayListData;
     private ArrayList<String> arrayListUrl;
@@ -37,16 +37,6 @@ public class LListAdapter extends BaseAdapter implements AdapterView.OnItemClick
         arrayListData = listData;
         arrayListUrl = listUrl;
         notifyDataSetChanged();
-    }
-
-    private String getUrl(int i) {
-        return ((arrayListUrl == null) ? null : arrayListUrl.get(position));
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(TAG, "onItemClick: " + position + " url: " + getUrl(position));
-        //TODO
     }
 
     @Override

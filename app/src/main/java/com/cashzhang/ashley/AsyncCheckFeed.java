@@ -56,13 +56,11 @@ class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
         if (isCancelled()) {
             return null;
         }
-      /* Get the user's input. */
         CharSequence inputUrl = ((TextView) m_dialog.findViewById(R.id.dialog_url)).getText();
         CharSequence inputTags = ((TextView) m_dialog.findViewById(R.id.dialog_tags)).getText();
 
         inputUrl = null == inputUrl ? "" : inputUrl;
 
-      /* Form the array of urls we will check the validity of. */
         CharSequence[] urlCheckList = {inputUrl, "https://" + inputUrl, "http://" + inputUrl};
 
         String url = "";

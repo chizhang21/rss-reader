@@ -60,24 +60,15 @@ public class ServiceUpdate extends IntentService {
 
     private static class Patterns {
         static final Pattern CDATA = Pattern.compile("\\<.*?\\>");
-        static final Pattern IMG = Pattern.compile("(?i)<img([^>]+)/>");
-        static final Pattern SRC = Pattern.compile("\\s*(?i)src\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))");
-        static final Pattern APOSTROPHE = Pattern.compile("'");
-        static final Pattern QUOT = Pattern.compile("\"");
-        static final Pattern LINE = Pattern.compile(NEWLINE);
     }
 
     private static final String NEWLINE = System.getProperty("line.separator");
-    private static final int MIN_IMAGE_WIDTH = 64;
     private static final float FAKE_WIDTH = Math.min(Resources.getSystem()
             .getDisplayMetrics().widthPixels, Resources.getSystem()
             .getDisplayMetrics().heightPixels);
-    private static final float USABLE_WIDTH_TEXT = FAKE_WIDTH - (Constants.s_eightDp << 1);
-
     public ServiceUpdate() {
         super("ServiceUpdate");
     }
-
     public ServiceUpdate(String name) {
         super(name);
     }
@@ -99,7 +90,7 @@ public class ServiceUpdate extends IntentService {
                 }
             }
         }
-        // Update the Activity.
+
         Intent broadcast = new Intent(BROADCAST_ACTION);
         sendBroadcast(broadcast);
         stopSelf();

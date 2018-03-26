@@ -7,20 +7,10 @@
     <!-- -->
     <ListView
         android:id="@+id/l_list"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@drawable/divider_tag_list"
         android:dividerHeight="1px"
         android:listSelector="@drawable/transparent"/>
-
-    <TextView
-        android:id="@+id/empty_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:padding="24dp"
-        android:textColor="@color/item_title_color"
-        android:textSize="18sp"/>
 
 </LinearLayout>

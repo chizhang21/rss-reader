@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -45,9 +46,9 @@ import static com.cashzhang.ashley.ServiceUpdate.ITEM_LIST;
 public class MainFragment extends Fragment {
 
     private final static String TAG = "ashley-rss";
-    private static final float PULL_DISTANCE = 0.5F;
 
     private ArrayList<String> listData;
+    private ArrayList<String> listUrl;
 
     LListAdapter listAdapter = null;
     ListView listView = null;
@@ -85,8 +86,6 @@ public class MainFragment extends Fragment {
 
         Log.d(TAG, "onCreateView: ");
         View layout = inflater.inflate(R.layout.feed_list, container, false);
-//        TextView emptyView = (TextView) layout.findViewById(R.id.empty_text);
-//        emptyView.setText(R.string.empty_manage_list_view);
 
         listView = (ListView) layout.findViewById(R.id.l_list);
 
@@ -95,7 +94,7 @@ public class MainFragment extends Fragment {
 
         listAdapter = new LListAdapter(mActivity);
         listView.setAdapter(listAdapter);
-        listView.setOnItemClickListener(listViewClickListener);
+        listView.setOnItemClickListener(itemClickListener);
         return layout;
     }
 
@@ -135,6 +134,18 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Log.d(TAG, "onItemClick: " + position + " url: " + getUrl(position));
+            //TODO
+        }
+    };
+
+    private String getUrl(int position) {
+        return ((listUrl == null) ? null : listUrl.get(position));
     }
 
     public void readFromFile() throws IOException, ClassNotFoundException {
