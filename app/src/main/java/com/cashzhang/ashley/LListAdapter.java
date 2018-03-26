@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,9 +16,10 @@ import java.util.ArrayList;
  * Created by zhangchi on 2018/2/28.
  */
 
-public class LListAdapter extends BaseAdapter {
+public class LListAdapter extends BaseAdapter implements AdapterView.OnItemClickListener{
 
     private ArrayList<String> arrayListData;
+    private ArrayList<String> arrayListUrl;
     private LayoutInflater layoutInflater;
     private final static String TAG = "ashley-rss";
 
@@ -27,18 +29,24 @@ public class LListAdapter extends BaseAdapter {
 //        public TextView info;
     }
 
-    public LListAdapter(Context context, ArrayList<String> listData) {
-        arrayListData = listData;
-        this.layoutInflater = LayoutInflater.from(context);
-    }
-
     public LListAdapter(Context context) {
         this.layoutInflater = LayoutInflater.from(context);
     }
 
-    public void refreshData(ArrayList<String> listData) {
+    public void refreshData(ArrayList<String> listData, ArrayList<String> listUrl) {
         arrayListData = listData;
+        arrayListUrl = listUrl;
         notifyDataSetChanged();
+    }
+
+    private String getUrl(int i) {
+        return ((arrayListUrl == null) ? null : arrayListUrl.get(position));
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, "onItemClick: " + position + " url: " + getUrl(position));
+        //TODO
     }
 
     @Override

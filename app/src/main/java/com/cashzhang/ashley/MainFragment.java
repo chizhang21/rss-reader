@@ -18,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -69,14 +68,6 @@ public class MainFragment extends Fragment {
             }
         }
     };
-    private AdapterView.OnItemClickListener listViewClickListener = new AdapterView.OnItemClickListener() {
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Log.d(TAG, "onItemClick: " + position);
-
-        }
-    };
 
     @Override
     public void onAttach(Activity activity) {
@@ -100,12 +91,8 @@ public class MainFragment extends Fragment {
         listView = (ListView) layout.findViewById(R.id.l_list);
 
         listData = new ArrayList<String>();
-        /*
-        for (int i = 0; i < titleString.length; i++) {
-            Log.d(TAG, "onCreate: listData add: " + titleString[i]);
-            listData.add(titleString[i]);
-        }
-        listAdapter = new LListAdapter(mActivity, listData);*/
+        listUrl = new ArrayList<String>();
+
         listAdapter = new LListAdapter(mActivity);
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(listViewClickListener);
@@ -190,11 +177,14 @@ public class MainFragment extends Fragment {
 
         if (set != null) {
             listData.clear();
+            listUrl.clear();
             for (Object obj : set) {
                 listData.add(mapFromFile.get(obj).m_title.toString());
-                Log.d(TAG, "readKeySet value: " + mapFromFile.get(obj).m_title.toString());
+                listUrl.add(mapFromFile.get(obj).m_url.toString());
+                Log.d(TAG, "readKeySet data: " + mapFromFile.get(obj).m_title.toString());
+                Log.d(TAG, "readKeySet url: " + mapFromFile.get(obj).m_url.toString());
             }
-            listAdapter.refreshData(listData);
+            listAdapter.refreshData(listData, listUrl);
         }
     }
 }
