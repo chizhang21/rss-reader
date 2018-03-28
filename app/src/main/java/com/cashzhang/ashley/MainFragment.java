@@ -144,8 +144,9 @@ public class MainFragment extends Fragment {
             /*Uri uri = Uri.parse(getUrl(position));
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);*/
-            // 2. use WebView
             //TODO
+            // 2. use WebView
+            //Intent intent = new Intent(MainActivity.this, DetailPage.class);
         }
     };
 
