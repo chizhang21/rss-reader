@@ -47,7 +47,7 @@ public class Constants {
         s_fragmentManager = activity.getFragmentManager();
         s_displayMetrics = s_resources.getDisplayMetrics();
         s_fragmentFeeds = (MainFragment) s_fragmentManager.findFragmentById(R.id.main_fragment);
-        s_drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
+//        s_drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
         s_eightDp = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8.0F, s_displayMetrics));
     }
 

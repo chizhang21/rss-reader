@@ -2,6 +2,8 @@ package com.cashzhang.ashley;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+
 import java.util.ArrayList;
 import java.util.List;
 import static com.cashzhang.ashley.Constants.s_fragmentManager;
@@ -20,6 +22,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         saveInitialConstants(this);
 
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolBar);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
         // Load the index from file.
         ObjectIO indexReader = new ObjectIO(this, INDEX);
         m_index = (List<IndexItem>) indexReader.read();
@@ -27,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
         if (null == m_index) {
             m_index = new ArrayList<IndexItem>();
         }
-
 
         if (null == savedInstanceState) {
             s_fragmentManager.executePendingTransactions();

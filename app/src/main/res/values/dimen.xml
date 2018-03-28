@@ -14,4 +14,5 @@
     <dimen name="navigation_height">48dp</dimen>
 
     <dimen name="navigation_width">240dp</dimen>
+    <dimen name="title_center_textsize">15dp</dimen>
 </resources>

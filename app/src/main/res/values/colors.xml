@@ -12,4 +12,5 @@
     <drawable name="transparent">@color/transparent</drawable>
     <color name="holo_light_pressed">#ffdddddd</color>
     <color name="holo_light_checked">#ffcfe9f3</color>
+    <color name="black">#000000</color>
 </resources>
