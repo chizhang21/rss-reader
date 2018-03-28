@@ -1,5 +1,7 @@
 package com.cashzhang.ashley;
 
+import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,11 +13,11 @@ import static com.cashzhang.ashley.Constants.s_fragmentManager;
 import static com.cashzhang.ashley.Constants.saveInitialConstants;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     public List<IndexItem> m_index;
     static final String INDEX = "index.txt";
-
+    private SwipeRefreshLayout mSwipeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
+
+        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        mSwipeLayout.setOnRefreshListener(this);
 
         // Load the index from file.
         ObjectIO indexReader = new ObjectIO(this, INDEX);
@@ -50,5 +55,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+    }
+    public void onRefresh() {
+        Intent intent = new Intent(this, ServiceUpdate.class);
+        this.startService(intent);
     }
 }

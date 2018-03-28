@@ -120,10 +120,10 @@ public class MainFragment extends Fragment {
                 dialog.show();
                 Log.d(TAG, "add feed.");
                 return true;
-            case R.id.refresh:
+            /*case R.id.refresh:
                 Intent intent = new Intent(getActivity(), ServiceUpdate.class);
                 getActivity().startService(intent);
-                return true;
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }
