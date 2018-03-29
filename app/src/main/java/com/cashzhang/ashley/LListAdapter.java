@@ -19,25 +19,24 @@ import java.util.ArrayList;
 
 public class LListAdapter extends BaseAdapter {
 
+    private ArrayList<String> arrayListTitle;
     private ArrayList<String> arrayListData;
-    private ArrayList<String> arrayListUrl;
     private LayoutInflater layoutInflater;
     public static final String BROADCAST_ACTION = "com.cashzhang.llistadapter.handle";
     private final static String TAG = "ashley-rss";
 
     public final class Component {
-//        public ImageView image;
+        public TextView webTitle;
         public TextView title;
-//        public TextView info;
     }
 
     public LListAdapter(Context context) {
         this.layoutInflater = LayoutInflater.from(context);
     }
 
-    public void refreshData(ArrayList<String> listData, ArrayList<String> listUrl) {
+    public void refreshData(ArrayList<String> listTitle, ArrayList<String> listData) {
+        arrayListTitle = listTitle;
         arrayListData = listData;
-        arrayListUrl = listUrl;
         notifyDataSetChanged();
     }
 
@@ -62,15 +61,14 @@ public class LListAdapter extends BaseAdapter {
         if (convertView == null) {
             component = new Component();
             convertView = layoutInflater.inflate(R.layout.feed_item, null);
-//            component.image = (ImageView) convertView.findViewById(R.id.image);
+            component.webTitle = (TextView) convertView.findViewById(R.id.webtitle);
             component.title = (TextView) convertView.findViewById(R.id.title);
-//            component.info = (TextView) convertView.findViewById(R.id.info);
             convertView.setTag(component);
         } else {
             component = (Component) convertView.getTag();
         }
+        component.webTitle.setText((arrayListTitle == null) ? null : arrayListTitle.get(position));
         component.title.setText((arrayListData == null) ? null : arrayListData.get(position));
-//        component.info.setText((String) arrayListData.get(position));
 
         Log.d(TAG, "position = " + position + ". count-1 = " + (getCount() - 1));
 

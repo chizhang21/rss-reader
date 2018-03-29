@@ -49,8 +49,10 @@ public class MainFragment extends Fragment {
 
     private final static String TAG = "ashley-rss";
 
+    private ArrayList<String> listTitle;
     private ArrayList<String> listData;
     private ArrayList<String> listUrl;
+    private ArrayList<String> listContent;
 
     LListAdapter listAdapter = null;
     ListView listView = null;
@@ -91,8 +93,10 @@ public class MainFragment extends Fragment {
 
         listView = (ListView) layout.findViewById(R.id.l_list);
 
+        listTitle = new ArrayList<String>();
         listData = new ArrayList<String>();
         listUrl = new ArrayList<String>();
+        listContent = new ArrayList<String>();
 
         listAdapter = new LListAdapter(mActivity);
         listView.setAdapter(listAdapter);
@@ -144,16 +148,21 @@ public class MainFragment extends Fragment {
             /*Uri uri = Uri.parse(getUrl(position));
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);*/
-            //TODO
             // 2. use WebView
             Intent intent = new Intent(getActivity(), DetailPage.class);
             intent.putExtra("url", getUrl(position));
             startActivity(intent);
+            // 3. show content
+            //TODO
+            Log.d(TAG, "onItemClick content: " + getContent(position));
         }
     };
 
     private String getUrl(int position) {
         return ((listUrl == null) ? null : listUrl.get(position));
+    }
+    private String getContent(int position) {
+        return ((listContent == null) ? null : listContent.get(position));
     }
 
     public void readFromFile() throws IOException, ClassNotFoundException {
@@ -195,15 +204,22 @@ public class MainFragment extends Fragment {
         }
 
         if (set != null) {
+            listTitle.clear();
             listData.clear();
             listUrl.clear();
+            listContent.clear();
+
             for (Object obj : set) {
+                listTitle.add(mapFromFile.get(obj).m_webtitle.toString());
                 listData.add(mapFromFile.get(obj).m_title.toString());
                 listUrl.add(mapFromFile.get(obj).m_url.toString());
+                listContent.add(mapFromFile.get(obj).m_content.toString());
+
                 Log.d(TAG, "readKeySet data: " + mapFromFile.get(obj).m_title.toString());
                 Log.d(TAG, "readKeySet url: " + mapFromFile.get(obj).m_url.toString());
+                Log.d(TAG, "readKeySet content: " + mapFromFile.get(obj).m_content.toString());
             }
-            listAdapter.refreshData(listData, listUrl);
+            listAdapter.refreshData(listTitle, listData);
             s_swipeLayout.setRefreshing(false);
         }
     }

@@ -148,6 +148,7 @@ public class ServiceUpdate extends IntentService {
                 } else if (tag.equals(Tags.TITLE)) {
                     String title = getContent(parser);
                     feedItem.m_title = title;
+                    feedItem.m_webtitle = title;//TODO tmp
                 } else if (tag.equals(Tags.CONTENT) || tag.equals(Tags.DESCRIPTION)) {
                     String content = getContent(parser);
                     content = Patterns.CDATA.matcher(content).replaceAll("").trim();

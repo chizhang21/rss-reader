@@ -12,6 +12,7 @@ import java.io.Serializable;
 public class FeedItem implements Serializable {
     private static final long serialVersionUID = 3L;
 
+    public String m_webtitle = "";
     public String m_title = "";
     public String m_imageLink = "";
     public String m_imageName = "";
@@ -22,6 +23,7 @@ public class FeedItem implements Serializable {
     public Long m_time = 0L;
 
     private void writeObject(ObjectOutputStream out) throws IOException {
+        out.writeUTF(m_webtitle);
         out.writeUTF(m_title);
         out.writeUTF(m_imageLink);
         out.writeUTF(m_imageName);
@@ -33,6 +35,7 @@ public class FeedItem implements Serializable {
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        m_webtitle = in.readUTF();
         m_title = in.readUTF();
         m_imageLink = in.readUTF();
         m_imageName = in.readUTF();
