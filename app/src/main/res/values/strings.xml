@@ -7,11 +7,11 @@
     <string name="dialog_title_add">Add feed</string>
     <string name="dialog_title_edit">Edit feed</string>
     <!-- Add/Edit feed dialog EditText hints. -->
-    <string name="dialog_feed_url_hint">Url</string>
-    <string name="dialog_feed_tag_hint">Tags</string>
+    <string name="dialog_feed_url_hint">URL</string>
+    <string name="dialog_feed_tag_hint">Name</string>
     <!-- Add/Edit feed dialog button texts. -->
     <string name="dialog_cancel">Cancel</string>
-    <string name="dialog_accept">Accept</string>
+    <string name="dialog_accept">OK</string>
     <string name="dialog_checking">Checking…</string>
     <!-- The All tag.-->
     <string name="all_tag">All</string>

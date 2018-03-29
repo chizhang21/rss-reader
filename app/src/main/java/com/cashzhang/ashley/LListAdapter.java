@@ -1,6 +1,7 @@
 package com.cashzhang.ashley;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ public class LListAdapter extends BaseAdapter {
     private ArrayList<String> arrayListData;
     private ArrayList<String> arrayListUrl;
     private LayoutInflater layoutInflater;
+    public static final String BROADCAST_ACTION = "com.cashzhang.llistadapter.handle";
     private final static String TAG = "ashley-rss";
 
     public final class Component {
@@ -69,6 +71,8 @@ public class LListAdapter extends BaseAdapter {
         }
         component.title.setText((arrayListData == null) ? null : arrayListData.get(position));
 //        component.info.setText((String) arrayListData.get(position));
+
+        Log.d(TAG, "position = " + position + ". count-1 = " + (getCount() - 1));
 
         return convertView;
     }

@@ -1,6 +1,7 @@
 package com.cashzhang.ashley;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Window;
@@ -22,6 +23,9 @@ public class DetailPage extends Activity {
         setContentView(R.layout.detail_page);
         WebView webView = (WebView) findViewById(R.id.WebView);
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("http://www.google.com");
+
+        Intent intent = getIntent();
+        String url = intent.getStringExtra("url");
+        webView.loadUrl(url);
     }
 }

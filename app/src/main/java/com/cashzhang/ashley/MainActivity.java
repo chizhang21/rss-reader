@@ -6,10 +6,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 import static com.cashzhang.ashley.Constants.s_fragmentManager;
+import static com.cashzhang.ashley.Constants.s_swipeLayout;
 import static com.cashzhang.ashley.Constants.saveInitialConstants;
 
 
@@ -27,8 +29,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolBar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         ActionBar ab = getSupportActionBar();
+        ab.setDisplayShowTitleEnabled(false);
         ab.setDisplayHomeAsUpEnabled(true);
 
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
@@ -56,8 +59,24 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
     }
+
     public void onRefresh() {
         Intent intent = new Intent(this, ServiceUpdate.class);
         this.startService(intent);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        switch (event.getKeyCode()) {
+            case KeyEvent.KEYCODE_BACK:
+                if (s_swipeLayout.isRefreshing()) {
+                    s_swipeLayout.setRefreshing(false);
+                    return true;
+                } else
+                    break;
+            default:
+                break;
+        }
+        return super.dispatchKeyEvent(event);
     }
 }

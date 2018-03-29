@@ -20,7 +20,7 @@ class DialogEditFeed extends Dialog {
     private AsyncTask<Void, Void, IndexItem> m_task;
 
     private DialogEditFeed(MainActivity activity, int position) {
-        super(activity, android.R.style.Theme_Holo_Light_Dialog);
+        super(activity, R.style.MyDialog);
         m_activity = activity;
         m_pos = position;
     }

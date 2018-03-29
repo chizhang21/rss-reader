@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import static com.cashzhang.ashley.Constants.s_activity;
+import static com.cashzhang.ashley.Constants.s_swipeLayout;
 import static com.cashzhang.ashley.ServiceUpdate.ITEM_LIST;
 
 /**
@@ -120,10 +121,9 @@ public class MainFragment extends Fragment {
                 dialog.show();
                 Log.d(TAG, "add feed.");
                 return true;
-            /*case R.id.refresh:
-                Intent intent = new Intent(getActivity(), ServiceUpdate.class);
-                getActivity().startService(intent);
-                return true;*/
+            case android.R.id.home:
+                //TODO
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -146,7 +146,9 @@ public class MainFragment extends Fragment {
             startActivity(intent);*/
             //TODO
             // 2. use WebView
-            //Intent intent = new Intent(MainActivity.this, DetailPage.class);
+            Intent intent = new Intent(getActivity(), DetailPage.class);
+            intent.putExtra("url", getUrl(position));
+            startActivity(intent);
         }
     };
 
@@ -202,7 +204,9 @@ public class MainFragment extends Fragment {
                 Log.d(TAG, "readKeySet url: " + mapFromFile.get(obj).m_url.toString());
             }
             listAdapter.refreshData(listData, listUrl);
+            s_swipeLayout.setRefreshing(false);
         }
     }
+
 }
 

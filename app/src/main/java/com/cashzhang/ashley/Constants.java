@@ -10,6 +10,7 @@ import android.os.Build;
 import android.support.v4.text.TextDirectionHeuristicsCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
@@ -35,8 +36,8 @@ public class Constants {
     static Resources s_resources;
     static MainFragment s_fragmentFeeds;
     static FragmentManager s_fragmentManager;
-    static DrawerLayout s_drawerLayout;
     static ListView s_listView;
+    static SwipeRefreshLayout s_swipeLayout;
     static int s_eightDp;
     static DisplayMetrics s_displayMetrics;
 
@@ -46,8 +47,9 @@ public class Constants {
         s_listView = activity.findViewById(R.id.l_list);
         s_fragmentManager = activity.getFragmentManager();
         s_displayMetrics = s_resources.getDisplayMetrics();
+        s_swipeLayout = (SwipeRefreshLayout) activity.findViewById(R.id.swipe_refresh);
         s_fragmentFeeds = (MainFragment) s_fragmentManager.findFragmentById(R.id.main_fragment);
-//        s_drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
+
         s_eightDp = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8.0F, s_displayMetrics));
     }
 
