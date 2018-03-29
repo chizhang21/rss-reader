@@ -6,21 +6,57 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="70dp"
         android:background="#FDF5E6"
         android:orientation="horizontal">
 
-        <!--<ImageView-->
-            <!--android:id="@+id/image"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content" />-->
+        <!-- image block -->
+        <LinearLayout
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/title"
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center"
+                android:src="@mipmap/rss_symbol" />
+
+        </LinearLayout>
+
+        <!-- content block -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/webtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="webtitle"
+                android:textColor="#828282"
+                android:textSize="11dp" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#363636"
+                android:textSize="14dp" />
+
+        </LinearLayout>
+
+        <!--time stamp -->
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="65dp"
-            android:textSize="13dp"
-            android:textColor="#666872" />
+            android:layout_height="match_parent">
+
+        </LinearLayout>
     </LinearLayout>
 
     <!--<TextView

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Ashley</string>
+    <string name="app_name">Ashley Reader</string>
     <string name="ic_action_add">Add</string>
     <string name="ic_action_refresh">Refresh</string>
     <string name="empty_manage_list_view">Press the add button to add a feed</string>
