@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,8 +30,10 @@ import android.widget.TextView;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -53,6 +56,7 @@ public class MainFragment extends Fragment {
     private ArrayList<String> listData;
     private ArrayList<String> listUrl;
     private ArrayList<String> listContent;
+    private ArrayList<String> listTime;
 
     LListAdapter listAdapter = null;
     ListView listView = null;
@@ -97,6 +101,7 @@ public class MainFragment extends Fragment {
         listData = new ArrayList<String>();
         listUrl = new ArrayList<String>();
         listContent = new ArrayList<String>();
+        listTime = new ArrayList<String>();
 
         listAdapter = new LListAdapter(mActivity);
         listView.setAdapter(listAdapter);
@@ -165,6 +170,36 @@ public class MainFragment extends Fragment {
         return ((listContent == null) ? null : listContent.get(position));
     }
 
+    /* String Data Long */
+    public static String longToString(long currentTime, String formatType)
+            throws ParseException {
+        Date date = longToDate(currentTime, formatType);
+        String strTime = dateToString(date, formatType);
+        return strTime;
+    }
+    public static Date longToDate(long currentTime, String formatType)
+            throws ParseException {
+        Date dateOld = new Date(currentTime);
+        String sDateTime = dateToString(dateOld, formatType);
+        Date date = stringToDate(sDateTime, formatType);
+        return date;
+    }
+    public static String dateToString(Date data, String formatType) {
+        return new SimpleDateFormat(formatType).format(data);
+    }
+    public static Date stringToDate(String strTime, String formatType)
+            throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat(formatType);
+        Date date = null;
+        try {
+            date = formatter.parse(strTime);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+    /* String Data Long */
+
     public void readFromFile() throws IOException, ClassNotFoundException {
 
         ObjectIO reader = new ObjectIO(getActivity(), MainActivity.INDEX);
@@ -208,18 +243,19 @@ public class MainFragment extends Fragment {
             listData.clear();
             listUrl.clear();
             listContent.clear();
+            listTime.clear();
 
             for (Object obj : set) {
                 listTitle.add(mapFromFile.get(obj).m_webtitle.toString());
                 listData.add(mapFromFile.get(obj).m_title.toString());
                 listUrl.add(mapFromFile.get(obj).m_url.toString());
                 listContent.add(mapFromFile.get(obj).m_content.toString());
+                listTime.add(longToString(mapFromFile.get(obj).m_time, "HH:mm aa"));
 
                 Log.d(TAG, "readKeySet data: " + mapFromFile.get(obj).m_title.toString());
                 Log.d(TAG, "readKeySet url: " + mapFromFile.get(obj).m_url.toString());
-                Log.d(TAG, "readKeySet content: " + mapFromFile.get(obj).m_content.toString());
             }
-            listAdapter.refreshData(listTitle, listData);
+            listAdapter.refreshData(listTitle, listData, listContent, listTime);
             s_swipeLayout.setRefreshing(false);
         }
     }

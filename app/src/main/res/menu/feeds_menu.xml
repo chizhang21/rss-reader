@@ -5,13 +5,8 @@
         android:id="@+id/hide_while_navigation">
         <item
             android:id="@+id/add_feed"
-            android:icon="@drawable/ic_action_new"
+            android:icon="@drawable/add"
             android:title="@string/ic_action_add"
             app:showAsAction="ifRoom" />
-        <!--<item
-            android:id="@+id/refresh"
-            android:icon="@drawable/ic_action_refresh"
-            android:title="@string/ic_action_refresh"
-            app:showAsAction="ifRoom" />-->
     </group>
 </menu>

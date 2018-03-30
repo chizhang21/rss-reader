@@ -6,63 +6,79 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:background="#FDF5E6"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <!-- image block -->
-        <LinearLayout
-            android:layout_width="30dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/image"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:layout_marginTop="20dp"
-                android:layout_gravity="center"
-                android:src="@mipmap/rss_symbol" />
-
-        </LinearLayout>
-
-        <!-- content block -->
+        <!-- web title block -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="16dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/webtitle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:text="webtitle"
+                android:layout_marginLeft="20dp"
+                android:text=""
                 android:textColor="#828282"
-                android:textSize="11dp" />
+                android:textSize="12dp" />
+            <TextView
+                android:id="@+id/timestamp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_marginRight="20dp"
+                android:text="2:42 PM"
+                android:textColor="#828282"
+                android:textSize="12dp"/>
+
+        </LinearLayout>
+
+        <!-- image and content block -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginLeft="6dp"
+                android:gravity="center_vertical"
+                android:src="@mipmap/rss_symbol" />
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="2dp"
                 android:textColor="#363636"
                 android:textSize="14dp" />
 
         </LinearLayout>
 
-        <!--time stamp -->
+        <!--content block -->
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_marginLeft="20dp"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="#828282"
+                android:textSize="12dp" />
         </LinearLayout>
     </LinearLayout>
-
-    <!--<TextView
-        android:id="@+id/info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#666872" />-->
-
 </LinearLayout>

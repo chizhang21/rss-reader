@@ -21,22 +21,31 @@ public class LListAdapter extends BaseAdapter {
 
     private ArrayList<String> arrayListTitle;
     private ArrayList<String> arrayListData;
+    private ArrayList<String> arrayListContent;
+    private ArrayList<String> arrayListTime;
     private LayoutInflater layoutInflater;
-    public static final String BROADCAST_ACTION = "com.cashzhang.llistadapter.handle";
     private final static String TAG = "ashley-rss";
 
     public final class Component {
         public TextView webTitle;
         public TextView title;
+        public TextView content;
+        public TextView timestamp;
     }
 
     public LListAdapter(Context context) {
         this.layoutInflater = LayoutInflater.from(context);
     }
 
-    public void refreshData(ArrayList<String> listTitle, ArrayList<String> listData) {
+    public void refreshData(ArrayList<String> listTitle,
+                            ArrayList<String> listData,
+                            ArrayList<String> listContent,
+                            ArrayList<String> listTime
+                            ) {
         arrayListTitle = listTitle;
         arrayListData = listData;
+        arrayListContent = listContent;
+        arrayListTime = listTime;
         notifyDataSetChanged();
     }
 
@@ -63,14 +72,17 @@ public class LListAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.feed_item, null);
             component.webTitle = (TextView) convertView.findViewById(R.id.webtitle);
             component.title = (TextView) convertView.findViewById(R.id.title);
+            component.content = (TextView) convertView.findViewById(R.id.content);
+            component.timestamp = (TextView) convertView.findViewById(R.id.timestamp);
             convertView.setTag(component);
         } else {
             component = (Component) convertView.getTag();
         }
+
         component.webTitle.setText((arrayListTitle == null) ? null : arrayListTitle.get(position));
         component.title.setText((arrayListData == null) ? null : arrayListData.get(position));
-
-        Log.d(TAG, "position = " + position + ". count-1 = " + (getCount() - 1));
+        component.content.setText((arrayListContent == null) ? null : arrayListContent.get(position));
+        component.timestamp.setText((arrayListTime == null) ? null : arrayListTime.get(position));
 
         return convertView;
     }

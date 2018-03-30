@@ -46,6 +46,7 @@ public class ServiceUpdate extends IntentService {
     public static final String BROADCAST_ACTION = "com.cashzhang.serviceupdate.handle";
     public static final String ITEM_LIST = "-item_list.txt";
     private final static String TAG = "ashley-rss";
+    private String tmpTitle = "";
 
     private static class Tags {
         static final String LINK = "link";
@@ -66,9 +67,11 @@ public class ServiceUpdate extends IntentService {
     private static final float FAKE_WIDTH = Math.min(Resources.getSystem()
             .getDisplayMetrics().widthPixels, Resources.getSystem()
             .getDisplayMetrics().heightPixels);
+
     public ServiceUpdate() {
         super("ServiceUpdate");
     }
+
     public ServiceUpdate(String name) {
         super(name);
     }
@@ -123,6 +126,22 @@ public class ServiceUpdate extends IntentService {
         FeedItem feedItem = new FeedItem();
 
         int eventType;
+
+        //for web title
+        do {
+            parser.next();
+            eventType = parser.getEventType();
+        }
+        while ((XmlPullParser.START_TAG != eventType || !Tags.TITLE.equals(parser.getName())));
+
+        String tagtag = parser.getName();
+        feedItem = new FeedItem();
+        if (tagtag.equals(Tags.TITLE)) {
+            String title = getContent(parser);
+            tmpTitle = title;//TODO tmp
+        }
+        //
+
         do {
             parser.next();
             eventType = parser.getEventType();
@@ -142,18 +161,17 @@ public class ServiceUpdate extends IntentService {
                         link = getContent(parser);
                     }
                     feedItem.m_url = link;
-                    Log.d(TAG, "parseFeed url: " + feedItem.m_url);
                 } else if (tag.equals(Tags.PUBLISHED) || tag.equals(Tags.PUB_DATE)) {
                     setPublishedTime(feedItem, getContent(parser), tag);
                 } else if (tag.equals(Tags.TITLE)) {
                     String title = getContent(parser);
                     feedItem.m_title = title;
-                    feedItem.m_webtitle = title;//TODO tmp
                 } else if (tag.equals(Tags.CONTENT) || tag.equals(Tags.DESCRIPTION)) {
                     String content = getContent(parser);
                     content = Patterns.CDATA.matcher(content).replaceAll("").trim();
                     feedItem.m_content = content;
                 }
+                feedItem.m_webtitle = tmpTitle;
             } else if (XmlPullParser.END_TAG == eventType) {
                 String tag = parser.getName();
                 boolean newItem = !map.containsKey(feedItem.m_time);
