@@ -1,5 +1,7 @@
 package com.cashzhang.ashley;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -20,6 +22,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     public List<IndexItem> m_index;
     static final String INDEX = "index.txt";
     private SwipeRefreshLayout mSwipeLayout;
+
+    ContentFragment contentFragment;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +69,13 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     public void onRefresh() {
         Intent intent = new Intent(this, ServiceUpdate.class);
         this.startService(intent);
+    }
+
+    public void goContentFragment() {
+        fragmentManager = getFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        contentFragment = new ContentFragment();
+        fragmentTransaction.replace(R.id.main_fragment, contentFragment);
     }
 
     @Override

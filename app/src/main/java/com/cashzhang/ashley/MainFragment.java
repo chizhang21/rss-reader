@@ -154,12 +154,14 @@ public class MainFragment extends Fragment {
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);*/
             // 2. use WebView
-            Intent intent = new Intent(getActivity(), DetailPage.class);
+            /*Intent intent = new Intent(getActivity(), DetailPage.class);
             intent.putExtra("url", getUrl(position));
-            startActivity(intent);
+            startActivity(intent);*/
             // 3. show content
             //TODO
-            Log.d(TAG, "onItemClick content: " + getContent(position));
+            MainActivity activity = (MainActivity) getActivity();
+            activity.goContentFragment();
+
         }
     };
 
