@@ -133,7 +133,6 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onResume() {
-        Log.d(TAG, "MainFragment onResume: ");
         super.onResume();
     }
 
@@ -190,24 +189,37 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             startActivity(intent);*/
             // 3. show content
             //TODO
-            goContentFragment();
+            goContentFragment(position);
 
         }
     };
 
-    private void goContentFragment() {
+    private void goContentFragment(int position) {
         fragmentManager = getFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         contentFragment = new ContentFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("title", getTitle(position));
+        bundle.putString("time", getTime(position));
+        bundle.putString("url", getUrl(position));
+        bundle.putString("content", getContent(position));
+
+        contentFragment.setArguments(bundle);
         fragmentTransaction.replace(R.id.container, contentFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
+    private String getTitle(int position) {
+        return ((listData == null) ? null : listData.get(position));
+    }
+    private String getTime(int position) {
+        return ((listTime == null) ? null : listTime.get(position));
+    }
     private String getUrl(int position) {
         return ((listUrl == null) ? null : listUrl.get(position));
     }
-
     private String getContent(int position) {
         return ((listContent == null) ? null : listContent.get(position));
     }
@@ -299,7 +311,5 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             mSwipeLayout.setRefreshing(false);
         }
     }
-
-
 }
 

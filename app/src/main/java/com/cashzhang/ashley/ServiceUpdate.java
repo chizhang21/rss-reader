@@ -138,7 +138,7 @@ public class ServiceUpdate extends IntentService {
         feedItem = new FeedItem();
         if (tagtag.equals(Tags.TITLE)) {
             String title = getContent(parser);
-            tmpTitle = title;//TODO tmp
+            tmpTitle = title;
         }
         //
 
@@ -168,7 +168,7 @@ public class ServiceUpdate extends IntentService {
                     feedItem.m_title = title;
                 } else if (tag.equals(Tags.CONTENT) || tag.equals(Tags.DESCRIPTION)) {
                     String content = getContent(parser);
-                    content = Patterns.CDATA.matcher(content).replaceAll("").trim();
+//                    content = Patterns.CDATA.matcher(content).replaceAll("").trim();
                     feedItem.m_content = content;
                 }
                 feedItem.m_webtitle = tmpTitle;
@@ -187,7 +187,6 @@ public class ServiceUpdate extends IntentService {
         // Write the map to file.
         ObjectIO out = new ObjectIO(this, contentFile);
         out.write(map);
-        Log.d(TAG, "parseFeed: out.write(map)");
 
         // Write the key set to file.
         Set<Long> set = new HashSet<Long>(map.keySet());

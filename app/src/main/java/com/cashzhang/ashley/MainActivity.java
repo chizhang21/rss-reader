@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         ActionBar ab = getSupportActionBar();
         ab.setDisplayShowTitleEnabled(false);
-        ab.setDisplayHomeAsUpEnabled(true);
+//        ab.setDisplayHomeAsUpEnabled(true);
 
         // Load the index from file.
         ObjectIO indexReader = new ObjectIO(this, INDEX);
