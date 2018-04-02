@@ -2,7 +2,7 @@ package com.cashzhang.ashley;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Fragment;
+
 import android.app.ListFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,7 +12,11 @@ import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,14 +45,13 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import static com.cashzhang.ashley.Constants.s_activity;
-import static com.cashzhang.ashley.Constants.s_swipeLayout;
 import static com.cashzhang.ashley.ServiceUpdate.ITEM_LIST;
 
 /**
  * Created by hadoop on 02/02/2018.
  */
 
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private final static String TAG = "ashley-rss";
 
@@ -60,7 +63,11 @@ public class MainFragment extends Fragment {
 
     LListAdapter listAdapter = null;
     ListView listView = null;
-    Activity mActivity;
+    ContentFragment contentFragment;
+
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
+    private SwipeRefreshLayout mSwipeLayout;
 
     private final BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -79,12 +86,13 @@ public class MainFragment extends Fragment {
     };
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mActivity = activity;
-        activity.registerReceiver(m_broadcastReceiver, new IntentFilter(ServiceUpdate.BROADCAST_ACTION));
-        Log.d(TAG, "onAttach: ");
-
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Activity activity;
+        if (context instanceof Activity) {
+            activity = (Activity) context;
+            activity.registerReceiver(m_broadcastReceiver, new IntentFilter(ServiceUpdate.BROADCAST_ACTION));
+        }
     }
 
     @Nullable
@@ -95,24 +103,38 @@ public class MainFragment extends Fragment {
         Log.d(TAG, "onCreateView: ");
         View layout = inflater.inflate(R.layout.feed_list, container, false);
 
+        mSwipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_refresh);
+        mSwipeLayout.setOnRefreshListener(this);
+
         listView = (ListView) layout.findViewById(R.id.l_list);
-
-        listTitle = new ArrayList<String>();
-        listData = new ArrayList<String>();
-        listUrl = new ArrayList<String>();
-        listContent = new ArrayList<String>();
-        listTime = new ArrayList<String>();
-
-        listAdapter = new LListAdapter(mActivity);
+        listAdapter = new LListAdapter(getActivity());
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(itemClickListener);
+
         return layout;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Constants.getFragmentView();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        listTitle = new ArrayList<String>();
+        listData = new ArrayList<String>();
+        listUrl = new ArrayList<String>();
+        listContent = new ArrayList<String>();
+        listTime = new ArrayList<String>();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(TAG, "MainFragment onResume: ");
+        super.onResume();
     }
 
     @Override
@@ -141,7 +163,16 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //refresh when fragment crated.
+        try {
+            readFromFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onRefresh() {
         Intent intent = new Intent(getActivity(), ServiceUpdate.class);
         getActivity().startService(intent);
     }
@@ -159,15 +190,24 @@ public class MainFragment extends Fragment {
             startActivity(intent);*/
             // 3. show content
             //TODO
-            MainActivity activity = (MainActivity) getActivity();
-            activity.goContentFragment();
+            goContentFragment();
 
         }
     };
 
+    private void goContentFragment() {
+        fragmentManager = getFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        contentFragment = new ContentFragment();
+        fragmentTransaction.replace(R.id.container, contentFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
     private String getUrl(int position) {
         return ((listUrl == null) ? null : listUrl.get(position));
     }
+
     private String getContent(int position) {
         return ((listContent == null) ? null : listContent.get(position));
     }
@@ -179,6 +219,7 @@ public class MainFragment extends Fragment {
         String strTime = dateToString(date, formatType);
         return strTime;
     }
+
     public static Date longToDate(long currentTime, String formatType)
             throws ParseException {
         Date dateOld = new Date(currentTime);
@@ -186,9 +227,11 @@ public class MainFragment extends Fragment {
         Date date = stringToDate(sDateTime, formatType);
         return date;
     }
+
     public static String dateToString(Date data, String formatType) {
         return new SimpleDateFormat(formatType).format(data);
     }
+
     public static Date stringToDate(String strTime, String formatType)
             throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat(formatType);
@@ -219,7 +262,6 @@ public class MainFragment extends Fragment {
     }
 
     private void readKeySet(String uid) {
-        Log.d(TAG, "readKeySet: uid = " + uid);
 
         ObjectIO reader = new ObjectIO(getActivity(), uid + ITEM_LIST);
         ObjectIO mapReader = new ObjectIO(getActivity(), uid);
@@ -230,8 +272,6 @@ public class MainFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "readKeySet set: " + set.toString());
-        Log.d(TAG, "readKeySet size: " + set.size());
 
         TreeMap<Long, FeedItem> mapFromFile = null;
         try {
@@ -254,13 +294,12 @@ public class MainFragment extends Fragment {
                 listContent.add(mapFromFile.get(obj).m_content.toString());
                 listTime.add(longToString(mapFromFile.get(obj).m_time, "HH:mm aa"));
 
-                Log.d(TAG, "readKeySet data: " + mapFromFile.get(obj).m_title.toString());
-                Log.d(TAG, "readKeySet url: " + mapFromFile.get(obj).m_url.toString());
             }
             listAdapter.refreshData(listTitle, listData, listContent, listTime);
-            s_swipeLayout.setRefreshing(false);
+            mSwipeLayout.setRefreshing(false);
         }
     }
+
 
 }
 

@@ -1,7 +1,5 @@
 package com.cashzhang.ashley;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -17,15 +15,11 @@ import static com.cashzhang.ashley.Constants.s_swipeLayout;
 import static com.cashzhang.ashley.Constants.saveInitialConstants;
 
 
-public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity {
 
     public List<IndexItem> m_index;
     static final String INDEX = "index.txt";
-    private SwipeRefreshLayout mSwipeLayout;
 
-    ContentFragment contentFragment;
-    private FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,15 +27,17 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         setContentView(R.layout.activity_main);
         saveInitialConstants(this);
 
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.container, new MainFragment())
+                .commit();
+
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolBar);
         setSupportActionBar(myToolbar);
 
         ActionBar ab = getSupportActionBar();
         ab.setDisplayShowTitleEnabled(false);
         ab.setDisplayHomeAsUpEnabled(true);
-
-        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
-        mSwipeLayout.setOnRefreshListener(this);
 
         // Load the index from file.
         ObjectIO indexReader = new ObjectIO(this, INDEX);
@@ -64,18 +60,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-    }
-
-    public void onRefresh() {
-        Intent intent = new Intent(this, ServiceUpdate.class);
-        this.startService(intent);
-    }
-
-    public void goContentFragment() {
-        fragmentManager = getFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        contentFragment = new ContentFragment();
-        fragmentTransaction.replace(R.id.main_fragment, contentFragment);
     }
 
     @Override

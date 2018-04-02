@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/hide_while_navigation">
+        <item
+            android:id="@+id/open_brower"
+            android:icon="@mipmap/safari"
+            android:title="@string/ic_action_add"
+            app:showAsAction="ifRoom" />
+    </group>
+</menu>

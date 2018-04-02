@@ -2,11 +2,12 @@ package com.cashzhang.ashley;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
+
 import android.app.FragmentTransaction;
 import android.content.res.Resources;
 import android.os.Build;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.text.TextDirectionHeuristicsCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -38,27 +39,17 @@ public class Constants {
     static FragmentManager s_fragmentManager;
     static ListView s_listView;
     static SwipeRefreshLayout s_swipeLayout;
-    static int s_eightDp;
-    static DisplayMetrics s_displayMetrics;
 
     static void saveInitialConstants(MainActivity activity) {
         s_activity = activity;
         s_resources = activity.getResources();
         s_listView = activity.findViewById(R.id.l_list);
-        s_fragmentManager = activity.getFragmentManager();
-        s_displayMetrics = s_resources.getDisplayMetrics();
-        s_swipeLayout = (SwipeRefreshLayout) activity.findViewById(R.id.swipe_refresh);
-        s_fragmentFeeds = (MainFragment) s_fragmentManager.findFragmentById(R.id.main_fragment);
-
-        s_eightDp = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8.0F, s_displayMetrics));
+        s_fragmentManager = activity.getSupportFragmentManager();
     }
 
-    static void hideFragments(Fragment... fragments) {
-
-    }
-
-    static void showFragments(Fragment... fragments) {
-
+    static public void getFragmentView() {
+        s_fragmentFeeds = (MainFragment) s_fragmentManager.findFragmentById(R.id.container);
+        s_swipeLayout = (SwipeRefreshLayout) s_fragmentFeeds.getView().findViewById(R.id.swipe_refresh);
     }
 
     public static XmlPullParser createXmlParser(CharSequence urlString) throws IOException, XmlPullParserException {

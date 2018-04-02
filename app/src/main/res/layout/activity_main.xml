@@ -28,16 +28,13 @@
             android:textSize="@dimen/title_center_textsize" />
     </android.support.v7.widget.Toolbar>
 
-    <fragment
-        android:id="@+id/main_fragment"
-        android:name="com.cashzhang.ashley.MainFragment"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:id="@+id/container"
+        tools:context="com.cashzhang.ashley.MainActivity"
+        >
 
-    <fragment
-        android:id="@+id/content_fragment"
-        android:name="com.cashzhang.ashley.ContentFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    </FrameLayout>
 
 </LinearLayout>
