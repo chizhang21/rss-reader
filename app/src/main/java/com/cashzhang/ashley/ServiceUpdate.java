@@ -1,45 +1,23 @@
 package com.cashzhang.ashley;
 
 import android.app.IntentService;
-import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Paint;
-import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.format.Time;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.Patterns;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ServiceUpdate extends IntentService {
@@ -63,17 +41,8 @@ public class ServiceUpdate extends IntentService {
         static final Pattern CDATA = Pattern.compile("\\<.*?\\>");
     }
 
-    private static final String NEWLINE = System.getProperty("line.separator");
-    private static final float FAKE_WIDTH = Math.min(Resources.getSystem()
-            .getDisplayMetrics().widthPixels, Resources.getSystem()
-            .getDisplayMetrics().heightPixels);
-
     public ServiceUpdate() {
         super("ServiceUpdate");
-    }
-
-    public ServiceUpdate(String name) {
-        super(name);
     }
 
     @Override
@@ -168,7 +137,7 @@ public class ServiceUpdate extends IntentService {
                     feedItem.m_title = title;
                 } else if (tag.equals(Tags.CONTENT) || tag.equals(Tags.DESCRIPTION)) {
                     String content = getContent(parser);
-//                    content = Patterns.CDATA.matcher(content).replaceAll("").trim();
+                    content = Patterns.CDATA.matcher(content).replaceAll("").trim();
                     feedItem.m_content = content;
                 }
                 feedItem.m_webtitle = tmpTitle;
