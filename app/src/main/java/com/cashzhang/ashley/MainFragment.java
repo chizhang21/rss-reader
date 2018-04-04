@@ -59,6 +59,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private ArrayList<String> listData;
     private ArrayList<String> listUrl;
     private ArrayList<String> listContent;
+    private ArrayList<String> listTContent;
     private ArrayList<String> listTime;
 
     LListAdapter listAdapter = null;
@@ -128,6 +129,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         listData = new ArrayList<String>();
         listUrl = new ArrayList<String>();
         listContent = new ArrayList<String>();
+        listTContent = new ArrayList<String>();
         listTime = new ArrayList<String>();
     }
 
@@ -188,7 +190,6 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             intent.putExtra("url", getUrl(position));
             startActivity(intent);*/
             // 3. show content
-            //TODO
             goContentFragment(position);
 
         }
@@ -297,6 +298,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             listData.clear();
             listUrl.clear();
             listContent.clear();
+            listTContent.clear();
             listTime.clear();
 
             for (Object obj : set) {
@@ -304,10 +306,11 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 listData.add(mapFromFile.get(obj).m_title.toString());
                 listUrl.add(mapFromFile.get(obj).m_url.toString());
                 listContent.add(mapFromFile.get(obj).m_content.toString());
+                listTContent.add(mapFromFile.get(obj).m_tcontent.toString());
                 listTime.add(longToString(mapFromFile.get(obj).m_time, "HH:mm aa"));
 
             }
-            listAdapter.refreshData(listTitle, listData, listContent, listTime);
+            listAdapter.refreshData(listTitle, listData, listTContent, listTime);
             mSwipeLayout.setRefreshing(false);
         }
     }

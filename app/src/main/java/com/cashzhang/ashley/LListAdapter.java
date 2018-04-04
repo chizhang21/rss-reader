@@ -42,7 +42,6 @@ public class LListAdapter extends BaseAdapter {
                             ArrayList<String> listContent,
                             ArrayList<String> listTime
                             ) {
-        Log.d("zhangchi", "refreshData: ");
         arrayListTitle = listTitle;
         arrayListData = listData;
         arrayListContent = listContent;

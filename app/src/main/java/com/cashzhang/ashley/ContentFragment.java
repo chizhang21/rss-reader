@@ -3,10 +3,13 @@ package com.cashzhang.ashley;
 import android.app.Dialog;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * Created by zhangchi on 2018/3/30.
@@ -41,11 +47,40 @@ public class ContentFragment extends Fragment {
 
         if (mTitle != null && mContent != null) {
             mTitle.setText(title);
-            mContent.setText(content);
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final Spanned sp = Html.fromHtml(content, new Html.ImageGetter() {
+                        @Override
+                        public Drawable getDrawable(String source) {
+                            InputStream is = null;
+                            try {
+                                is = (InputStream) new URL(source).getContent();
+                                Drawable d = Drawable.createFromStream(is, "src");
+                                d.setBounds(0, 0, d.getIntrinsicWidth(),
+                                        d.getIntrinsicHeight());
+                                is.close();
+                                return d;
+                            } catch (Exception e) {
+                                return null;
+                            }
+                        }
+                    }, null);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mContent.setText(sp);
+                        }
+                    });
+                }
+            }).start();
         }
         Log.d(TAG, "ContentFragment onCreateView: ");
         return layout;
     }
+
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

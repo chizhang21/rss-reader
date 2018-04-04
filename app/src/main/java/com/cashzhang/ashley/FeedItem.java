@@ -19,6 +19,7 @@ public class FeedItem implements Serializable {
     public String m_urlTrimmed = "";
     public String m_url = "";
     public String m_content = "";
+    public String m_tcontent = "";
     public String[] m_desLines = {"", "", ""};
     public Long m_time = 0L;
 
@@ -30,6 +31,7 @@ public class FeedItem implements Serializable {
         out.writeUTF(m_urlTrimmed);
         out.writeUTF(m_url);
         out.writeUTF(m_content);
+        out.writeUTF(m_tcontent);
         out.writeObject(m_desLines);
         out.writeLong(m_time);
     }
@@ -42,6 +44,7 @@ public class FeedItem implements Serializable {
         m_urlTrimmed = in.readUTF();
         m_url = in.readUTF();
         m_content = in.readUTF();
+        m_tcontent = in.readUTF();
         m_desLines = (String[]) in.readObject();
         m_time = in.readLong();
     }

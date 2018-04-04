@@ -53,7 +53,7 @@
                 android:id="@+id/c_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hello, Content!"
+                android:text="Loading......"
                 android:textColor="#363636"
                 android:textSize="15dp" />
         </LinearLayout>

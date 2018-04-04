@@ -137,8 +137,8 @@ public class ServiceUpdate extends IntentService {
                     feedItem.m_title = title;
                 } else if (tag.equals(Tags.CONTENT) || tag.equals(Tags.DESCRIPTION)) {
                     String content = getContent(parser);
-                    content = Patterns.CDATA.matcher(content).replaceAll("").trim();
                     feedItem.m_content = content;
+                    feedItem.m_tcontent = Patterns.CDATA.matcher(content).replaceAll("").trim();
                 }
                 feedItem.m_webtitle = tmpTitle;
             } else if (XmlPullParser.END_TAG == eventType) {
