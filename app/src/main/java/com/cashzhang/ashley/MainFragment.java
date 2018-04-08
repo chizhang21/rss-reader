@@ -34,8 +34,10 @@ import android.widget.TextView;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -151,10 +153,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 MainActivity activity = (MainActivity) getActivity();
                 Dialog dialog = DialogEditFeed.newInstance(activity, -1);
                 dialog.show();
-                Log.d(TAG, "add feed.");
-                return true;
-            case android.R.id.home:
-                //TODO
+                Log.d(TAG, "add feed");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -181,17 +180,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            // 1. call system browser
-            /*Uri uri = Uri.parse(getUrl(position));
-            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            startActivity(intent);*/
-            // 2. use WebView
-            /*Intent intent = new Intent(getActivity(), DetailPage.class);
-            intent.putExtra("url", getUrl(position));
-            startActivity(intent);*/
-            // 3. show content
             goContentFragment(position);
-
         }
     };
 
@@ -278,10 +267,11 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         ObjectIO reader = new ObjectIO(getActivity(), uid + ITEM_LIST);
         ObjectIO mapReader = new ObjectIO(getActivity(), uid);
+        Long[] arraySets;
 
-        HashSet<Long> set = null;
+        HashSet<Long> sets = null;
         try {
-            set = (HashSet<Long>) reader.read();
+            sets = (HashSet<Long>) reader.read();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -293,7 +283,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             e.printStackTrace();
         }
 
-        if (set != null) {
+        if (sets != null) {
             listTitle.clear();
             listData.clear();
             listUrl.clear();
@@ -301,14 +291,16 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             listTContent.clear();
             listTime.clear();
 
-            for (Object obj : set) {
-                listTitle.add(mapFromFile.get(obj).m_webtitle.toString());
-                listData.add(mapFromFile.get(obj).m_title.toString());
-                listUrl.add(mapFromFile.get(obj).m_url.toString());
-                listContent.add(mapFromFile.get(obj).m_content.toString());
-                listTContent.add(mapFromFile.get(obj).m_tcontent.toString());
-                listTime.add(longToString(mapFromFile.get(obj).m_time, "HH:mm aa"));
-
+            arraySets = sets.toArray(new Long[sets.size()]);
+            Arrays.sort(arraySets);
+            for (int i = arraySets.length - 1; i >= 0; i--) {
+                FeedItem feedItem = mapFromFile.get(arraySets[i]);
+                listTitle.add(feedItem.m_webtitle.toString());
+                listData.add(feedItem.m_title.toString());
+                listUrl.add(feedItem.m_url.toString());
+                listContent.add(feedItem.m_content.toString());
+                listTContent.add(feedItem.m_tcontent.toString());
+                listTime.add(longToString(feedItem.m_time, "HH:mm aa"));
             }
             listAdapter.refreshData(listTitle, listData, listTContent, listTime);
             mSwipeLayout.setRefreshing(false);

@@ -4,6 +4,8 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.text.format.Time;
+import android.util.Log;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.File;
@@ -70,6 +72,7 @@ public class ServiceUpdate extends IntentService {
 
     private void parseFeed(CharSequence urlString, long uid) throws XmlPullParserException, IOException {
         String contentFile = Long.toString(uid);
+        Log.d(TAG, "parseFeed");
 
         if (new File(getFilesDir(), contentFile + "-content.txt").exists()) {
             ObjectIO reader = new ObjectIO(this, uid + "-content.txt");

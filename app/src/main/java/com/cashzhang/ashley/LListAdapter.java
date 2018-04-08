@@ -66,6 +66,7 @@ public class LListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Log.d(TAG, "getView begin");
         Component component = null;
         if (convertView == null) {
             component = new Component();
@@ -83,7 +84,7 @@ public class LListAdapter extends BaseAdapter {
         component.title.setText((arrayListData == null) ? null : arrayListData.get(position));
         component.content.setText((arrayListContent == null) ? null : arrayListContent.get(position));
         component.timestamp.setText((arrayListTime == null) ? null : arrayListTime.get(position));
-
+        Log.d(TAG, "getView end");
         return convertView;
     }
 
