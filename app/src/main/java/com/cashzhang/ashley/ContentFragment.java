@@ -2,7 +2,9 @@ package com.cashzhang.ashley;
 
 import android.app.Dialog;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +12,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import java.io.InputStream;
@@ -44,6 +49,10 @@ public class ContentFragment extends Fragment {
 
         mTitle = (TextView) layout.findViewById(R.id.c_title);
         mContent = (TextView) layout.findViewById(R.id.c_content);
+        Resources resources = this.getResources();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        float density = dm.density;
+        final int width = dm.widthPixels;
 
         if (mTitle != null && mContent != null) {
             mTitle.setText(title);
@@ -51,15 +60,23 @@ public class ContentFragment extends Fragment {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+
                     final Spanned sp = Html.fromHtml(content, new Html.ImageGetter() {
                         @Override
                         public Drawable getDrawable(String source) {
                             InputStream is = null;
                             try {
                                 is = (InputStream) new URL(source).getContent();
+
                                 Drawable d = Drawable.createFromStream(is, "src");
-                                d.setBounds(0, 0, d.getIntrinsicWidth(),
-                                        d.getIntrinsicHeight());
+                                DisplayMetrics dm = getActivity().getResources().getDisplayMetrics();
+                                int dwidth = dm.widthPixels - 32;
+                                float dheight = (float)d.getIntrinsicHeight()*(float)dwidth/(float)d.getIntrinsicWidth();
+                                int dh = (int)(dheight+0.5);
+                                int wid = dwidth;
+                                int hei = dh;
+                                d.setBounds(0, 0, wid, hei);
+
                                 is.close();
                                 return d;
                             } catch (Exception e) {
@@ -67,12 +84,17 @@ public class ContentFragment extends Fragment {
                             }
                         }
                     }, null);
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mContent.setText(sp);
-                        }
-                    });
+                    try {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mContent.setText(sp);
+                                mContent.setMovementMethod(LinkMovementMethod.getInstance());
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }).start();
         }
