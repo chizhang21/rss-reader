@@ -2,20 +2,16 @@ package com.cashzhang.ashley;
 
 import android.app.Activity;
 import android.app.Dialog;
-
-import android.app.ListFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ParseException;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,26 +21,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static com.cashzhang.ashley.Constants.s_activity;
 import static com.cashzhang.ashley.ServiceUpdate.ITEM_LIST;
@@ -65,12 +53,17 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private ArrayList<String> listTime;
 
     LListAdapter listAdapter = null;
-    ListView listView = null;
     ContentFragment contentFragment;
+
+    @BindView(R.id.swipe_refresh)
+    SwipeRefreshLayout mSwipeLayout;
+
+    @BindView(R.id.l_list)
+    ListView listView;
 
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
-    private SwipeRefreshLayout mSwipeLayout;
+//    private SwipeRefreshLayout mSwipeLayout;
 
     private final BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -105,11 +98,9 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         Log.d(TAG, "onCreateView: ");
         View layout = inflater.inflate(R.layout.feed_list, container, false);
+        ButterKnife.bind(this, layout);
 
-        mSwipeLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipe_refresh);
         mSwipeLayout.setOnRefreshListener(this);
-
-        listView = (ListView) layout.findViewById(R.id.l_list);
         listAdapter = new LListAdapter(getActivity());
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(itemClickListener);
@@ -295,12 +286,12 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             Arrays.sort(arraySets);
             for (int i = arraySets.length - 1; i >= 0; i--) {
                 FeedItem feedItem = mapFromFile.get(arraySets[i]);
-                listTitle.add(feedItem.m_webtitle.toString());
-                listData.add(feedItem.m_title.toString());
-                listUrl.add(feedItem.m_url.toString());
-                listContent.add(feedItem.m_content.toString());
-                listTContent.add(feedItem.m_tcontent.toString());
-                listTime.add(longToString(feedItem.m_time, "HH:mm aa"));
+                listTitle.add(feedItem.m_webtitle);
+                listData.add(feedItem.m_title);
+                listUrl.add(feedItem.m_url);
+                listContent.add(feedItem.m_content);
+                listTContent.add(feedItem.m_tcontent);
+                listTime.add(longToString(feedItem.m_time, "MM-dd HH:mm"));
             }
             listAdapter.refreshData(listTitle, listData, listTContent, listTime);
             mSwipeLayout.setRefreshing(false);

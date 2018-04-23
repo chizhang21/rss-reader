@@ -14,25 +14,22 @@ import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
 class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
-    /* Formats */
+    private final static String TAG = "ashley-rss";
+
     private static final Pattern SPLIT_SPACE = Pattern.compile(" ");
     private static final Pattern SPLIT_COMMA = Pattern.compile(",");
     private final Dialog m_dialog;
     private final IndexItem m_oldIndexItem;
     private final MainActivity m_activity;
 
-    private final static String TAG = "ashley-rss";
 
     private AsyncCheckFeed(MainActivity activity, Dialog dialog, IndexItem oldIndexItem) {
         m_dialog = dialog;
@@ -71,7 +68,6 @@ class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
                 return null;
             }
             if (isValidFeed(urlToCheck)) {
-            /* Check to see if this url is new .*/
                 boolean newFeed = true;
                 for (IndexItem indexItem : m_activity.m_index) {
                     if (indexItem.m_url.equals(urlToCheck.toString())) {

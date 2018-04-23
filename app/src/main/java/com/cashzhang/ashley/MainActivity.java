@@ -10,6 +10,10 @@ import android.view.KeyEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.cashzhang.ashley.Constants.s_fragmentManager;
 import static com.cashzhang.ashley.Constants.s_swipeLayout;
 import static com.cashzhang.ashley.Constants.saveInitialConstants;
@@ -19,20 +23,19 @@ public class MainActivity extends AppCompatActivity {
 
     public List<IndexItem> m_index;
     static final String INDEX = "index.txt";
-
+    @BindView(R.id.toolBar) Toolbar myToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         saveInitialConstants(this);
-
+        ButterKnife.bind(this);
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.container, new MainFragment())
                 .commit();
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolBar);
         setSupportActionBar(myToolbar);
 
         ActionBar ab = getSupportActionBar();

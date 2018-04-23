@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by zhangchi on 2018/2/7.
  */
@@ -18,6 +21,10 @@ class DialogEditFeed extends Dialog {
     private final MainActivity m_activity;
     private final int m_pos;
     private AsyncTask<Void, Void, IndexItem> m_task;
+    @BindView(R.id.dialog_tags) MultiAutoCompleteTextView tagEdit;
+    @BindView(R.id.dialog_url) TextView urlText;
+    @BindView(R.id.dialog_button_positive) Button buttonPositive;
+    @BindView(R.id.dialog_button_negative) Button buttonNegative;
 
     private DialogEditFeed(MainActivity activity, int position) {
         super(activity, R.style.MyDialog);
@@ -40,7 +47,7 @@ class DialogEditFeed extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_edit_dialog);
 
-        MultiAutoCompleteTextView tagEdit = (MultiAutoCompleteTextView) findViewById(R.id.dialog_tags);
+        ButterKnife.bind(this);
         tagEdit.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
         final IndexItem oldItem;
@@ -49,15 +56,12 @@ class DialogEditFeed extends Dialog {
         if (-1 != m_pos) {
             oldItem = m_activity.m_index.get(m_pos);
 
-            ((TextView) findViewById(R.id.dialog_url)).setText(oldItem.m_url);
+            urlText.setText(oldItem.m_url);
         } else {
             oldItem = null;
         }
 
         final Dialog dialog = this;
-
-        Button buttonNegative = (Button) findViewById(R.id.dialog_button_negative);
-        final Button buttonPositive = (Button) findViewById(R.id.dialog_button_positive);
 
         // Set the click listeners.
         buttonNegative.setOnClickListener(new View.OnClickListener() {

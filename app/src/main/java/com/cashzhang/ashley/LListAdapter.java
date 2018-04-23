@@ -1,17 +1,17 @@
 package com.cashzhang.ashley;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by zhangchi on 2018/2/28.
@@ -19,18 +19,21 @@ import java.util.ArrayList;
 
 public class LListAdapter extends BaseAdapter {
 
+    private final static String TAG = "ashley-rss";
     private ArrayList<String> arrayListTitle;
     private ArrayList<String> arrayListData;
     private ArrayList<String> arrayListContent;
     private ArrayList<String> arrayListTime;
     private LayoutInflater layoutInflater;
-    private final static String TAG = "ashley-rss";
 
-    public final class Component {
-        public TextView webTitle;
-        public TextView title;
-        public TextView content;
-        public TextView timestamp;
+    static class Component {
+        @BindView(R.id.webtitle) TextView webTitle;
+        @BindView(R.id.title) TextView title;
+        @BindView(R.id.content) TextView content;
+        @BindView(R.id.timestamp) TextView timestamp;
+        public Component(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 
     public LListAdapter(Context context) {
@@ -66,26 +69,22 @@ public class LListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d(TAG, "getView begin");
-        Component component = null;
+        Component component;
         if (convertView == null) {
-            component = new Component();
             convertView = layoutInflater.inflate(R.layout.feed_item, null);
-            component.webTitle = (TextView) convertView.findViewById(R.id.webtitle);
-            component.title = (TextView) convertView.findViewById(R.id.title);
-            component.content = (TextView) convertView.findViewById(R.id.content);
-            component.timestamp = (TextView) convertView.findViewById(R.id.timestamp);
+            component = new Component(convertView);
             convertView.setTag(component);
         } else {
             component = (Component) convertView.getTag();
         }
-
         component.webTitle.setText((arrayListTitle == null) ? null : arrayListTitle.get(position));
         component.title.setText((arrayListData == null) ? null : arrayListData.get(position));
         component.content.setText((arrayListContent == null) ? null : arrayListContent.get(position));
         component.timestamp.setText((arrayListTime == null) ? null : arrayListTime.get(position));
-        Log.d(TAG, "getView end");
+
         return convertView;
     }
+
+
 
 }
