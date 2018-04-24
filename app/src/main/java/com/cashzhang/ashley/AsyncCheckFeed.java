@@ -9,6 +9,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,22 +22,28 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
-    private final static String TAG = "ashley-rss";
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
+class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
+
+    private final static String TAG = "ashley-rss";
     private static final Pattern SPLIT_SPACE = Pattern.compile(" ");
     private static final Pattern SPLIT_COMMA = Pattern.compile(",");
     private final Dialog m_dialog;
     private final IndexItem m_oldIndexItem;
     private final MainActivity m_activity;
 
+    @BindView(R.id.dialog_button_positive) Button button;
+    @BindView(R.id.dialog_tags) MultiAutoCompleteTextView tagEdit;
+    @BindView(R.id.dialog_url) TextView urlText;
 
     private AsyncCheckFeed(MainActivity activity, Dialog dialog, IndexItem oldIndexItem) {
         m_dialog = dialog;
         m_oldIndexItem = oldIndexItem;
         m_activity = activity;
 
-        Button button = (Button) m_dialog.findViewById(R.id.dialog_button_positive);
+        ButterKnife.bind(this, dialog);
         button.setText(R.string.dialog_checking);
         button.setEnabled(false);
     }
@@ -53,8 +60,8 @@ class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
         if (isCancelled()) {
             return null;
         }
-        CharSequence inputUrl = ((TextView) m_dialog.findViewById(R.id.dialog_url)).getText();
-        CharSequence inputTags = ((TextView) m_dialog.findViewById(R.id.dialog_tags)).getText();
+        CharSequence inputUrl = urlText.getText();
+        CharSequence inputTags = tagEdit.getText();
 
         inputUrl = null == inputUrl ? "" : inputUrl;
 
@@ -167,7 +174,6 @@ class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
         Context context = m_dialog.getContext();
 
         if (result.m_url.isEmpty()) {
-            Button button = (Button) m_dialog.findViewById(R.id.dialog_button_positive);
             button.setText(R.string.dialog_accept);
             button.setEnabled(true);
 
