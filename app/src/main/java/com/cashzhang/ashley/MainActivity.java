@@ -1,5 +1,7 @@
 package com.cashzhang.ashley;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,13 +31,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         saveInitialConstants(this);
         ButterKnife.bind(this);
-        getSupportFragmentManager()
+
+        List<Fragment> fragments=new ArrayList<Fragment>();
+        fragments.add(new LeftFragment());
+        fragments.add(new MainFragment());
+        fragments.add(new ContentFragment());
+        FrogAdapter adapter = new FrogAdapter(getSupportFragmentManager(), fragments);
+
+        ViewPager vp = (ViewPager)findViewById(R.id.viewpager);
+        vp.setAdapter(adapter);
+
+        /*getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.container, new MainFragment())
-                .commit();
+                .commit();*/
+
 
         setSupportActionBar(myToolbar);
-
         ActionBar ab = getSupportActionBar();
         ab.setDisplayShowTitleEnabled(false);
 //        ab.setDisplayHomeAsUpEnabled(true);
