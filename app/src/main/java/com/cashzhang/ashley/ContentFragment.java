@@ -36,8 +36,10 @@ public class ContentFragment extends Fragment {
     private String time = null;
     private String url = null;
     private String content = null;
-    @BindView(R.id.c_title) TextView mTitle;
-    @BindView(R.id.c_content) TextView mContent;
+    @BindView(R.id.c_title)
+    TextView mTitle;
+    @BindView(R.id.c_content)
+    TextView mContent;
 
     @Nullable
     @Override
@@ -47,7 +49,8 @@ public class ContentFragment extends Fragment {
 
         ButterKnife.bind(this, layout);
 
-        if (mTitle != null && mContent != null) {
+        if (mTitle != null && mContent != null && title != null) {
+            Log.d(TAG, "onCreateView: mTitle != null && mContent != null");
             mTitle.setText(title);
 
             new Thread(new Runnable() {
@@ -89,7 +92,6 @@ public class ContentFragment extends Fragment {
                 }
             }).start();
         }
-        Log.d(TAG, "ContentFragment onCreateView: ");
         return layout;
     }
 
@@ -99,10 +101,12 @@ public class ContentFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         Bundle bundle = getArguments();
-        title = bundle.getString("title");
-        time = bundle.getString("time");
-        url = bundle.getString("url");
-        content = bundle.getString("content");
+        if (bundle != null) {
+            title = bundle.getString("title");
+            time = bundle.getString("time");
+            url = bundle.getString("url");
+            content = bundle.getString("content");
+        }
     }
 
     @Override

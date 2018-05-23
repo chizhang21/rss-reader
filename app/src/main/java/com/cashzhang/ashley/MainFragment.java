@@ -111,7 +111,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Constants.getFragmentView();
+//        Constants.getFragmentView();
     }
 
     @Override
@@ -176,6 +176,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     };
 
     private void goContentFragment(int position) {
+        Log.d(TAG, "goContentFragment: ");
         fragmentManager = getFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         contentFragment = new ContentFragment();

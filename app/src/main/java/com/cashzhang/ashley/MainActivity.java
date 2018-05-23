@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     public List<IndexItem> m_index;
     static final String INDEX = "index.txt";
     @BindView(R.id.toolBar) Toolbar myToolbar;
+    @BindView(R.id.viewpager) ViewPager vp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +33,12 @@ public class MainActivity extends AppCompatActivity {
         saveInitialConstants(this);
         ButterKnife.bind(this);
 
-        List<Fragment> fragments=new ArrayList<Fragment>();
+        List<Fragment> fragments = new ArrayList<Fragment>();
         fragments.add(new LeftFragment());
         fragments.add(new MainFragment());
         fragments.add(new ContentFragment());
-        FrogAdapter adapter = new FrogAdapter(getSupportFragmentManager(), fragments);
 
-        ViewPager vp = (ViewPager)findViewById(R.id.viewpager);
+        FrogAdapter adapter = new FrogAdapter(getSupportFragmentManager(), fragments);
         vp.setAdapter(adapter);
 
         /*getSupportFragmentManager()
