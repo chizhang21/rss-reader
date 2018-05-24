@@ -21,6 +21,8 @@ import static com.cashzhang.ashley.Constants.saveInitialConstants;
 
 public class MainActivity extends AppCompatActivity {
 
+    public FragmentSwitch fragmentSwitch;
+
     public List<IndexItem> m_index;
     static final String INDEX = "index.txt";
     @BindView(R.id.toolBar) Toolbar myToolbar;
@@ -89,4 +91,18 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.dispatchKeyEvent(event);
     }
+
+    public interface FragmentSwitch {
+        void gotoFragment(ViewPager viewPager);
+    }
+
+    public void setFragmentSwitch(FragmentSwitch fragmentSwitch) {
+        this.fragmentSwitch = fragmentSwitch;
+    }
+    public void forSkip() {
+        if (fragmentSwitch != null) {
+            fragmentSwitch.gotoFragment(vp);
+        }
+    }
 }
+

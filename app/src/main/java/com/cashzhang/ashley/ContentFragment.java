@@ -1,9 +1,12 @@
 package com.cashzhang.ashley;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Html;
@@ -36,6 +39,9 @@ public class ContentFragment extends Fragment {
     private String time = null;
     private String url = null;
     private String content = null;
+
+    View tmpView;
+
     @BindView(R.id.c_title)
     TextView mTitle;
     @BindView(R.id.c_content)
@@ -44,13 +50,46 @@ public class ContentFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        Log.d(TAG, "ContentFragment onCreateView: ");
         super.onCreateView(inflater, container, savedInstanceState);
         View layout = inflater.inflate(R.layout.content_page, container, false);
-
         ButterKnife.bind(this, layout);
 
+        tmpView = layout;
+        Log.d(TAG, "tmpView: " + tmpView);
+        loadData();
+        return layout;
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "ContentFragment onCreate: ");
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    public void loadData() {
+        Log.d(TAG, "loadData()");
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            Log.d(TAG, "bundle != null ");
+            title = bundle.getString("title");
+            Log.d(TAG, "title == null: " + (title == null) + " value: " + title);
+            time = bundle.getString("time");
+            Log.d(TAG, "time == null: " + (time == null) + " value: " + time);
+            url = bundle.getString("url");
+            Log.d(TAG, "url == null: " + (url == null) + " value: " + url);
+            content = bundle.getString("content");
+        }
+        Log.d(TAG, "mTitle UI == null: " + (mTitle == null));
+        Log.d(TAG, "mContent UI == null: " + (mContent == null));
+        if (mTitle == null && tmpView != null)
+            mTitle = tmpView.findViewById(R.id.c_title);
+        if (mContent == null && tmpView != null)
+            mContent = tmpView.findViewById(R.id.c_content);
         if (mTitle != null && mContent != null && title != null) {
-            Log.d(TAG, "onCreateView: mTitle != null && mContent != null");
+            Log.d(TAG, "mContent != null");
             mTitle.setText(title);
 
             new Thread(new Runnable() {
@@ -92,25 +131,11 @@ public class ContentFragment extends Fragment {
                 }
             }).start();
         }
-        return layout;
-    }
-
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            title = bundle.getString("title");
-            time = bundle.getString("time");
-            url = bundle.getString("url");
-            content = bundle.getString("content");
-        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.d(TAG, "ContentFragment onCreateOptionsMenu: ");
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.content_menu, menu);
     }
@@ -129,5 +154,16 @@ public class ContentFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @SuppressLint("HandlerLeak")
+    public final Handler mHandler = new Handler(){
+        public void handleMessage(Message message){
+            switch (message.what){
+                case 0:
+                    Log.d(TAG, "handleMessage: 0");
+                    loadData();
+            }
+        }
+    };
 
 }

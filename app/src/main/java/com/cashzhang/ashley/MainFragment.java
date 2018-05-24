@@ -8,10 +8,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ParseException;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -111,7 +114,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        Constants.getFragmentView();
+        Constants.getFragmentView(this);
     }
 
     @Override
@@ -177,9 +180,11 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void goContentFragment(int position) {
         Log.d(TAG, "goContentFragment: ");
-        fragmentManager = getFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentManager = getFragmentManager();
+//        fragmentTransaction = fragmentManager.beginTransaction();
         contentFragment = new ContentFragment();
+
+        final Handler mHandler = contentFragment.mHandler;
 
         Bundle bundle = new Bundle();
         bundle.putString("title", getTitle(position));
@@ -188,9 +193,22 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         bundle.putString("content", getContent(position));
 
         contentFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.container, contentFragment);
+
+        final MainActivity mainActivity = (MainActivity)getActivity();
+        mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
+            @Override
+            public void gotoFragment(ViewPager viewPager) {
+                Message message = new Message();
+                message.what = 0;
+                mHandler.sendMessage(message);
+                viewPager.setCurrentItem(2);
+            }
+        });
+        mainActivity.forSkip();
+
+        /*fragmentTransaction.replace(R.id.container, contentFragment);
         fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        fragmentTransaction.commit();*/
     }
 
     private String getTitle(int position) {

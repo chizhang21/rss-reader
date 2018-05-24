@@ -3,6 +3,7 @@ package com.cashzhang.ashley;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  * Created by zhangchi on 2018/5/23.
  */
 
-public class FrogAdapter extends FragmentPagerAdapter {
+public class FrogAdapter extends FragmentStatePagerAdapter {
     private List<Fragment> mFragments;
 
     public FrogAdapter(FragmentManager fm, List<Fragment> fragments) {
