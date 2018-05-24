@@ -40,12 +40,17 @@ public class ContentFragment extends Fragment {
     private String url = null;
     private String content = null;
 
-    View tmpView;
+    Bundle bundle;
 
     @BindView(R.id.c_title)
     TextView mTitle;
     @BindView(R.id.c_content)
     TextView mContent;
+
+    public static ContentFragment newInstance() {
+        ContentFragment contentFragment = new ContentFragment();
+        return contentFragment;
+    }
 
     @Nullable
     @Override
@@ -55,8 +60,6 @@ public class ContentFragment extends Fragment {
         View layout = inflater.inflate(R.layout.content_page, container, false);
         ButterKnife.bind(this, layout);
 
-        tmpView = layout;
-        Log.d(TAG, "tmpView: " + tmpView);
         loadData();
         return layout;
     }
@@ -70,8 +73,7 @@ public class ContentFragment extends Fragment {
     }
 
     public void loadData() {
-        Log.d(TAG, "loadData()");
-        Bundle bundle = getArguments();
+        Log.d(TAG, "loadData() bundle == null? " + (bundle == null));
         if (bundle != null) {
             Log.d(TAG, "bundle != null ");
             title = bundle.getString("title");
@@ -84,10 +86,7 @@ public class ContentFragment extends Fragment {
         }
         Log.d(TAG, "mTitle UI == null: " + (mTitle == null));
         Log.d(TAG, "mContent UI == null: " + (mContent == null));
-        if (mTitle == null && tmpView != null)
-            mTitle = tmpView.findViewById(R.id.c_title);
-        if (mContent == null && tmpView != null)
-            mContent = tmpView.findViewById(R.id.c_content);
+
         if (mTitle != null && mContent != null && title != null) {
             Log.d(TAG, "mContent != null");
             mTitle.setText(title);
@@ -95,7 +94,6 @@ public class ContentFragment extends Fragment {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-
                     final Spanned sp = Html.fromHtml(content, new Html.ImageGetter() {
                         @Override
                         public Drawable getDrawable(String source) {
@@ -161,7 +159,9 @@ public class ContentFragment extends Fragment {
             switch (message.what){
                 case 0:
                     Log.d(TAG, "handleMessage: 0");
-                    loadData();
+                    bundle = getArguments();
+                    Log.d(TAG, "handler bundle == null? " + (bundle==null));
+                    ContentFragment.newInstance().setArguments(bundle);
             }
         }
     };

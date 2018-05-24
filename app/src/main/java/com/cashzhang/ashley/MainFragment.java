@@ -68,6 +68,11 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private FragmentTransaction fragmentTransaction;
 //    private SwipeRefreshLayout mSwipeLayout;
 
+    public static MainFragment newInstance() {
+        MainFragment mainFragment = new MainFragment();
+        return mainFragment;
+    }
+
     private final BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -194,7 +199,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         contentFragment.setArguments(bundle);
 
-        final MainActivity mainActivity = (MainActivity)getActivity();
+        final MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
             @Override
             public void gotoFragment(ViewPager viewPager) {
@@ -206,9 +211,9 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
         mainActivity.forSkip();
 
-        /*fragmentTransaction.replace(R.id.container, contentFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();*/
+//        fragmentTransaction.replace(R.id.viewpager, contentFragment);
+//        fragmentTransaction.addToBackStack(null);
+//        fragmentTransaction.commit();
     }
 
     private String getTitle(int position) {

@@ -23,6 +23,11 @@ public class LeftFragment extends Fragment {
     @BindView(R.id.left_list)
     ListView leftList;
 
+    public static LeftFragment newInstance() {
+        LeftFragment leftFragment = new LeftFragment();
+        return leftFragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
