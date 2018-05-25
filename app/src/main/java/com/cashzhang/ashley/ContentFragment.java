@@ -1,7 +1,10 @@
 package com.cashzhang.ashley;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,14 +45,27 @@ public class ContentFragment extends Fragment {
 
     Bundle bundle;
 
-    @BindView(R.id.c_title)
+//    @BindView(R.id.c_title)
+//    TextView mTitle;
+//    @BindView(R.id.c_content)
+//    TextView mContent;
+
     TextView mTitle;
-    @BindView(R.id.c_content)
     TextView mContent;
+
+    Activity activity;
 
     public static ContentFragment newInstance() {
         ContentFragment contentFragment = new ContentFragment();
         return contentFragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof Activity) {
+            activity = (Activity) context;
+        }
     }
 
     @Nullable
@@ -58,9 +74,12 @@ public class ContentFragment extends Fragment {
         Log.d(TAG, "ContentFragment onCreateView: ");
         super.onCreateView(inflater, container, savedInstanceState);
         View layout = inflater.inflate(R.layout.content_page, container, false);
-        ButterKnife.bind(this, layout);
+//        ButterKnife.bind(this, layout);
 
-        loadData();
+        mTitle = (TextView) layout.findViewById(R.id.c_title);
+        mContent = (TextView) layout.findViewById(R.id.c_content);
+
+
         return layout;
     }
 
@@ -72,8 +91,21 @@ public class ContentFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    public void loadData() {
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Log.d(TAG, "setUserVisibleHint() -> isVisibleToUser: " + isVisibleToUser);
+        if (isVisibleToUser)
+            loadData(MainActivity.getBundle());
+    }
+
+    public void loadData(Bundle tmpBundle) {
         Log.d(TAG, "loadData() bundle == null? " + (bundle == null));
+        try {
+            bundle = tmpBundle;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (bundle != null) {
             Log.d(TAG, "bundle != null ");
             title = bundle.getString("title");
@@ -153,17 +185,16 @@ public class ContentFragment extends Fragment {
         }
     }
 
-    @SuppressLint("HandlerLeak")
+    /*@SuppressLint("HandlerLeak")
     public final Handler mHandler = new Handler(){
         public void handleMessage(Message message){
             switch (message.what){
                 case 0:
                     Log.d(TAG, "handleMessage: 0");
-                    bundle = getArguments();
-                    Log.d(TAG, "handler bundle == null? " + (bundle==null));
-                    ContentFragment.newInstance().setArguments(bundle);
+                    bundle = (Bundle) message.obj;
+                    loadData();
             }
         }
-    };
+    };*/
 
 }

@@ -187,25 +187,22 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         Log.d(TAG, "goContentFragment: ");
 //        fragmentManager = getFragmentManager();
 //        fragmentTransaction = fragmentManager.beginTransaction();
+
+
         contentFragment = new ContentFragment();
-
-        final Handler mHandler = contentFragment.mHandler;
-
-        Bundle bundle = new Bundle();
+//        final Handler mHandler = contentFragment.mHandler;
+        final Bundle bundle = new Bundle();
         bundle.putString("title", getTitle(position));
         bundle.putString("time", getTime(position));
         bundle.putString("url", getUrl(position));
         bundle.putString("content", getContent(position));
-
         contentFragment.setArguments(bundle);
 
         final MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
             @Override
-            public void gotoFragment(ViewPager viewPager) {
-                Message message = new Message();
-                message.what = 0;
-                mHandler.sendMessage(message);
+            public void gotoFragment(ViewPager viewPager, FrogAdapter adapter) {
+                mainActivity.setBundle(bundle);
                 viewPager.setCurrentItem(2);
             }
         });
