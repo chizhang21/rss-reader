@@ -47,8 +47,9 @@ public class Constants {
         s_fragmentManager = activity.getSupportFragmentManager();
     }
 
-    static public void getFragmentView() {
-        s_fragmentFeeds = (MainFragment) s_fragmentManager.findFragmentById(R.id.container);
+    static public void getFragmentView(MainFragment mainFragment) {
+//        s_fragmentFeeds = (MainFragment) s_fragmentManager.findFragmentById(R.id.container);
+        s_fragmentFeeds = mainFragment;
         s_swipeLayout = (SwipeRefreshLayout) s_fragmentFeeds.getView().findViewById(R.id.swipe_refresh);
     }
 
