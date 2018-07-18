@@ -10,11 +10,8 @@
         android:id="@+id/accounts_img"
         android:layout_gravity="center"
         android:src="@mipmap/rss_symbol"/>
-    <ListView
-        android:id="@+id/left_list"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@drawable/divider_tag_list"
-        android:dividerHeight="2px"
-        android:listSelector="@drawable/transparent" />
+        android:id="@+id/left_text"/>
 </LinearLayout>
