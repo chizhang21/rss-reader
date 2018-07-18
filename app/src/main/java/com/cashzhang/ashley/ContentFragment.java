@@ -45,13 +45,15 @@ public class ContentFragment extends Fragment {
 
     Bundle bundle;
 
-//    @BindView(R.id.c_title)
-//    TextView mTitle;
-//    @BindView(R.id.c_content)
-//    TextView mContent;
-
+    @BindView(R.id.c_title)
     TextView mTitle;
+    @BindView(R.id.c_content)
     TextView mContent;
+    @BindView(R.id.mid_line)
+    View mLine;
+
+    /*TextView mTitle;
+    TextView mContent;*/
 
     Activity activity;
 
@@ -74,15 +76,13 @@ public class ContentFragment extends Fragment {
         Log.d(TAG, "ContentFragment onCreateView: ");
         super.onCreateView(inflater, container, savedInstanceState);
         View layout = inflater.inflate(R.layout.content_page, container, false);
-//        ButterKnife.bind(this, layout);
+        ButterKnife.bind(this, layout);
 
-        mTitle = (TextView) layout.findViewById(R.id.c_title);
-        mContent = (TextView) layout.findViewById(R.id.c_content);
-
-
+        mTitle.setVisibility(View.INVISIBLE);
+        mContent.setVisibility(View.INVISIBLE);
+        mLine.setVisibility(View.INVISIBLE);
         return layout;
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,8 +95,19 @@ public class ContentFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         Log.d(TAG, "setUserVisibleHint() -> isVisibleToUser: " + isVisibleToUser);
-        if (isVisibleToUser)
-            loadData(MainActivity.getBundle());
+        if (isVisibleToUser) {
+            Bundle vBundle = MainActivity.getBundle();
+            if (vBundle == null) {
+                mTitle.setVisibility(View.INVISIBLE);
+                mContent.setVisibility(View.INVISIBLE);
+                mLine.setVisibility(View.INVISIBLE);
+            } else {
+                mTitle.setVisibility(View.VISIBLE);
+                mContent.setVisibility(View.VISIBLE);
+                mLine.setVisibility(View.VISIBLE);
+                loadData(vBundle);
+            }
+        }
     }
 
     public void loadData(Bundle tmpBundle) {
@@ -111,10 +122,9 @@ public class ContentFragment extends Fragment {
             url = bundle.getString("url");
             content = bundle.getString("content");
         }
-
         if (mTitle != null && mContent != null && title != null) {
             mTitle.setText(title);
-
+            mContent.setText("Loading...");
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -176,17 +186,4 @@ public class ContentFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    /*@SuppressLint("HandlerLeak")
-    public final Handler mHandler = new Handler(){
-        public void handleMessage(Message message){
-            switch (message.what){
-                case 0:
-                    Log.d(TAG, "handleMessage: 0");
-                    bundle = (Bundle) message.obj;
-                    loadData();
-            }
-        }
-    };*/
-
 }
