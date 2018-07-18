@@ -100,27 +100,19 @@ public class ContentFragment extends Fragment {
     }
 
     public void loadData(Bundle tmpBundle) {
-        Log.d(TAG, "loadData() bundle == null? " + (bundle == null));
         try {
             bundle = tmpBundle;
         } catch (Exception e) {
             e.printStackTrace();
         }
         if (bundle != null) {
-            Log.d(TAG, "bundle != null ");
             title = bundle.getString("title");
-            Log.d(TAG, "title == null: " + (title == null) + " value: " + title);
             time = bundle.getString("time");
-            Log.d(TAG, "time == null: " + (time == null) + " value: " + time);
             url = bundle.getString("url");
-            Log.d(TAG, "url == null: " + (url == null) + " value: " + url);
             content = bundle.getString("content");
         }
-        Log.d(TAG, "mTitle UI == null: " + (mTitle == null));
-        Log.d(TAG, "mContent UI == null: " + (mContent == null));
 
         if (mTitle != null && mContent != null && title != null) {
-            Log.d(TAG, "mContent != null");
             mTitle.setText(title);
 
             new Thread(new Runnable() {
