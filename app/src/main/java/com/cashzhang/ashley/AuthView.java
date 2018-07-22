@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.alibaba.fastjson.JSON;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -54,65 +55,52 @@ public class AuthView extends Activity {
         final String tokenParams = tokenUrl;
 
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient(){
+        webView.setWebViewClient(new WebViewClient() {
             @Override
-            public void onPageFinished (WebView view, String url) {
+            public void onPageFinished(WebView view, String url) {
                 if (url.contains("code=")) {
                     String params = url.substring(url.indexOf("?") + 1);
                     String code = "";
 
-                    for(String p : params.split("&")){
-                        if(p.contains("code")){
+                    for (String p : params.split("&")) {
+                        if (p.contains("code")) {
                             code = p.split("=")[1];
                             break;
                         }
                     }
                     final String finalCode = code;
-                    RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
-                    //create listener
+                    //success listener
                     Response.Listener listener = new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            Log.d(TAG, response);
-                            //TODO handle success
-                            JSONObject jsonObject = null;
-                            String access = null;
-                            String refresh = null;
-                            try {
-                                jsonObject = new JSONObject(response);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            if (response.contains("access_token") && response.contains("refresh_token")) {
-                                try {
-                                    access = jsonObject.getString("access_token");
-                                    refresh = jsonObject.getString("refresh_token");
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                            Log.d(TAG, "onResponse: " + response);
 
-                                Intent intent = new Intent();
-                                intent.putExtra("accessToken", access);
-                                intent.putExtra("refreshToken", refresh);
-                                setResult(Activity.RESULT_OK, intent);
-                                AuthView.this.finish();
-                            }
+                            Token token = JSON.parseObject(response, Token.class);
+
+                            Settings.setAccessToken(token.getAccess_token());
+                            Settings.setRefreshToken(token.getRefresh_token());
+
+                            Intent intent = new Intent();
+//                            intent.putExtra("accessToken", token.getAccess_token());
+//                            intent.putExtra("refreshToken", token.getRefresh_token());
+                            setResult(Activity.RESULT_OK, intent);
+                            AuthView.this.finish();
                         }
                     };
-                    //create error listener
+                    //error listener
                     Response.ErrorListener errorListener = new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.e(TAG, error.getMessage(), error);
                         }
                     };
-                    //post request
+                    //POST request
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, tokenParams,
                             listener, errorListener) {
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
                             Map<String, String> map = new HashMap<String, String>();
-                            map.put("Content-Type","application/json");
+                            map.put("Content-Type", "application/json");
                             map.put("client_id", "feedly");
                             map.put("client_secret", "0XP4XQ07VVMDWBKUHTJM4WUQ");
                             map.put("grant_type", "authorization_code");
@@ -120,9 +108,8 @@ public class AuthView extends Activity {
                             map.put("code", finalCode);
                             return map;
                         }
-
                     };
-                    mQueue.add(stringRequest);
+                    VolleyController.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
                 }
             }
         });

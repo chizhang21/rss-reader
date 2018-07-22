@@ -91,9 +91,8 @@ public class MainActivity extends AppCompatActivity {
             case KeyEvent.KEYCODE_BACK:
                 if (s_swipeLayout.isRefreshing()) {
                     s_swipeLayout.setRefreshing(false);
-                    return true;
-                } else
-                    break;
+                }
+                return true;
             default:
                 break;
         }

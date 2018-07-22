@@ -14,4 +14,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/left_text"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/CATE"
+        android:text="CATE"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/SUBS"
+        android:text="SUBS"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/FEED"
+        android:text="FEED"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ENTRY"
+        android:text="ENTRY"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/STREAM"
+        android:text="STREAM"/>
 </LinearLayout>
