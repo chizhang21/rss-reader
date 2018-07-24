@@ -30,8 +30,12 @@ public class FrogAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return LeftFragment.newInstance();
             case 1:
-                return MainFragment.newInstance();
+                return CategsFragment.newInstance();
             case 2:
+                return SecCategsFragment.newInstance();
+            case 3:
+                return MainFragment.newInstance();
+            case 4:
                 return ContentFragment.newInstance();
             default:
                 return null;

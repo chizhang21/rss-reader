@@ -36,6 +36,8 @@ public class Constants {
     static MainActivity s_activity;
     static Resources s_resources;
     static MainFragment s_fragmentFeeds;
+    static CategsFragment s_fragmentCateg;
+    static SecCategsFragment s_fragmentSecCateg;
     static FragmentManager s_fragmentManager;
     static ListView s_listView;
     static SwipeRefreshLayout s_swipeLayout;
@@ -48,9 +50,18 @@ public class Constants {
     }
 
     static public void getFragmentView(MainFragment mainFragment) {
-//        s_fragmentFeeds = (MainFragment) s_fragmentManager.findFragmentById(R.id.container);
         s_fragmentFeeds = mainFragment;
         s_swipeLayout = (SwipeRefreshLayout) s_fragmentFeeds.getView().findViewById(R.id.swipe_refresh);
+    }
+
+    static public void getCatesFragmentView(CategsFragment categsFragment) {
+        s_fragmentCateg = categsFragment;
+        s_swipeLayout = (SwipeRefreshLayout) s_fragmentCateg.getView().findViewById(R.id.swipe_refresh);
+    }
+
+    static public void getSecCatesFragmentView(SecCategsFragment secCategsFragment) {
+        s_fragmentSecCateg = secCategsFragment;
+        s_swipeLayout = (SwipeRefreshLayout) s_fragmentSecCateg.getView().findViewById(R.id.swipe_refresh);
     }
 
     public static XmlPullParser createXmlParser(CharSequence urlString) throws IOException, XmlPullParserException {

@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     static final String INDEX = "index.txt";
 
     LeftFragment leftFragment = LeftFragment.newInstance();
+    CategsFragment categsFragment = CategsFragment.newInstance();
+    SecCategsFragment secCategsFragment = SecCategsFragment.newInstance();
     MainFragment mainFragment = MainFragment.newInstance();
     ContentFragment contentFragment = ContentFragment.newInstance();
 
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
         fragments = new ArrayList<Fragment>();
         fragments.add(leftFragment);
+        fragments.add(categsFragment);
+        fragments.add(secCategsFragment);
         fragments.add(mainFragment);
         fragments.add(contentFragment);
 
