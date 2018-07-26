@@ -91,7 +91,7 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
         Activity activity;
         if (context instanceof Activity) {
             activity = (Activity) context;
-            activity.registerReceiver(m_broadcastReceiver, new IntentFilter(ServiceUpdate.BROADCAST_ACTION));
+            activity.registerReceiver(m_broadcastReceiver, new IntentFilter(SyncCatesListService.BROADCAST_ACTION));
         }
     }
 

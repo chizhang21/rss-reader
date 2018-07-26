@@ -40,7 +40,9 @@ public class Constants {
     static SecCategsFragment s_fragmentSecCateg;
     static FragmentManager s_fragmentManager;
     static ListView s_listView;
-    static SwipeRefreshLayout s_swipeLayout;
+    static SwipeRefreshLayout s_swipeSLayout;
+    static SwipeRefreshLayout s_swipeCLayout;
+    static SwipeRefreshLayout s_swipeMLayout;
 
     static void saveInitialConstants(MainActivity activity) {
         s_activity = activity;
@@ -51,17 +53,17 @@ public class Constants {
 
     static public void getFragmentView(MainFragment mainFragment) {
         s_fragmentFeeds = mainFragment;
-        s_swipeLayout = (SwipeRefreshLayout) s_fragmentFeeds.getView().findViewById(R.id.swipe_refresh);
+        s_swipeMLayout = (SwipeRefreshLayout) s_fragmentFeeds.getView().findViewById(R.id.swipe_refresh);
     }
 
     static public void getCatesFragmentView(CategsFragment categsFragment) {
         s_fragmentCateg = categsFragment;
-        s_swipeLayout = (SwipeRefreshLayout) s_fragmentCateg.getView().findViewById(R.id.swipe_refresh);
+        s_swipeCLayout = (SwipeRefreshLayout) s_fragmentCateg.getView().findViewById(R.id.swipe_refresh);
     }
 
     static public void getSecCatesFragmentView(SecCategsFragment secCategsFragment) {
         s_fragmentSecCateg = secCategsFragment;
-        s_swipeLayout = (SwipeRefreshLayout) s_fragmentSecCateg.getView().findViewById(R.id.swipe_refresh);
+        s_swipeSLayout = (SwipeRefreshLayout) s_fragmentSecCateg.getView().findViewById(R.id.swipe_refresh);
     }
 
     public static XmlPullParser createXmlParser(CharSequence urlString) throws IOException, XmlPullParserException {

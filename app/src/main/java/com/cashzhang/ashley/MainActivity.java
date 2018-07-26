@@ -16,7 +16,9 @@ import butterknife.ButterKnife;
 
 import static com.cashzhang.ashley.Constants.s_fragmentFeeds;
 import static com.cashzhang.ashley.Constants.s_fragmentManager;
-import static com.cashzhang.ashley.Constants.s_swipeLayout;
+import static com.cashzhang.ashley.Constants.s_swipeMLayout;
+import static com.cashzhang.ashley.Constants.s_swipeCLayout;
+import static com.cashzhang.ashley.Constants.s_swipeSLayout;
 import static com.cashzhang.ashley.Constants.saveInitialConstants;
 
 
@@ -93,8 +95,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean dispatchKeyEvent(KeyEvent event) {
         switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_BACK:
-                if (s_swipeLayout.isRefreshing()) {
-                    s_swipeLayout.setRefreshing(false);
+                if (s_swipeCLayout.isRefreshing()) {
+                    s_swipeSLayout.setRefreshing(false);
+                } else if (s_swipeCLayout.isRefreshing()) {
+                    s_swipeCLayout.setRefreshing(false);
+                } else if (s_swipeMLayout.isRefreshing()) {
+                    s_swipeMLayout.setRefreshing(false);
                 }
                 return true;
             default:
