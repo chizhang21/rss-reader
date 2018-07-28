@@ -77,7 +77,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         @Override
         public void onReceive(Context context, Intent intent) {
             if (null != s_activity) {
-                Log.d(TAG, "onReceive:");
+                Log.d(TAG, "onReceive: main fragment");
                 try {
                     readFromFile();
                 } catch (IOException e) {
@@ -95,7 +95,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         Activity activity;
         if (context instanceof Activity) {
             activity = (Activity) context;
-            activity.registerReceiver(m_broadcastReceiver, new IntentFilter(ServiceUpdate.BROADCAST_ACTION));
+            activity.registerReceiver(m_broadcastReceiver, new IntentFilter(ServiceUpdate.FEED_BROADCAST_ACTION));
         }
     }
 
@@ -203,7 +203,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             @Override
             public void gotoFragment(ViewPager viewPager, FrogAdapter adapter) {
                 mainActivity.setBundle(bundle);
-                viewPager.setCurrentItem(2);
+                viewPager.setCurrentItem(4);
             }
         });
         mainActivity.forSkip();

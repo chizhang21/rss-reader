@@ -23,7 +23,7 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 public class ServiceUpdate extends IntentService {
-    public static final String BROADCAST_ACTION = "com.cashzhang.serviceupdate.handle";
+    public static final String FEED_BROADCAST_ACTION = "com.cashzhang.serviceupdate.handle";
     public static final String ITEM_LIST = "-item_list.txt";
     private final static String TAG = "ashley-rss";
     private String tmpTitle = "";
@@ -65,7 +65,7 @@ public class ServiceUpdate extends IntentService {
             }
         }
 
-        Intent broadcast = new Intent(BROADCAST_ACTION);
+        Intent broadcast = new Intent(FEED_BROADCAST_ACTION);
         sendBroadcast(broadcast);
         stopSelf();
     }
@@ -95,7 +95,7 @@ public class ServiceUpdate extends IntentService {
         }
 
         XmlPullParser parser = Constants.createXmlParser(urlString);
-        FeedItem feedItem = new FeedItem();
+        FeedItem feedItem;
 
         int eventType;
 

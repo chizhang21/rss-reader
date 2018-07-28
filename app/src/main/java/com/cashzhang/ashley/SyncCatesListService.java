@@ -21,13 +21,15 @@ public class SyncCatesListService extends IntentService {
     private static final String BASE_URL = "https://cloud.feedly.com";
     private static final String CATEGORIES = "/v3/categories?sort=feedly";
 
-    public static final String BROADCAST_ACTION = "com.cashzhang.syncates.handle";
+    public static final String CATEG_BROADCAST_ACTION = "com.cashzhang.syncates.handle";
     public static final String ITEM_LIST = "-categ_list.txt";
 
     private static String accessToken = null;
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        Log.d(TAG, "onHandleIntent: sync categs");
+        accessToken = Settings.getAccessToken();
         //TODO call sync categ method
         if (!accessToken.equals("") && accessToken != null) {
             Log.d(TAG, "token saved in SharedPreferences");
@@ -48,7 +50,11 @@ public class SyncCatesListService extends IntentService {
             public void onResponse(String response) {
                 Log.d(TAG, "CATEGS: " + response);
                 //TODO write into categs list file
+
                 //TODO send broadcast
+                Intent broadcast = new Intent(CATEG_BROADCAST_ACTION);
+                sendBroadcast(broadcast);
+                stopSelf();
 
             }
         };

@@ -44,14 +44,10 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     private final static String TAG = "ashley-rss";
 
-    private ArrayList<String> listData;
-    private ArrayList<String> listUrl;
     private ArrayList<String> listContent;
-    private ArrayList<String> listTContent;
-    private ArrayList<String> listTime;
 
-    LListAdapter listAdapter = null;
-    ContentFragment contentFragment;
+    CategListAdapter listAdapter = null;
+    SecCategsFragment secCategsFragment;
 
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout mSwipeLayout;
@@ -71,9 +67,8 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private final BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            //TODO check brodcast intent then read from file
             if (null != s_activity) {
-                Log.d(TAG, "onReceive:");
+                Log.d(TAG, "onReceive: categs fragment");
                 try {
                     readFromFile();
                 } catch (IOException e) {
@@ -91,7 +86,7 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
         Activity activity;
         if (context instanceof Activity) {
             activity = (Activity) context;
-            activity.registerReceiver(m_broadcastReceiver, new IntentFilter(SyncCatesListService.BROADCAST_ACTION));
+            activity.registerReceiver(m_broadcastReceiver, new IntentFilter(SyncCatesListService.CATEG_BROADCAST_ACTION));
         }
     }
 
@@ -100,12 +95,12 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        Log.d(TAG, "onCreateView: ");
+        Log.d(TAG, "onCreateView: categ fragment");
         View layout = inflater.inflate(R.layout.feed_list, container, false);
         ButterKnife.bind(this, layout);
 
         mSwipeLayout.setOnRefreshListener(this);
-        listAdapter = new LListAdapter(getActivity());
+        listAdapter = new CategListAdapter(getActivity());
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(itemClickListener);
 
@@ -122,12 +117,7 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        listTitle = new ArrayList<String>();
-        listData = new ArrayList<String>();
-        listUrl = new ArrayList<String>();
         listContent = new ArrayList<String>();
-        listTContent = new ArrayList<String>();
-        listTime = new ArrayList<String>();
     }
 
     @Override
@@ -168,7 +158,8 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     public void onRefresh() {
-        Intent intent = new Intent(getActivity(), ServiceUpdate.class);
+        Log.d(TAG, "onRefresh: categ fragment");
+        Intent intent = new Intent(getActivity(), SyncCatesListService.class);
         getActivity().startService(intent);
     }
 
@@ -181,18 +172,11 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     private void goContentFragment(int position) {
         Log.d(TAG, "goContentFragment: ");
-//        fragmentManager = getFragmentManager();
-//        fragmentTransaction = fragmentManager.beginTransaction();
 
-
-        contentFragment = new ContentFragment();
-//        final Handler mHandler = contentFragment.mHandler;
+        secCategsFragment = new SecCategsFragment();
         final Bundle bundle = new Bundle();
-        bundle.putString("title", getTitle(position));
-        bundle.putString("time", getTime(position));
-        bundle.putString("url", getUrl(position));
         bundle.putString("content", getContent(position));
-        contentFragment.setArguments(bundle);
+        secCategsFragment.setArguments(bundle);
 
         final MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
@@ -204,60 +188,14 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
         });
         mainActivity.forSkip();
 
-//        fragmentTransaction.replace(R.id.viewpager, contentFragment);
-//        fragmentTransaction.addToBackStack(null);
-//        fragmentTransaction.commit();
-    }
-
-    private String getTitle(int position) {
-        return ((listData == null) ? null : listData.get(position));
-    }
-    private String getTime(int position) {
-        return ((listTime == null) ? null : listTime.get(position));
-    }
-    private String getUrl(int position) {
-        return ((listUrl == null) ? null : listUrl.get(position));
     }
     private String getContent(int position) {
         return ((listContent == null) ? null : listContent.get(position));
     }
 
-    /* String Data Long */
-    public static String longToString(long currentTime, String formatType)
-            throws ParseException {
-        Date date = longToDate(currentTime, formatType);
-        String strTime = dateToString(date, formatType);
-        return strTime;
-    }
-
-    public static Date longToDate(long currentTime, String formatType)
-            throws ParseException {
-        Date dateOld = new Date(currentTime);
-        String sDateTime = dateToString(dateOld, formatType);
-        Date date = stringToDate(sDateTime, formatType);
-        return date;
-    }
-
-    public static String dateToString(Date data, String formatType) {
-        return new SimpleDateFormat(formatType).format(data);
-    }
-
-    public static Date stringToDate(String strTime, String formatType)
-            throws ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat(formatType);
-        Date date = null;
-        try {
-            date = formatter.parse(strTime);
-        } catch (java.text.ParseException e) {
-            e.printStackTrace();
-        }
-        return date;
-    }
-    /* String Data Long */
-
     public void readFromFile() throws IOException, ClassNotFoundException {
 
-        ObjectIO reader = new ObjectIO(getActivity(), MainActivity.INDEX);
+        ObjectIO reader = new ObjectIO(getActivity(), MainActivity.CATEGS);
         Iterable<IndexItem> indexItems = (Iterable<IndexItem>) reader.read();
 
         if (indexItems != null) {
@@ -292,25 +230,15 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
         }
 
         if (sets != null) {
-            listTitle.clear();
-            listData.clear();
-            listUrl.clear();
             listContent.clear();
-            listTContent.clear();
-            listTime.clear();
 
             arraySets = sets.toArray(new Long[sets.size()]);
             Arrays.sort(arraySets);
             for (int i = arraySets.length - 1; i >= 0; i--) {
                 FeedItem feedItem = mapFromFile.get(arraySets[i]);
-                listTitle.add(feedItem.m_webtitle);
-                listData.add(feedItem.m_title);
-                listUrl.add(feedItem.m_url);
                 listContent.add(feedItem.m_content);
-                listTContent.add(feedItem.m_tcontent);
-                listTime.add(longToString(feedItem.m_time, "MM-dd HH:mm"));
             }
-            listAdapter.refreshData(listTitle, listData, listTContent, listTime);
+            listAdapter.refreshData(listContent);
             mSwipeLayout.setRefreshing(false);
         }
     }

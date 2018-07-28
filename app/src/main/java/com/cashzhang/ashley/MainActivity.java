@@ -58,16 +58,9 @@ public class MainActivity extends AppCompatActivity {
         adapter = new FrogAdapter(getSupportFragmentManager(), fragments);
         vp.setAdapter(adapter);
 
-        /*getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.container, new MainFragment())
-                .commit();*/
-
-
         setSupportActionBar(myToolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayShowTitleEnabled(false);
-//        ab.setDisplayHomeAsUpEnabled(true);
 
         // Load the index from file.
         ObjectIO indexReader = new ObjectIO(this, INDEX);
@@ -97,9 +90,9 @@ public class MainActivity extends AppCompatActivity {
         switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_BACK:
                 if (s_swipeCLayout.isRefreshing()) {
-                    s_swipeSLayout.setRefreshing(false);
-                } else if (s_swipeCLayout.isRefreshing()) {
                     s_swipeCLayout.setRefreshing(false);
+                } else if (s_swipeSLayout.isRefreshing()) {
+                    s_swipeSLayout.setRefreshing(false);
                 } else if (s_swipeMLayout.isRefreshing()) {
                     s_swipeMLayout.setRefreshing(false);
                 }

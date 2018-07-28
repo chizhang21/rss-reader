@@ -29,6 +29,10 @@
             android:name=".ServiceUpdate"
             android:enabled="true"
             android:exported="true"></service>
+        <service
+            android:name=".SyncCatesListService"
+        android:enabled="true"
+        android:exported="true"></service>
     </application>
 
 </manifest>
