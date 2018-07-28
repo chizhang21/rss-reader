@@ -44,7 +44,6 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     private final static String TAG = "ashley-rss";
 
-    private ArrayList<String> listTitle;
     private ArrayList<String> listData;
     private ArrayList<String> listUrl;
     private ArrayList<String> listContent;
@@ -72,6 +71,7 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private final BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            //TODO check brodcast intent then read from file
             if (null != s_activity) {
                 Log.d(TAG, "onReceive:");
                 try {
