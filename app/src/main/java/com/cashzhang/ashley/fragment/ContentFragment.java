@@ -1,21 +1,11 @@
-package com.cashzhang.ashley;
+package com.cashzhang.ashley.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Html;
@@ -29,12 +19,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
+import com.cashzhang.ashley.MainActivity;
+import com.cashzhang.ashley.R;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -54,13 +42,9 @@ public class ContentFragment extends Fragment {
     private String content = null;
 
     Bundle bundle;
-
-//    @BindView(R.id.c_title)
-//    TextView mTitle;
-//    @BindView(R.id.c_content)
-//    TextView mContent;
-
+    @BindView(R.id.c_title)
     TextView mTitle;
+    @BindView(R.id.c_content)
     TextView mContent;
 
     Activity activity;
@@ -84,11 +68,7 @@ public class ContentFragment extends Fragment {
         Log.d(TAG, "ContentFragment onCreateView: ");
         super.onCreateView(inflater, container, savedInstanceState);
         View layout = inflater.inflate(R.layout.content_page, container, false);
-//        ButterKnife.bind(this, layout);
-
-        mTitle = (TextView) layout.findViewById(R.id.c_title);
-        mContent = (TextView) layout.findViewById(R.id.c_content);
-
+        ButterKnife.bind(this, layout);
 
         return layout;
     }
@@ -191,67 +171,5 @@ public class ContentFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    /*public class PicassoImageGetter implements Html.ImageGetter {
-
-        private AppTextView textView = null;
-
-        public PicassoImageGetter() {
-
-        }
-
-        public PicassoImageGetter(AppTextView target) {
-            textView = target;
-        }
-
-        @Override
-        public Drawable getDrawable(String source) {
-            BitmapDrawablePlaceHolder drawable = new BitmapDrawablePlaceHolder();
-            Picasso.with(App.get())
-                    .load(source)
-                    .placeholder(R.mipmap.rss_symbol)
-                    .into(drawable);
-            return drawable;
-        }
-
-        private class BitmapDrawablePlaceHolder extends BitmapDrawable implements Target {
-
-            protected Drawable drawable;
-
-            @Override
-            public void draw(final Canvas canvas) {
-                if (drawable != null) {
-                    drawable.draw(canvas);
-                }
-            }
-
-            public void setDrawable(Drawable drawable) {
-                this.drawable = drawable;
-                int width = drawable.getIntrinsicWidth();
-                int height = drawable.getIntrinsicHeight();
-                drawable.setBounds(0, 0, width, height);
-                setBounds(0, 0, width, height);
-                if (textView != null) {
-                    textView.setText(textView.getText());
-                }
-            }
-
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                setDrawable(new BitmapDrawable(App.get().getResources(), bitmap));
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-
-        }
-    }*/
-
 }
 

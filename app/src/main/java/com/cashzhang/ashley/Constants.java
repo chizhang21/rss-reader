@@ -1,22 +1,12 @@
 package com.cashzhang.ashley;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-
-import android.app.FragmentTransaction;
 import android.content.res.Resources;
-import android.os.Build;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.text.TextDirectionHeuristicsCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
-import android.view.View;
-import android.view.ViewConfiguration;
 import android.widget.ListView;
+import com.cashzhang.ashley.fragment.CategsFragment;
+import com.cashzhang.ashley.fragment.MainFragment;
+import com.cashzhang.ashley.fragment.SecCategsFragment;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -33,12 +23,16 @@ import java.net.URL;
 
 public class Constants {
 
-    static MainActivity s_activity;
-    static Resources s_resources;
-    static MainFragment s_fragmentFeeds;
-    static FragmentManager s_fragmentManager;
-    static ListView s_listView;
-    static SwipeRefreshLayout s_swipeLayout;
+    public static MainActivity s_activity;
+    public static Resources s_resources;
+    public static MainFragment s_fragmentFeeds;
+    public static CategsFragment s_fragmentCateg;
+    public static SecCategsFragment s_fragmentSecCateg;
+    public static FragmentManager s_fragmentManager;
+    public static ListView s_listView;
+    public static SwipeRefreshLayout s_swipeSLayout;
+    public static SwipeRefreshLayout s_swipeCLayout;
+    public static SwipeRefreshLayout s_swipeMLayout;
 
     static void saveInitialConstants(MainActivity activity) {
         s_activity = activity;
@@ -48,9 +42,18 @@ public class Constants {
     }
 
     static public void getFragmentView(MainFragment mainFragment) {
-//        s_fragmentFeeds = (MainFragment) s_fragmentManager.findFragmentById(R.id.container);
         s_fragmentFeeds = mainFragment;
-        s_swipeLayout = (SwipeRefreshLayout) s_fragmentFeeds.getView().findViewById(R.id.swipe_refresh);
+        s_swipeMLayout = (SwipeRefreshLayout) s_fragmentFeeds.getView().findViewById(R.id.swipe_refresh);
+    }
+
+    static public void getCatesFragmentView(CategsFragment categsFragment) {
+        s_fragmentCateg = categsFragment;
+        s_swipeCLayout = (SwipeRefreshLayout) s_fragmentCateg.getView().findViewById(R.id.swipe_refresh);
+    }
+
+    static public void getSecCatesFragmentView(SecCategsFragment secCategsFragment) {
+        s_fragmentSecCateg = secCategsFragment;
+        s_swipeSLayout = (SwipeRefreshLayout) s_fragmentSecCateg.getView().findViewById(R.id.swipe_refresh);
     }
 
     public static XmlPullParser createXmlParser(CharSequence urlString) throws IOException, XmlPullParserException {

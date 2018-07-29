@@ -1,4 +1,4 @@
-package com.cashzhang.ashley;
+package com.cashzhang.ashley.bean;
 
 public class Token {
     private String access_token;

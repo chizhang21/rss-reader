@@ -19,22 +19,22 @@ import java.util.Collection;
  */
 
 
-class ObjectIO {
+public class ObjectIO {
     private final Context m_context;
     private String m_fileName;
     private Object m_object;
 
-    ObjectIO(Context context, String fileName) {
+    public ObjectIO(Context context, String fileName) {
         m_context = context;
         m_fileName = fileName;
     }
 
-    void setNewFileName(String fileName) {
+    public void setNewFileName(String fileName) {
         m_fileName = fileName;
         m_object = null;
     }
 
-    void write(Object object) {
+    public void write(Object object) {
         try {
             FileOutputStream fos = m_context.openFileOutput(m_fileName, Context.MODE_PRIVATE);
             BufferedOutputStream bos = new BufferedOutputStream(fos);

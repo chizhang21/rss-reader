@@ -1,4 +1,4 @@
-package com.cashzhang.ashley;
+package com.cashzhang.ashley.bean;
 
 import java.util.ArrayList;
 

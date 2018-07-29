@@ -26,9 +26,13 @@
         </activity>
 
         <service
-            android:name=".ServiceUpdate"
+            android:name=".service.ServiceUpdate"
             android:enabled="true"
             android:exported="true"></service>
+        <service
+            android:name=".service.SyncCatesListService"
+        android:enabled="true"
+        android:exported="true"></service>
     </application>
 
 </manifest>

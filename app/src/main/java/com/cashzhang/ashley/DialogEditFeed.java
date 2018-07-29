@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
@@ -17,7 +16,7 @@ import butterknife.ButterKnife;
  */
 
 
-class DialogEditFeed extends Dialog {
+public class DialogEditFeed extends Dialog {
     private final MainActivity m_activity;
     private final int m_pos;
     private AsyncTask<Void, Void, IndexItem> m_task;
@@ -32,7 +31,7 @@ class DialogEditFeed extends Dialog {
         m_pos = position;
     }
 
-    static Dialog newInstance(MainActivity activity, int position) {
+    public static Dialog newInstance(MainActivity activity, int position) {
         Dialog dialog = new DialogEditFeed(activity, position);
 
         // Get the text resources and set the title of the dialog.

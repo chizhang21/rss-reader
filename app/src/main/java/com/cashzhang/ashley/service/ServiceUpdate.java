@@ -1,10 +1,16 @@
-package com.cashzhang.ashley;
+package com.cashzhang.ashley.service;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.text.format.Time;
 import android.util.Log;
+
+import com.cashzhang.ashley.Constants;
+import com.cashzhang.ashley.FeedItem;
+import com.cashzhang.ashley.IndexItem;
+import com.cashzhang.ashley.MainActivity;
+import com.cashzhang.ashley.ObjectIO;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -23,7 +29,7 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 public class ServiceUpdate extends IntentService {
-    public static final String BROADCAST_ACTION = "com.cashzhang.serviceupdate.handle";
+    public static final String FEED_BROADCAST_ACTION = "com.cashzhang.serviceupdate.handle";
     public static final String ITEM_LIST = "-item_list.txt";
     private final static String TAG = "ashley-rss";
     private String tmpTitle = "";
@@ -49,6 +55,7 @@ public class ServiceUpdate extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        Log.d(TAG, "onHandleIntent: service update");
         ObjectIO reader = new ObjectIO(this, MainActivity.INDEX);
         Iterable<IndexItem> indexItems = (Iterable<IndexItem>) reader.read();
 
@@ -65,7 +72,7 @@ public class ServiceUpdate extends IntentService {
             }
         }
 
-        Intent broadcast = new Intent(BROADCAST_ACTION);
+        Intent broadcast = new Intent(FEED_BROADCAST_ACTION);
         sendBroadcast(broadcast);
         stopSelf();
     }
@@ -95,7 +102,7 @@ public class ServiceUpdate extends IntentService {
         }
 
         XmlPullParser parser = Constants.createXmlParser(urlString);
-        FeedItem feedItem = new FeedItem();
+        FeedItem feedItem;
 
         int eventType;
 

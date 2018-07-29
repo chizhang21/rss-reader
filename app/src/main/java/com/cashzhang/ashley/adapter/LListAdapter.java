@@ -1,12 +1,13 @@
-package com.cashzhang.ashley;
+package com.cashzhang.ashley.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.cashzhang.ashley.R;
 
 import java.util.ArrayList;
 
@@ -84,7 +85,4 @@ public class LListAdapter extends BaseAdapter {
 
         return convertView;
     }
-
-
-
 }
