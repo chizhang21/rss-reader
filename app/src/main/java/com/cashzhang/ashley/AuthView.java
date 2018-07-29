@@ -68,9 +68,7 @@ public class AuthView extends Activity {
                         @Override
                         public void onResponse(String response) {
                             Log.d(TAG, "onResponse: " + response);
-
                             Token token = JSON.parseObject(response, Token.class);
-
                             Settings.setAccessToken(token.getAccess_token());
                             Settings.setRefreshToken(token.getRefresh_token());
 

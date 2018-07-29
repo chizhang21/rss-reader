@@ -95,11 +95,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean dispatchKeyEvent(KeyEvent event) {
         switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_BACK:
-                if (s_swipeCLayout.isRefreshing()) {
+
+                if (s_swipeCLayout != null && s_swipeCLayout.isRefreshing()) {
                     s_swipeCLayout.setRefreshing(false);
-                } else if (s_swipeSLayout.isRefreshing()) {
+                } else if (s_swipeSLayout != null && s_swipeSLayout.isRefreshing()) {
                     s_swipeSLayout.setRefreshing(false);
-                } else if (s_swipeMLayout.isRefreshing()) {
+                } else if (s_swipeMLayout != null && s_swipeMLayout.isRefreshing()) {
                     s_swipeMLayout.setRefreshing(false);
                 }
                 return true;
