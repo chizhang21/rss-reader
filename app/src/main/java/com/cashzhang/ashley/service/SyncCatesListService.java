@@ -1,4 +1,4 @@
-package com.cashzhang.ashley;
+package com.cashzhang.ashley.service;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.cashzhang.ashley.Constants;
+import com.cashzhang.ashley.Settings;
 
 import java.util.HashMap;
 import java.util.Map;

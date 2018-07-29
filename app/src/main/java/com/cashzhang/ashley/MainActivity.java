@@ -8,13 +8,19 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 
+import com.cashzhang.ashley.adapter.FrogAdapter;
+import com.cashzhang.ashley.fragment.CategsFragment;
+import com.cashzhang.ashley.fragment.ContentFragment;
+import com.cashzhang.ashley.fragment.LeftFragment;
+import com.cashzhang.ashley.fragment.MainFragment;
+import com.cashzhang.ashley.fragment.SecCategsFragment;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.cashzhang.ashley.Constants.s_fragmentFeeds;
 import static com.cashzhang.ashley.Constants.s_fragmentManager;
 import static com.cashzhang.ashley.Constants.s_swipeMLayout;
 import static com.cashzhang.ashley.Constants.s_swipeCLayout;
@@ -29,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
     FrogAdapter adapter;
     static Bundle bundle;
     public List<IndexItem> m_index;
-    static final String CATEGS = "categs.txt";
-    static final String INDEX = "index.txt";
+    public static final String CATEGS = "categs.txt";
+    public static final String INDEX = "index.txt";
 
     LeftFragment leftFragment = LeftFragment.newInstance();
     CategsFragment categsFragment = CategsFragment.newInstance();

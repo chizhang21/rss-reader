@@ -1,11 +1,16 @@
-package com.cashzhang.ashley;
+package com.cashzhang.ashley.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
+
+import com.cashzhang.ashley.fragment.CategsFragment;
+import com.cashzhang.ashley.fragment.ContentFragment;
+import com.cashzhang.ashley.fragment.LeftFragment;
+import com.cashzhang.ashley.fragment.MainFragment;
+import com.cashzhang.ashley.fragment.SecCategsFragment;
 
 import java.util.List;
 

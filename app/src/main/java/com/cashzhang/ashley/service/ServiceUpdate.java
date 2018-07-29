@@ -1,10 +1,16 @@
-package com.cashzhang.ashley;
+package com.cashzhang.ashley.service;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.text.format.Time;
 import android.util.Log;
+
+import com.cashzhang.ashley.Constants;
+import com.cashzhang.ashley.FeedItem;
+import com.cashzhang.ashley.IndexItem;
+import com.cashzhang.ashley.MainActivity;
+import com.cashzhang.ashley.ObjectIO;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -49,6 +55,7 @@ public class ServiceUpdate extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        Log.d(TAG, "onHandleIntent: service update");
         ObjectIO reader = new ObjectIO(this, MainActivity.INDEX);
         Iterable<IndexItem> indexItems = (Iterable<IndexItem>) reader.read();
 

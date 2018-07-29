@@ -1,4 +1,4 @@
-package com.cashzhang.ashley;
+package com.cashzhang.ashley.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -6,10 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ParseException;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,11 +23,20 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.cashzhang.ashley.Constants;
+import com.cashzhang.ashley.DialogEditFeed;
+import com.cashzhang.ashley.FeedItem;
+import com.cashzhang.ashley.IndexItem;
+import com.cashzhang.ashley.MainActivity;
+import com.cashzhang.ashley.ObjectIO;
+import com.cashzhang.ashley.R;
+import com.cashzhang.ashley.adapter.CategListAdapter;
+import com.cashzhang.ashley.adapter.FrogAdapter;
+import com.cashzhang.ashley.service.SyncCatesListService;
+
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.TreeMap;
 
@@ -38,7 +44,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.cashzhang.ashley.Constants.s_activity;
-import static com.cashzhang.ashley.ServiceUpdate.ITEM_LIST;
+import static com.cashzhang.ashley.service.ServiceUpdate.ITEM_LIST;
 
 public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 

@@ -3,7 +3,6 @@ package com.cashzhang.ashley;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Window;
@@ -14,15 +13,10 @@ import android.webkit.WebViewClient;
 import com.alibaba.fastjson.JSON;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.cashzhang.ashley.bean.Token;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -81,8 +75,6 @@ public class AuthView extends Activity {
                             Settings.setRefreshToken(token.getRefresh_token());
 
                             Intent intent = new Intent();
-//                            intent.putExtra("accessToken", token.getAccess_token());
-//                            intent.putExtra("refreshToken", token.getRefresh_token());
                             setResult(Activity.RESULT_OK, intent);
                             AuthView.this.finish();
                         }
