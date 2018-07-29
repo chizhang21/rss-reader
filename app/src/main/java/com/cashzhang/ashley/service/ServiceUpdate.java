@@ -119,7 +119,6 @@ public class ServiceUpdate extends IntentService {
             String title = getContent(parser);
             tmpTitle = title;
         }
-        //
 
         do {
             parser.next();

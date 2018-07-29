@@ -1,6 +1,8 @@
 package com.cashzhang.ashley.bean;
 
-public class Token {
+import java.io.Serializable;
+
+public class Token implements Serializable{
     private String access_token;
     private String refresh_token;
     private String plan;

@@ -18,13 +18,12 @@ public class CategListAdapter extends BaseAdapter {
     private final static String TAG = "ashley-rss";
 
 
-    private ArrayList<String> arrayListContent;
+    private ArrayList<String> arrayListLabel;
 
     private LayoutInflater layoutInflater;
 
     static class Component {
-        @BindView(R.id.content) TextView content;
-        @BindView(R.id.timestamp) TextView timestamp;
+        @BindView(R.id.categ_content) TextView content;
         public Component(View view) {
             ButterKnife.bind(this, view);
         }
@@ -34,21 +33,19 @@ public class CategListAdapter extends BaseAdapter {
         this.layoutInflater = LayoutInflater.from(context);
     }
 
-    public void refreshData(
-                            ArrayList<String> listContent
-    ) {
-        arrayListContent = listContent;
+    public void refreshData( ArrayList<String> listContent) {
+        arrayListLabel = listContent;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return ((arrayListContent == null) ? 0 :arrayListContent.size());
+        return ((arrayListLabel == null) ? 0 :arrayListLabel.size());
     }
 
     @Override
     public Object getItem(int i) {
-        return ((arrayListContent == null) ? null : arrayListContent.get(i));
+        return ((arrayListLabel == null) ? null : arrayListLabel.get(i));
     }
 
     @Override
@@ -58,15 +55,15 @@ public class CategListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LListAdapter.Component component;
+        CategListAdapter.Component component;
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.feed_item, null);
-            component = new LListAdapter.Component(convertView);
+            convertView = layoutInflater.inflate(R.layout.categ_item, null);
+            component = new CategListAdapter.Component(convertView);
             convertView.setTag(component);
         } else {
-            component = (LListAdapter.Component) convertView.getTag();
+            component = (CategListAdapter.Component) convertView.getTag();
         }
-        component.content.setText((arrayListContent == null) ? null : arrayListContent.get(position));
+        component.content.setText((arrayListLabel == null) ? null : arrayListLabel.get(position));
 
         return convertView;
     }

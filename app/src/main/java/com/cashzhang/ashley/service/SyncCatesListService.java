@@ -2,9 +2,14 @@ package com.cashzhang.ashley.service;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.util.Base64;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -13,9 +18,21 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.cashzhang.ashley.Constants;
 import com.cashzhang.ashley.Settings;
+import com.cashzhang.ashley.bean.Categ;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+
+import okio.Utf8;
 
 public class SyncCatesListService extends IntentService {
 
@@ -51,9 +68,32 @@ public class SyncCatesListService extends IntentService {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "CATEGS: " + response);
-                //TODO write into categs list file
+                String userId = Settings.getId();
+                String currentUserCategFile = "data/data/com.cashzhang.ashley/files/";
+                File file = new File(currentUserCategFile, "categ_list_" + userId);
+                if (!file.exists()) {
+                    try {
+                        file.createNewFile();
 
-                //TODO send broadcast
+                        FileOutputStream fos = null;
+                        try {
+                            fos = new FileOutputStream(file);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            fos.write(response.getBytes());
+                            fos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                //send broadcast
                 Intent broadcast = new Intent(CATEG_BROADCAST_ACTION);
                 sendBroadcast(broadcast);
                 stopSelf();

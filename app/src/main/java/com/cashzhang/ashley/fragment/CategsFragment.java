@@ -9,8 +9,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -23,21 +21,26 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.cashzhang.ashley.Constants;
 import com.cashzhang.ashley.DialogEditFeed;
 import com.cashzhang.ashley.FeedItem;
-import com.cashzhang.ashley.IndexItem;
 import com.cashzhang.ashley.MainActivity;
 import com.cashzhang.ashley.ObjectIO;
 import com.cashzhang.ashley.R;
+import com.cashzhang.ashley.Settings;
 import com.cashzhang.ashley.adapter.CategListAdapter;
 import com.cashzhang.ashley.adapter.FrogAdapter;
 import com.cashzhang.ashley.service.SyncCatesListService;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.TreeMap;
 
 import butterknife.BindView;
@@ -50,7 +53,8 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     private final static String TAG = "ashley-rss";
 
-    private ArrayList<String> listContent;
+    private ArrayList<String> listLabel;
+    private ArrayList<String> listId;
 
     CategListAdapter listAdapter = null;
     SecCategsFragment secCategsFragment;
@@ -60,10 +64,6 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     @BindView(R.id.l_list)
     ListView listView;
-
-    private FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
-//    private SwipeRefreshLayout mSwipeLayout;
 
     public static CategsFragment newInstance() {
         CategsFragment categsFragment = new CategsFragment();
@@ -123,7 +123,8 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        listContent = new ArrayList<String>();
+        listLabel = new ArrayList<String>();
+        listId = new ArrayList<String>();
     }
 
     @Override
@@ -195,58 +196,42 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
         mainActivity.forSkip();
 
     }
+
     private String getContent(int position) {
-        return ((listContent == null) ? null : listContent.get(position));
+        return ((listLabel == null) ? null : listLabel.get(position));
+    }
+
+    private String getUserID(int position) {
+        return ((listId == null) ? null : listId.get(position));
     }
 
     public void readFromFile() throws IOException, ClassNotFoundException {
+        String response;
 
-        ObjectIO reader = new ObjectIO(getActivity(), MainActivity.CATEGS);
-        Iterable<IndexItem> indexItems = (Iterable<IndexItem>) reader.read();
+        File file = new File("data/data/com.cashzhang.ashley/files/categ_list_" + Settings.getId());
+        if (file.exists()) {
+            FileInputStream is = new FileInputStream(file);
+            byte[] b = new byte[is.available()];
+            is.read(b);
+            response = new String(b);
+            if (!response.equals("")) {
 
-        if (indexItems != null) {
-            for (IndexItem indexItem : indexItems) {
-                try {
-                    readKeySet(Long.toString(indexItem.m_uid));
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (listLabel != null)
+                    listLabel.clear();
+                if (listId != null)
+                    listId.clear();
+
+                JSONArray jsonArray = JSONArray.parseArray(response);
+                for (Iterator iterator = jsonArray.iterator(); iterator.hasNext(); ) {
+                    JSONObject jsonObject = (JSONObject) iterator.next();
+                    listId.add(jsonObject.get("id").toString());
+                    listLabel.add(jsonObject.get("label").toString());
                 }
+                listAdapter.refreshData(listLabel);
             }
         }
-    }
 
-    private void readKeySet(String uid) {
-
-        ObjectIO reader = new ObjectIO(getActivity(), uid + ITEM_LIST);
-        ObjectIO mapReader = new ObjectIO(getActivity(), uid);
-        Long[] arraySets;
-
-        HashSet<Long> sets = null;
-        try {
-            sets = (HashSet<Long>) reader.read();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        TreeMap<Long, FeedItem> mapFromFile = null;
-        try {
-            mapFromFile = (TreeMap<Long, FeedItem>) mapReader.read();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (sets != null) {
-            listContent.clear();
-
-            arraySets = sets.toArray(new Long[sets.size()]);
-            Arrays.sort(arraySets);
-            for (int i = arraySets.length - 1; i >= 0; i--) {
-                FeedItem feedItem = mapFromFile.get(arraySets[i]);
-                listContent.add(feedItem.m_content);
-            }
-            listAdapter.refreshData(listContent);
-            mSwipeLayout.setRefreshing(false);
-        }
+        mSwipeLayout.setRefreshing(false);
     }
 }
 

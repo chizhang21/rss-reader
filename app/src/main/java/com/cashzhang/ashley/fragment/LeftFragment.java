@@ -32,6 +32,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -141,6 +142,7 @@ public class LeftFragment extends Fragment implements View.OnClickListener {
                 Profile profile = JSON.parseObject(response, Profile.class);
                 Settings.setId(profile.getId());
                 Settings.setEmail(profile.getEmail());
+                Settings.setGivenName(profile.getGivenName());
                 leftText.setText(Settings.getEmail());
             }
         };
