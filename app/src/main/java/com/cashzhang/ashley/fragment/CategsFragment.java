@@ -21,33 +21,42 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.cashzhang.ashley.Constants;
 import com.cashzhang.ashley.DialogEditFeed;
-import com.cashzhang.ashley.FeedItem;
 import com.cashzhang.ashley.MainActivity;
-import com.cashzhang.ashley.ObjectIO;
 import com.cashzhang.ashley.R;
 import com.cashzhang.ashley.Settings;
 import com.cashzhang.ashley.adapter.CategListAdapter;
 import com.cashzhang.ashley.adapter.FrogAdapter;
+import com.cashzhang.ashley.bean.Categ;
+import com.cashzhang.ashley.bean.CategItem;
 import com.cashzhang.ashley.service.SyncCatesListService;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.TreeMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.cashzhang.ashley.Constants.s_activity;
-import static com.cashzhang.ashley.service.ServiceUpdate.ITEM_LIST;
 
 public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -77,6 +86,7 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 Log.d(TAG, "onReceive: categs fragment");
                 try {
                     readFromFile();
+                    getSubs();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
@@ -182,7 +192,8 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         secCategsFragment = new SecCategsFragment();
         final Bundle bundle = new Bundle();
-        bundle.putString("content", getContent(position));
+        bundle.putString("categ_lebel", getLabel(position));
+        bundle.putString("categ_id", getCategId(position));
         secCategsFragment.setArguments(bundle);
 
         final MainActivity mainActivity = (MainActivity) getActivity();
@@ -197,11 +208,11 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     }
 
-    private String getContent(int position) {
+    private String getLabel(int position) {
         return ((listLabel == null) ? null : listLabel.get(position));
     }
 
-    private String getUserID(int position) {
+    private String getCategId(int position) {
         return ((listId == null) ? null : listId.get(position));
     }
 
@@ -230,8 +241,73 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 listAdapter.refreshData(listLabel);
             }
         }
-
         mSwipeLayout.setRefreshing(false);
     }
+
+    public void getSubs() {
+        Log.d(TAG, "getSubs: ");
+        RequestQueue mQueue = Volley.newRequestQueue(Constants.s_activity);
+        //success listener
+        final Response.Listener listener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                JSONArray jsonArray = JSONArray.parseArray(response);
+                for (Iterator iterator = jsonArray.iterator(); iterator.hasNext(); ) {
+                    JSONObject jsonObject = (JSONObject) iterator.next();
+                    CategItem categItem = JSONObject.toJavaObject(jsonObject, CategItem.class);
+                    for (Categ categ : categItem.getCategories()) {
+                        Log.d(TAG, "==categItem categ label== " + categ.getLabel());
+                        writeEachCategItemToFile(categ.getLabel(), JSON.toJSONString(categItem));
+                    }
+                }
+            }
+        };
+        //error listener
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, error.getMessage(), error);
+            }
+        };
+        //GET request
+        StringRequest stringRequest = new StringRequest(Constants.BASE_URL + Constants.SUBSCRIPTIONS,
+                listener, errorListener) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
+                return headers;
+            }
+        };
+        mQueue.add(stringRequest);
+    }
+
+    private void writeEachCategItemToFile(String fileName, String categItemJson) {
+        String currentUserDir = "data/data/com.cashzhang.ashley/files/";
+        File file = new File(currentUserDir, fileName);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+                writeEachCategItemToFile(fileName, categItemJson);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(file, true);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                fos.write(categItemJson.getBytes());
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
 

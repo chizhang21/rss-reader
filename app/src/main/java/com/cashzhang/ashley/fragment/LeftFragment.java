@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -23,14 +25,22 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.cashzhang.ashley.AuthView;
 import com.cashzhang.ashley.Constants;
+import com.cashzhang.ashley.FeedItem;
 import com.cashzhang.ashley.R;
 import com.cashzhang.ashley.Settings;
 import com.cashzhang.ashley.VolleyController;
+import com.cashzhang.ashley.bean.Categ;
+import com.cashzhang.ashley.bean.CategItem;
 import com.cashzhang.ashley.bean.Profile;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,17 +54,6 @@ import butterknife.ButterKnife;
 public class LeftFragment extends Fragment implements View.OnClickListener {
 
     private final static String TAG = "ashley-rss";
-
-    private static final String BASE_URL = "https://cloud.feedly.com";
-    private static final String AUTH_URL = "/v3/auth/auth";
-    private static final String TOKEN_URL = "/v3/auth/token";
-    private static final String PROFILE = "/v3/profile";
-    private static final String CATEGORIES = "/v3/categories?sort=feedly";
-    private static final String SUBSCRIPTIONS = "/v3/subscriptions";
-    private static final String RESPONSE_TYPE = "?response_type=code";
-    private static final String CLIENT_ID = "&client_id=feedly";
-    private static final String REDIRECT_URI = "&redirect_uri=https://cloud.feedly.com/feedly.html";
-    private static final String SCOPE = "&scope=https://cloud.feedly.com/subscriptions";
 
     private static String accessToken = null;
     private static String refreshToken = null;
@@ -92,8 +91,8 @@ public class LeftFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), AuthView.class);
-                String authUrl = BASE_URL + AUTH_URL + RESPONSE_TYPE + CLIENT_ID + REDIRECT_URI + SCOPE;
-                String tokenUrl = BASE_URL + TOKEN_URL;
+                String authUrl = Constants.BASE_URL + Constants.AUTH_URL + Constants.RESPONSE_TYPE + Constants.CLIENT_ID + Constants.REDIRECT_URI + Constants.SCOPE;
+                String tokenUrl = Constants.BASE_URL + Constants.TOKEN_URL;
                 intent.putExtra("authurl", authUrl);
                 intent.putExtra("tokenurl", tokenUrl);
                 startActivityForResult(intent, 404);
@@ -154,7 +153,7 @@ public class LeftFragment extends Fragment implements View.OnClickListener {
             }
         };
         //GET request
-        StringRequest stringRequest = new StringRequest(BASE_URL + PROFILE,
+        StringRequest stringRequest = new StringRequest(Constants.BASE_URL + Constants.PROFILE,
                 listener, errorListener) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -194,7 +193,40 @@ public class LeftFragment extends Fragment implements View.OnClickListener {
     }
 
     public void getCate() {
-
+        Log.d(TAG, "test: ");
+        RequestQueue mQueue = Volley.newRequestQueue(Constants.s_activity);
+        //success listener
+        final Response.Listener listener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "test: " + response);
+            }
+        };
+        //error listener
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, error.getMessage(), error);
+            }
+        };
+        String input="";
+        try {
+            input = Constants.BASE_URL + "/v3/feeds/"+ URLEncoder.encode("feed/http://coolshell.cn/feed", "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        //GET request
+        StringRequest stringRequest = new StringRequest(input,
+                listener, errorListener) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("X-Feedly-Access-Token", accessToken);
+                return headers;
+            }
+        };
+        mQueue.add(stringRequest);
     }
 
     public void getSubs() {
@@ -205,7 +237,15 @@ public class LeftFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "SUBS: " + response);
-
+                tmpWrite("subs", response);
+                JSONArray jsonArray = JSONArray.parseArray(response);
+                for (Iterator iterator = jsonArray.iterator(); iterator.hasNext(); ) {
+                    JSONObject jsonObject = (JSONObject) iterator.next();
+                    CategItem categItem = JSONObject.toJavaObject(jsonObject, CategItem.class);
+                    for (Categ categ:categItem.getCategories()) {
+                        Log.d(TAG, "==categItem categ label== " + categ.getLabel());
+                    }
+                }
             }
         };
         //error listener
@@ -216,7 +256,7 @@ public class LeftFragment extends Fragment implements View.OnClickListener {
             }
         };
         //GET request
-        StringRequest stringRequest = new StringRequest(BASE_URL + SUBSCRIPTIONS,
+        StringRequest stringRequest = new StringRequest(Constants.BASE_URL + Constants.SUBSCRIPTIONS,
                 listener, errorListener) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -237,7 +277,7 @@ public class LeftFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "FEED: " + response);
-
+                tmpWrite("feed_feedId", response);
             }
         };
         //error listener
@@ -247,8 +287,14 @@ public class LeftFragment extends Fragment implements View.OnClickListener {
                 Log.e(TAG, error.getMessage(), error);
             }
         };
+        String input="";
+        try {
+            input = Constants.BASE_URL + "/v3/feeds/"+ URLEncoder.encode("user/bb7abbe1-c7c8-4817-b451-c92a5a4ecbd4/category/IT", "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         //GET request
-        StringRequest stringRequest = new StringRequest(BASE_URL + "/v3/feed/user/bb7abbe1-c7c8-4817-b451-c92a5a4ecbd4/category/IT",
+        StringRequest stringRequest = new StringRequest(input,
                 listener, errorListener) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -281,7 +327,7 @@ public class LeftFragment extends Fragment implements View.OnClickListener {
             }
         };
         //GET request
-        StringRequest stringRequest = new StringRequest(BASE_URL + "/v3/entries/user/bb7abbe1-c7c8-4817-b451-c92a5a4ecbd4/category/IT",
+        StringRequest stringRequest = new StringRequest(Constants.BASE_URL + "/v3/entries/user/bb7abbe1-c7c8-4817-b451-c92a5a4ecbd4/category/IT",
                 listener, errorListener) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -301,7 +347,7 @@ public class LeftFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "STREAM: " + response);
-
+                tmpWrite("stream_categID", response);
             }
         };
         //error listener
@@ -314,7 +360,7 @@ public class LeftFragment extends Fragment implements View.OnClickListener {
         //GET request
         String input = null;
         try {
-            input = BASE_URL + "/v3/streams/contents?streamId="+ URLEncoder.encode("user/bb7abbe1-c7c8-4817-b451-c92a5a4ecbd4/category/IT", "UTF-8");
+            input = Constants.BASE_URL + "/v3/streams/contents?streamId="+ URLEncoder.encode("user/bb7abbe1-c7c8-4817-b451-c92a5a4ecbd4/category/IT", "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -329,6 +375,31 @@ public class LeftFragment extends Fragment implements View.OnClickListener {
             }
         };
         VolleyController.getInstance(Constants.s_activity).addToRequestQueue(stringRequest);
+    }
+
+    private void tmpWrite(String fileName, String response) {
+        String currentUserDir = "data/data/com.cashzhang.ashley/files/";
+        File file = new File(currentUserDir, fileName);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(file);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    fos.write(response.getBytes());
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

@@ -23,6 +23,18 @@ import java.net.URL;
 
 public class Constants {
 
+    public static final String BASE_URL = "https://cloud.feedly.com";
+    public static final String AUTH_URL = "/v3/auth/auth";
+    public static final String TOKEN_URL = "/v3/auth/token";
+    public static final String PROFILE = "/v3/profile";
+    public static final String CATEGORIES = "/v3/categories?sort=feedly";
+    public static final String SUBSCRIPTIONS = "/v3/subscriptions";
+    public static final String RESPONSE_TYPE = "?response_type=code";
+    public static final String CLIENT_ID = "&client_id=feedly";
+    public static final String REDIRECT_URI = "&redirect_uri=https://cloud.feedly.com/feedly.html";
+    public static final String SCOPE = "&scope=https://cloud.feedly.com/subscriptions";
+
+
     public static MainActivity s_activity;
     public static Resources s_resources;
     public static MainFragment s_fragmentFeeds;

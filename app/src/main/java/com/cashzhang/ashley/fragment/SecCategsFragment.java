@@ -63,9 +63,6 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
     @BindView(R.id.l_list)
     ListView listView;
 
-    private FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
-
     public static SecCategsFragment newInstance() {
         SecCategsFragment secCategsFragment = new SecCategsFragment();
         return secCategsFragment;
