@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +28,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.cashzhang.ashley.Constants;
 import com.cashzhang.ashley.DialogEditFeed;
 import com.cashzhang.ashley.FeedItem;
@@ -30,15 +38,22 @@ import com.cashzhang.ashley.IndexItem;
 import com.cashzhang.ashley.MainActivity;
 import com.cashzhang.ashley.ObjectIO;
 import com.cashzhang.ashley.R;
+import com.cashzhang.ashley.Settings;
 import com.cashzhang.ashley.adapter.CategListAdapter;
 import com.cashzhang.ashley.adapter.FrogAdapter;
+import com.cashzhang.ashley.bean.CategItem;
 import com.cashzhang.ashley.service.ServiceUpdate;
 import com.cashzhang.ashley.service.SyncCatesListService;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.TreeMap;
 
 import butterknife.BindView;
@@ -52,19 +67,18 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
 
     private final static String TAG = "ashley-rss";
 
-    private ArrayList<String> listContent;
-
+    private ArrayList<String> listTitle;
+    private ArrayList<String> listFeedId;
+    Bundle bundle;
     CategListAdapter listAdapter = null;
     MainFragment mainFragment;
 
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout mSwipeLayout;
-
     @BindView(R.id.l_list)
     ListView listView;
 
-    private FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
+    private String label;
 
     public static SecCategsFragment newInstance() {
         SecCategsFragment secCategsFragment = new SecCategsFragment();
@@ -77,7 +91,7 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
             if (null != s_activity) {
                 Log.d(TAG, "onReceive: sec categs fragment");
                 try {
-                    readFromFile();
+                    readFromFile(label+".cif");
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
@@ -124,7 +138,8 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        listContent = new ArrayList<String>();
+        listFeedId = new ArrayList<String>();
+        listTitle = new ArrayList<String>();
     }
 
     @Override
@@ -151,22 +166,35 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
                 return super.onOptionsItemSelected(item);
         }
     }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Log.d(TAG, "setUserVisibleHint() -> isVisibleToUser: " + isVisibleToUser);
+        if (isVisibleToUser) {
+            try {
+                loadData(MainActivity.getBundle());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            onRefresh();
+        }
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    public void onRefresh() {
         try {
-            readFromFile();
+            readFromFile(label+".cif");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    public void onRefresh() {
-        Intent intent = new Intent(getActivity(), ServiceUpdate.class);
-        getActivity().startService(intent);
     }
 
     AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
@@ -181,7 +209,7 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
 
         mainFragment = new MainFragment();
         final Bundle bundle = new Bundle();
-        bundle.putString("content", getContent(position));
+        bundle.putString("feed_id", getFeedId(position));
         mainFragment.setArguments(bundle);
 
         final MainActivity mainActivity = (MainActivity) getActivity();
@@ -195,58 +223,51 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
         mainActivity.forSkip();
 
     }
-    private String getContent(int position) {
-        return ((listContent == null) ? null : listContent.get(position));
+    private String getFeedId(int position) {
+        return ((listTitle == null) ? null : listTitle.get(position));
     }
 
-    public void readFromFile() throws IOException, ClassNotFoundException {
+    public void loadData(Bundle tmpBundle) throws IOException, ClassNotFoundException {
+        try {
+            bundle = tmpBundle;
+            Log.d(TAG, "loadData: bundle == null? " + (bundle == null));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (bundle != null) {
+            label = bundle.getString("categ_lebel");
+            readFromFile(label+".cif");
+        }
+    }
 
-        ObjectIO reader = new ObjectIO(getActivity(), MainActivity.INDEX);
-        Iterable<IndexItem> indexItems = (Iterable<IndexItem>) reader.read();
+    public void readFromFile(String fileLabelName) throws IOException, ClassNotFoundException {
+        String response;
 
-        if (indexItems != null) {
-            for (IndexItem indexItem : indexItems) {
-                try {
-                    readKeySet(Long.toString(indexItem.m_uid));
-                } catch (Exception e) {
-                    e.printStackTrace();
+        File file = new File("data/data/com.cashzhang.ashley/files/" + fileLabelName);
+        if (file.exists()) {
+            FileInputStream is = new FileInputStream(file);
+            byte[] b = new byte[is.available()];
+            is.read(b);
+            response = new String(b);
+            if (!response.equals("")) {
+
+                if (listTitle != null)
+                    listTitle.clear();
+                if (listFeedId != null)
+                    listFeedId.clear();
+
+
+                JSONArray jsonArray = JSONArray.parseArray(response);
+                for (Iterator iterator = jsonArray.iterator(); iterator.hasNext(); ) {
+                    JSONObject jsonObject = (JSONObject) iterator.next();
+                    listFeedId.add(jsonObject.get("id").toString());
+                    listTitle.add(jsonObject.get("title").toString());
                 }
+                listAdapter.refreshData(listTitle);
             }
         }
+        mSwipeLayout.setRefreshing(false);
     }
 
-    private void readKeySet(String uid) {
-
-        ObjectIO reader = new ObjectIO(getActivity(), uid + ITEM_LIST);
-        ObjectIO mapReader = new ObjectIO(getActivity(), uid);
-        Long[] arraySets;
-
-        HashSet<Long> sets = null;
-        try {
-            sets = (HashSet<Long>) reader.read();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        TreeMap<Long, FeedItem> mapFromFile = null;
-        try {
-            mapFromFile = (TreeMap<Long, FeedItem>) mapReader.read();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (sets != null) {
-            listContent.clear();
-
-            arraySets = sets.toArray(new Long[sets.size()]);
-            Arrays.sort(arraySets);
-            for (int i = arraySets.length - 1; i >= 0; i--) {
-                FeedItem feedItem = mapFromFile.get(arraySets[i]);
-                listContent.add(feedItem.m_content);
-            }
-            listAdapter.refreshData(listContent);
-            mSwipeLayout.setRefreshing(false);
-        }
-    }
 }
 
