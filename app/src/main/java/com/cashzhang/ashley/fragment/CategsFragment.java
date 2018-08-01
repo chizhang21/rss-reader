@@ -337,7 +337,7 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     private void modifyEachFile(ArrayList<String> labels) throws IOException {
         for (String label : labels) {
-            modifyFileContent(label);
+            modifyFileContent(label+".cif");
         }
     }
 
