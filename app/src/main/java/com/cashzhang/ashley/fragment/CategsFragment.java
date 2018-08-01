@@ -48,6 +48,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -193,7 +196,6 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
         secCategsFragment = new SecCategsFragment();
         final Bundle bundle = new Bundle();
         bundle.putString("categ_lebel", getLabel(position));
-        bundle.putString("categ_id", getCategId(position));
         secCategsFragment.setArguments(bundle);
 
         final MainActivity mainActivity = (MainActivity) getActivity();
@@ -245,7 +247,8 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     public void getSubs() {
-        Log.d(TAG, "getSubs: ");
+        //TODO delete categ item file
+        deleteCategItemFile();
         RequestQueue mQueue = Volley.newRequestQueue(Constants.s_activity);
         //success listener
         final Response.Listener listener = new Response.Listener<String>() {
@@ -256,9 +259,13 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     JSONObject jsonObject = (JSONObject) iterator.next();
                     CategItem categItem = JSONObject.toJavaObject(jsonObject, CategItem.class);
                     for (Categ categ : categItem.getCategories()) {
-                        Log.d(TAG, "==categItem categ label== " + categ.getLabel());
-                        writeEachCategItemToFile(categ.getLabel(), JSON.toJSONString(categItem));
+                        writeEachCategItemToFile(categ.getLabel() + ".cif", JSON.toJSONString(categItem) + ",");
                     }
+                }
+                try {
+                    modifyEachFile(listLabel);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         };
@@ -289,6 +296,7 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
         if (!file.exists()) {
             try {
                 file.createNewFile();
+                writeBracket(fileName, "[");
                 writeEachCategItemToFile(fileName, categItemJson);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -309,5 +317,54 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
         }
     }
 
+    private void writeBracket(String fileName, String bracket) {
+        String currentUserDir = "data/data/com.cashzhang.ashley/files/";
+        File file = new File(currentUserDir, fileName);
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file, false);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            fos.write(bracket.getBytes());
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void modifyEachFile(ArrayList<String> labels) throws IOException {
+        for (String label : labels) {
+            modifyFileContent(label);
+        }
+    }
+
+    private void modifyFileContent(String lebel) throws IOException {
+        String currentUserDir = "data/data/com.cashzhang.ashley/files/";
+
+        RandomAccessFile raf = new RandomAccessFile(currentUserDir + lebel, "rw");
+        long totalLen = raf.length();
+        FileChannel channel = raf.getChannel();
+        MappedByteBuffer buffer = channel.map(FileChannel.MapMode.READ_WRITE, totalLen - 1, 1);
+        buffer.put(0, (byte) (']'));
+
+        buffer.force();
+        buffer.clear();
+        channel.close();
+        raf.close();
+    }
+
+    private void deleteCategItemFile() {
+        File file = new File("data/data/com.cashzhang.ashley/files/");
+        File temp = null;
+        File[] filelist = file.listFiles();
+        for (int i = 0; i < filelist.length; i++) {
+            temp = filelist[i];
+            if (temp.getName().endsWith(".cif"))
+                temp.delete();
+        }
+    }
 }
 
