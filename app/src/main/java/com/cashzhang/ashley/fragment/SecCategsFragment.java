@@ -224,7 +224,7 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
 
     }
     private String getFeedId(int position) {
-        return ((listTitle == null) ? null : listTitle.get(position));
+        return ((listFeedId == null) ? null : listFeedId.get(position));
     }
 
     public void loadData(Bundle tmpBundle) throws IOException, ClassNotFoundException {
