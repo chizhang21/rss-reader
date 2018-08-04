@@ -45,8 +45,8 @@ public class ServiceUpdate extends IntentService {
         static final String ITEM = "item";
     }
 
-    private static class Patterns {
-        static final Pattern CDATA = Pattern.compile("\\<.*?\\>");
+    public static class Patterns {
+        public static final Pattern CDATA = Pattern.compile("\\<.*?\\>");
     }
 
     public ServiceUpdate() {

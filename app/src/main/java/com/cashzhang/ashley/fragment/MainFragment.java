@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.alibaba.fastjson.JSON;
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -40,6 +42,8 @@ import com.cashzhang.ashley.R;
 import com.cashzhang.ashley.Settings;
 import com.cashzhang.ashley.adapter.FrogAdapter;
 import com.cashzhang.ashley.adapter.LListAdapter;
+import com.cashzhang.ashley.bean.FeedStream;
+import com.cashzhang.ashley.bean.FeedStreamItems;
 import com.cashzhang.ashley.service.ServiceUpdate;
 
 import java.io.File;
@@ -51,9 +55,11 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -71,12 +77,14 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private final static String TAG = "ashley-rss";
 
-    private ArrayList<String> listTitle;
-    private ArrayList<String> listData;
-    private ArrayList<String> listUrl;
-    private ArrayList<String> listContent;
-    private ArrayList<String> listTContent;
-    private ArrayList<String> listTime;
+    private ArrayList<String> listTitle;//web title
+    private ArrayList<String> listData;//title
+    private ArrayList<String> listUrl;//url
+    private ArrayList<String> listContent;//content should display in content fragment
+    private ArrayList<String> listTContent;//content on the list
+    private ArrayList<String> listTime;//publish time
+
+    private ArrayList<FeedStreamItems> listItems;
 
     LListAdapter listAdapter = null;
     ContentFragment contentFragment;
@@ -219,9 +227,11 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
         if (bundle != null) {
             feedId = bundle.getString("feed_id");
-            Log.d(TAG, "MainFragment loadData: " + feedId);
+            if (feedId != null) {
+                Log.d(TAG, "MainFragment loadData: " + feedId);
 //            readFromFile(label+".cif");
-            getFeedStreamById(feedId);
+                getFeedStreamById(feedId);
+            }
         }
     }
 
@@ -234,6 +244,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             public void onResponse(String response) {
                 tmpWrite("FeedStream", response);
                 //TODO parse for each feed item
+                parseFeedStream(response);
             }
         };
         //error listener
@@ -263,6 +274,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             public Map<String, String> getParams() {
                 HashMap<String, String> params = new HashMap<String, String>();
                 params.put("unreadOnly ", "true");
+                params.put("ranked", "newest");
                 return params;
             }
         };
@@ -440,5 +452,25 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             e.printStackTrace();
         }
     }
+
+    private void parseFeedStream(String response) {
+        FeedStream feedStream = JSON.parseObject(response, FeedStream.class);
+        listItems = (ArrayList<FeedStreamItems>) feedStream.getItems();
+        for (FeedStreamItems listItem: listItems) {
+            //listTitle, listData, listUrl , listContent, listTContent, listTime
+            listTitle.add(feedStream.getTitle());
+            listData.add(listItem.getTitle());
+            if (listItem.getContent() != null)
+                listContent.add(listItem.getContent().getContent());
+            else if (listItem.getSummary() != null)
+                listContent.add(listItem.getSummary().getContent());
+            listTContent.add(ServiceUpdate.Patterns.CDATA.matcher(listItem.getSummary().getContent()).replaceAll("").trim());
+            listUrl.add(listItem.getAlternate().get(0).getHref());
+            listTime.add(longToString(listItem.getPublished(),"MM-dd HH:mm"));
+        }
+        listAdapter.refreshData(listTitle, listData, listTContent, listTime);
+        mSwipeLayout.setRefreshing(false);
+    }
+
 }
 
