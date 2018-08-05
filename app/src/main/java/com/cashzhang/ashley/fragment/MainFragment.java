@@ -178,7 +178,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.feeds_menu, menu);
+//        inflater.inflate(R.menu.feeds_menu, menu);
     }
 
     @Override

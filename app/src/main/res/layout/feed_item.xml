@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:background="#FDF5E6"
+        android:background="#DCDCDC"
         android:orientation="vertical">
 
         <!-- web title block -->
@@ -24,7 +24,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_weight="1"
                 android:text="hello title"
-                android:textColor="#828282"
+                android:textColor="#363636"
                 android:textSize="12dp" />
 
             <TextView
@@ -35,7 +35,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="2:42 PM"
-                android:textColor="#828282"
+                android:textColor="#363636"
                 android:textSize="12dp" />
 
         </LinearLayout>
@@ -50,12 +50,13 @@
                 android:layout_width="18dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <ImageView
+                <!-- add image in here -->
+                <!-- ImageView
                     android:id="@+id/image"
                     android:layout_width="match_parent"
                     android:layout_height="18dp"
                     android:layout_gravity="top"
-                    android:src="@mipmap/rss_symbol" />
+                    android:src="@mipmap/rss_symbol" /-->
 
             </LinearLayout>
 
