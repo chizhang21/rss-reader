@@ -47,9 +47,11 @@ import com.cashzhang.ashley.service.SyncCatesListService;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -236,7 +238,34 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
         }
         if (bundle != null) {
             label = bundle.getString("categ_lebel");
-            readFromFile(label+".cif");
+            Log.d(TAG, "SecFragm: bundle != null, label == " + label);
+            if (label != null) {
+                File src = new File("data/data/com.cashzhang.ashley/files/" + label + ".cif");
+                File dst = new File("data/data/com.cashzhang.ashley/files/tmp.cif");
+                if (!dst.exists()) {
+                    try {
+                        dst.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                copyLabelFileToDefault(src, dst);
+                readFromFile(label+".cif");
+            } else
+                readFromFile("tmp.cif");
+        }
+    }
+
+    private void copyLabelFileToDefault(File src, File dst) throws IOException {
+        FileChannel inputChannel = null;
+        FileChannel outputChannel = null;
+        try {
+            inputChannel = new FileInputStream(src).getChannel();
+            outputChannel = new FileOutputStream(dst).getChannel();
+            outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
+        } finally {
+            inputChannel.close();
+            outputChannel.close();
         }
     }
 
