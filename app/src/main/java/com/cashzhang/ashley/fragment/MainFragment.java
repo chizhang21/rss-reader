@@ -26,6 +26,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -47,6 +49,7 @@ import com.cashzhang.ashley.bean.FeedStreamItems;
 import com.cashzhang.ashley.service.ServiceUpdate;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -59,6 +62,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
@@ -174,7 +178,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.feeds_menu, menu);
+//        inflater.inflate(R.menu.feeds_menu, menu);
     }
 
     @Override
@@ -231,12 +235,18 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 Log.d(TAG, "MainFragment loadData: " + feedId);
 //            readFromFile(label+".cif");
                 getFeedStreamById(feedId);
+            } else {
+                Log.d(TAG, "loadData: feedId == null, ready read from file");
+                readFeedStreamFile();
             }
+        } else {
+            Log.d(TAG, "loadData: bundle == null, ready read from file");
+            readFeedStreamFile();
         }
+
     }
 
     private void getFeedStreamById(final String feedId) {
-        Log.d(TAG, "test: ");
         RequestQueue mQueue = Volley.newRequestQueue(Constants.s_activity);
         //success listener
         final Response.Listener listener = new Response.Listener<String>() {
@@ -254,9 +264,9 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 Log.e(TAG, error.getMessage(), error);
             }
         };
-        String input="";
+        String input = "";
         try {
-            input = Constants.BASE_URL + "/v3/streams/contents?streamId="+ URLEncoder.encode(feedId, "UTF-8");
+            input = Constants.BASE_URL + "/v3/streams/contents?streamId=" + URLEncoder.encode(feedId, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -270,6 +280,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
                 return headers;
             }
+
             @Override
             public Map<String, String> getParams() {
                 HashMap<String, String> params = new HashMap<String, String>();
@@ -326,12 +337,15 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private String getTitle(int position) {
         return ((listData == null) ? null : listData.get(position));
     }
+
     private String getTime(int position) {
         return ((listTime == null) ? null : listTime.get(position));
     }
+
     private String getUrl(int position) {
         return ((listUrl == null) ? null : listUrl.get(position));
     }
+
     private String getContent(int position) {
         return ((listContent == null) ? null : listContent.get(position));
     }
@@ -453,9 +467,33 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
+    private void readFeedStreamFile() throws IOException {
+        File file = new File("data/data/com.cashzhang.ashley/files/FeedStream");
+        if (file.exists()) {
+            FileInputStream is = new FileInputStream(file);
+            byte[] b = new byte[is.available()];
+            is.read(b);
+            String response = new String(b);
+            if (!response.equals("")) {
+                parseFeedStream(response);
+            }
+        }
+    }
+
+
     private void parseFeedStream(String response) {
         FeedStream feedStream = JSON.parseObject(response, FeedStream.class);
         listItems = (ArrayList<FeedStreamItems>) feedStream.getItems();
+        //TODO clear
+        if (listItems != null) {
+            listTitle.clear();
+            listData.clear();
+            listContent.clear();
+            listTContent.clear();
+            listUrl.clear();
+            listTime.clear();
+        }
+
         for (FeedStreamItems listItem: listItems) {
             //listTitle, listData, listUrl , listContent, listTContent, listTime
             listTitle.add(feedStream.getTitle());

@@ -5,7 +5,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FDF5E6"
+    android:background="#DCDCDC"
     android:orientation="vertical"
     tools:context="com.cashzhang.ashley.MainActivity">
 
@@ -13,7 +13,7 @@
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#FAF0E6"
+        android:background="#DCDCDC"
         android:elevation="4dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 

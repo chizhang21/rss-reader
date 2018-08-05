@@ -116,6 +116,8 @@ public class ContentFragment extends Fragment {
                                 is = (InputStream) new URL(source).getContent();
 
                                 Drawable d = Drawable.createFromStream(is, "src");
+                                if (d == null)
+                                    d = Drawable.createFromStream(is, "href");
                                 DisplayMetrics dm = getActivity().getResources().getDisplayMetrics();
                                 int dwidth = dm.widthPixels - 50;
 

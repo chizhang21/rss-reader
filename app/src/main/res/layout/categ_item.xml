@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="5dp"
-        android:background="#FDF5E6"
+        android:background="#DCDCDC"
         android:orientation="horizontal">
 
         <!-- image and content block -->
@@ -21,12 +21,14 @@
                 android:layout_width="18dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <ImageView
+                <!-- add image in here -->
+                <!-- ImageView
                     android:id="@+id/categ_image"
                     android:layout_width="match_parent"
                     android:layout_height="18dp"
                     android:layout_gravity="center"
-                    android:src="@mipmap/rss_symbol" />
+                    android:src="@mipmap/rss_symbol" /-->
+
             </LinearLayout>
         </LinearLayout>
 
@@ -41,7 +43,7 @@
                 android:layout_marginStart="15dp"
                 android:singleLine="true"
                 android:text=""
-                android:textColor="#000000"
+                android:textColor="#363636"
                 android:textSize="24sp" />
         </LinearLayout>
     </LinearLayout>

@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -148,7 +149,7 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.feeds_menu, menu);
+//        inflater.inflate(R.menu.feeds_menu, menu);
     }
 
     @Override
@@ -174,6 +175,15 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Log.d(TAG, "setUserVisibleHint() -> isVisibleToUser: " + isVisibleToUser);
+        if (isVisibleToUser) {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().show();
         }
     }
 
