@@ -159,7 +159,6 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 MainActivity activity = (MainActivity) getActivity();
                 Dialog dialog = DialogEditFeed.newInstance(activity, -1);
                 dialog.show();
-                Log.d(TAG, "add feed");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

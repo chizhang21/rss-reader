@@ -162,7 +162,6 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
                 MainActivity activity = (MainActivity) getActivity();
                 Dialog dialog = DialogEditFeed.newInstance(activity, -1);
                 dialog.show();
-                Log.d(TAG, "add feed");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
