@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ParseException;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,69 +25,48 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.cashzhang.ashley.AuthView;
 import com.cashzhang.ashley.Constants;
 import com.cashzhang.ashley.DialogEditFeed;
-import com.cashzhang.ashley.FeedItem;
-import com.cashzhang.ashley.IndexItem;
 import com.cashzhang.ashley.MainActivity;
-import com.cashzhang.ashley.ObjectIO;
 import com.cashzhang.ashley.R;
 import com.cashzhang.ashley.Settings;
 import com.cashzhang.ashley.VolleyController;
 import com.cashzhang.ashley.adapter.FrogAdapter;
 import com.cashzhang.ashley.adapter.LListAdapter;
-import com.cashzhang.ashley.bean.Categ;
-import com.cashzhang.ashley.bean.CategItem;
 import com.cashzhang.ashley.bean.FeedStream;
 import com.cashzhang.ashley.bean.FeedStreamItems;
 import com.cashzhang.ashley.bean.MarkAsRead;
-import com.cashzhang.ashley.bean.Token;
 import com.cashzhang.ashley.service.ServiceUpdate;
 
 import org.json.JSONException;
-import org.json.JSONStringer;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.cashzhang.ashley.Constants.s_activity;
-import static com.cashzhang.ashley.service.ServiceUpdate.ITEM_LIST;
 
 /**
- * Created by hadoop on 02/02/2018.
+ * Created by cz21 on 02/02/2018.
  */
 
 public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {

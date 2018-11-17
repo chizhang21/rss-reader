@@ -15,7 +15,7 @@ import com.cashzhang.ashley.fragment.SecCategsFragment;
 import java.util.List;
 
 /**
- * Created by zhangchi on 2018/5/23.
+ * Created by cz21 on 2018/5/23.
  */
 
 public class FrogAdapter extends FragmentStatePagerAdapter {
