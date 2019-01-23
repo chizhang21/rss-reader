@@ -3,7 +3,7 @@ ehthumbs.db
 Desktop.ini
 db.ini
 deploy_key_rsa
-
+*.jks
 *.json
 *.rawproto
 *.bin
