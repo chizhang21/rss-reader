@@ -6,51 +6,33 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.android.volley.AuthFailureError;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.cashzhang.ashley.AuthView;
+import com.cashzhang.ashley.LoginActivity;
 import com.cashzhang.ashley.Constants;
-import com.cashzhang.ashley.FeedItem;
-import com.cashzhang.ashley.MainActivity;
 import com.cashzhang.ashley.R;
 import com.cashzhang.ashley.Settings;
 import com.cashzhang.ashley.VolleyController;
-import com.cashzhang.ashley.bean.Categ;
-import com.cashzhang.ashley.bean.CategItem;
 import com.cashzhang.ashley.bean.Profile;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by hadoop on 2018/5/22.
+ * Created by cz21 on 2018/5/22.
  */
 
 public class LeftFragment extends Fragment {
@@ -81,7 +63,7 @@ public class LeftFragment extends Fragment {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AuthView.class);
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
                 String authUrl = Constants.BASE_URL + Constants.AUTH_URL + Constants.RESPONSE_TYPE + Constants.CLIENT_ID + Constants.REDIRECT_URI + Constants.SCOPE;
                 String tokenUrl = Constants.BASE_URL + Constants.TOKEN_URL;
                 intent.putExtra("authurl", authUrl);
@@ -90,7 +72,7 @@ public class LeftFragment extends Fragment {
             }
         });
 
-        if (Settings.getEmail() != null ) {
+        if (Settings.getEmail() != null) {
             Log.d(TAG, "onCreate: Email=" + Settings.getEmail());
             leftText.setText(Settings.getEmail());
         }

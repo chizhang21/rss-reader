@@ -12,13 +12,16 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
 
 /**
- * Created by zhangchi on 2018/2/6.
+ * Created by cz21 on 2018/2/6.
  */
 
 public class Constants {
@@ -77,5 +80,29 @@ public class Constants {
         InputStream inputStream = url.openStream();
         parser.setInput(inputStream, null);
         return parser;
+    }
+
+    public static void tmpWrite(String fileName, String response) {
+        String currentUserDir = "data/data/com.cashzhang.ashley/files/";
+        File file = new File(currentUserDir, fileName);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file, false);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            fos.write(response.getBytes());
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

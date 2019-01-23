@@ -15,7 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by zhangchi on 2018/2/28.
+ * Created by cz21 on 2018/2/28.
  */
 
 public class LListAdapter extends BaseAdapter {

@@ -25,10 +25,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by hadoop on 2018/6/2.
+ * Created by cz21 on 2018/6/2.
  */
 
-public class AuthView extends Activity {
+public class LoginActivity extends Activity {
 
     private final static String TAG = "ashley-rss";
 
@@ -74,7 +74,7 @@ public class AuthView extends Activity {
 
                             Intent intent = new Intent();
                             setResult(Activity.RESULT_OK, intent);
-                            AuthView.this.finish();
+                            LoginActivity.this.finish();
                         }
                     };
                     //error listener

@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,9 +25,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -36,51 +35,45 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.cashzhang.ashley.Constants;
 import com.cashzhang.ashley.DialogEditFeed;
-import com.cashzhang.ashley.FeedItem;
-import com.cashzhang.ashley.IndexItem;
 import com.cashzhang.ashley.MainActivity;
-import com.cashzhang.ashley.ObjectIO;
 import com.cashzhang.ashley.R;
 import com.cashzhang.ashley.Settings;
+import com.cashzhang.ashley.VolleyController;
 import com.cashzhang.ashley.adapter.FrogAdapter;
 import com.cashzhang.ashley.adapter.LListAdapter;
 import com.cashzhang.ashley.bean.FeedStream;
 import com.cashzhang.ashley.bean.FeedStreamItems;
+import com.cashzhang.ashley.bean.MarkAsRead;
 import com.cashzhang.ashley.service.ServiceUpdate;
+
+import org.json.JSONException;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Locale;
+import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.cashzhang.ashley.Constants.s_activity;
-import static com.cashzhang.ashley.service.ServiceUpdate.ITEM_LIST;
 
 /**
- * Created by hadoop on 02/02/2018.
+ * Created by cz21 on 02/02/2018.
  */
 
 public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private final static String TAG = "ashley-rss";
 
+    private ArrayList<String> listId;
     private ArrayList<String> listTitle;//web title
     private ArrayList<String> listData;//title
     private ArrayList<String> listUrl;//url
@@ -88,8 +81,10 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private ArrayList<String> listTContent;//content on the list
     private ArrayList<String> listTime;//publish time
 
-    private ArrayList<FeedStreamItems> listItems;
+    List<String> entryIDs = new ArrayList<String>();
 
+    private ArrayList<FeedStreamItems> listItems;
+    MarkAsRead markAsRead = new MarkAsRead();
     LListAdapter listAdapter = null;
     ContentFragment contentFragment;
     Bundle bundle;
@@ -162,6 +157,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        listId = new ArrayList<String>();
         listTitle = new ArrayList<String>();
         listData = new ArrayList<String>();
         listUrl = new ArrayList<String>();
@@ -188,7 +184,6 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 MainActivity activity = (MainActivity) getActivity();
                 Dialog dialog = DialogEditFeed.newInstance(activity, -1);
                 dialog.show();
-                Log.d(TAG, "add feed");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -230,7 +225,8 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             e.printStackTrace();
         }
         if (bundle != null) {
-            feedId = bundle.getString("feed_id");
+            String tmpFeedId = bundle.getString("feed_id");
+            if (tmpFeedId != null && !tmpFeedId.equals("")) feedId = tmpFeedId;
             if (feedId != null) {
                 Log.d(TAG, "MainFragment loadData: " + feedId);
 //            readFromFile(label+".cif");
@@ -252,7 +248,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         final Response.Listener listener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                tmpWrite("FeedStream", response);
+                Constants.tmpWrite("FeedStream", response);
                 //TODO parse for each feed item
                 parseFeedStream(response);
             }
@@ -266,7 +262,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         };
         String input = "";
         try {
-            input = Constants.BASE_URL + "/v3/streams/contents?streamId=" + URLEncoder.encode(feedId, "UTF-8");
+            input = Constants.BASE_URL + "/v3/streams/contents?streamId=" + URLEncoder.encode(feedId, "UTF-8") + "&unreadOnly=true";
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -276,17 +272,8 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
                 headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
                 return headers;
-            }
-
-            @Override
-            public Map<String, String> getParams() {
-                HashMap<String, String> params = new HashMap<String, String>();
-                params.put("unreadOnly ", "true");
-                params.put("ranked", "newest");
-                return params;
             }
         };
         mQueue.add(stringRequest);
@@ -308,15 +295,20 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            goContentFragment(position);
+            try {
+                goContentFragment(position);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     };
 
-    private void goContentFragment(int position) {
+    private void goContentFragment(int position) throws JSONException {
         Log.d(TAG, "goContentFragment: ");
 
         contentFragment = new ContentFragment();
         final Bundle bundle = new Bundle();
+        bundle.putString("id", getId(position));
         bundle.putString("title", getTitle(position));
         bundle.putString("time", getTime(position));
         bundle.putString("url", getUrl(position));
@@ -332,6 +324,58 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
         mainActivity.forSkip();
+        markAsRead(getId(position));
+    }
+
+    private void markAsRead(final String id) throws JSONException {
+        Log.d(TAG, "markAsRead: id="+id);
+
+        entryIDs.add(id);
+        markAsRead.setAction("markAsRead");
+        markAsRead.setType("entries");
+        markAsRead.setEntryIds(entryIDs);
+
+        final String jsonString = JSONObject.toJSONString(markAsRead);
+
+        org.json.JSONObject jsonObject = new org.json.JSONObject(jsonString);
+
+        //success listener
+        Response.Listener listener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "markAsRead onResponse: " + response);
+            }
+        };
+        //error listener
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, error.getMessage(), error);
+            }
+        };
+        //POST request
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.BASE_URL+"/v3/markers",
+                listener, errorListener) {
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                String str = jsonString;
+                return str.getBytes();
+            };
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
+                return headers;
+            }
+        };
+        VolleyController.getInstance(s_activity).addToRequestQueue(stringRequest);
+    }
+
+    private String getId(int position) {
+        return ((listId == null) ? null : listId.get(position));
     }
 
     private String getTitle(int position) {
@@ -443,29 +487,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }*/
 
-    private void tmpWrite(String fileName, String response) {
-        String currentUserDir = "data/data/com.cashzhang.ashley/files/";
-        File file = new File(currentUserDir, fileName);
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            fos.write(response.getBytes());
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     private void readFeedStreamFile() throws IOException {
         File file = new File("data/data/com.cashzhang.ashley/files/FeedStream");
@@ -486,6 +508,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         listItems = (ArrayList<FeedStreamItems>) feedStream.getItems();
         //TODO clear
         if (listItems != null) {
+            listId.clear();
             listTitle.clear();
             listData.clear();
             listContent.clear();
@@ -496,6 +519,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         for (FeedStreamItems listItem: listItems) {
             //listTitle, listData, listUrl , listContent, listTContent, listTime
+            listId.add(listItem.getId());
             listTitle.add(feedStream.getTitle());
             listData.add(listItem.getTitle());
             if (listItem.getContent() != null)
@@ -503,7 +527,8 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             else if (listItem.getSummary() != null)
                 listContent.add(listItem.getSummary().getContent());
             listTContent.add(ServiceUpdate.Patterns.CDATA.matcher(listItem.getSummary().getContent()).replaceAll("").trim());
-            listUrl.add(listItem.getAlternate().get(0).getHref());
+//            listUrl.add(listItem.getAlternate().get(0).getHref());
+            listUrl.add(listItem.getOriginId());
             listTime.add(longToString(listItem.getPublished(),"MM-dd HH:mm"));
         }
         listAdapter.refreshData(listTitle, listData, listTContent, listTime);

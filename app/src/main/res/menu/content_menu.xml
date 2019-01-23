@@ -4,6 +4,12 @@
     <group
         android:id="@+id/hide_while_navigation">
         <item
+            android:id="@+id/mercury"
+            android:icon="@mipmap/rss_icon"
+            android:title="@string/app_name"
+            app:showAsAction="ifRoom"
+            />
+        <item
             android:id="@+id/open_brower"
             android:icon="@mipmap/safari"
             android:title="@string/ic_action_add"
