@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#DCDCDC"
     android:orientation="vertical"
-    tools:context="com.cashzhang.ashley.MainActivity">
+    tools:context="com.cashzhang.nozdormu.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolBar"
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="ASHLEY"
+            android:text="nozdormu"
             android:textColor="@color/black"
             android:textSize="@dimen/title_center_textsize" />
     </android.support.v7.widget.Toolbar>
@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/container"
-        tools:context="com.cashzhang.ashley.MainActivity"
+        tools:context="MainActivity"
         >
 
     </FrameLayout>-->

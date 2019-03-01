@@ -1,4 +1,4 @@
-package com.cashzhang.ashley;
+package com.cashzhang.nozdormu;
 
 import org.junit.Test;
 

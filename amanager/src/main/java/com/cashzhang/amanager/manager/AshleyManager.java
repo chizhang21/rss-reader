@@ -1,4 +1,4 @@
 package com.cashzhang.amanager.manager;
 
-public class AshleyManager {
+public class nozdormuManager {
 }
