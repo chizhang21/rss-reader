@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="nozdormu"
+            android:text="NOZDORMU"
             android:textColor="@color/black"
             android:textSize="@dimen/title_center_textsize" />
     </android.support.v7.widget.Toolbar>

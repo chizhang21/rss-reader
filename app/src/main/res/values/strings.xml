@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">nozdormu Reader</string>
+    <string name="app_name">Nozdormu</string>
     <string name="ic_action_add">Add</string>
     <string name="ic_action_open">Open in Brower</string>
     <string name="ic_action_refresh">Refresh</string>
