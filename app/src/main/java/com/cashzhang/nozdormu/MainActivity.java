@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     FrogAdapter adapter;
     static Bundle bundle;
     public List<IndexItem> m_index;
-    public static final String CATEGS = "categs.txt";
     public static final String INDEX = "index.txt";
 
     LeftFragment leftFragment = LeftFragment.newInstance();
@@ -69,12 +68,12 @@ public class MainActivity extends AppCompatActivity {
         ab.setDisplayShowTitleEnabled(false);
 
         // Load the index from file.
-        ObjectIO indexReader = new ObjectIO(this, INDEX);
-        m_index = (List<IndexItem>) indexReader.read();
-
-        if (null == m_index) {
-            m_index = new ArrayList<IndexItem>();
-        }
+//        ObjectIO indexReader = new ObjectIO(this, INDEX);
+//        m_index = (List<IndexItem>) indexReader.read();
+//
+//        if (null == m_index) {
+//            m_index = new ArrayList<IndexItem>();
+//        }
 
         if (null == savedInstanceState) {
             s_fragmentManager.executePendingTransactions();

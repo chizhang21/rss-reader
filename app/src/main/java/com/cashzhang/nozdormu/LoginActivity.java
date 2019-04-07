@@ -9,20 +9,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
-import com.alibaba.fastjson.JSON;
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.cashzhang.nozdormu.bean.LoginBody;
 import com.cashzhang.nozdormu.bean.Token;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by cz21 on 2018/6/2.
@@ -47,6 +41,8 @@ public class LoginActivity extends Activity {
         String authUrl = intent.getStringExtra("authurl");
         final String tokenUrl = intent.getStringExtra("tokenurl");
         final String tokenParams = tokenUrl;
+        final FeedlyApi feedlyApi = ServiceGenerator.createService(FeedlyApi.class);
+
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient() {
@@ -63,12 +59,12 @@ public class LoginActivity extends Activity {
                         }
                     }
                     final String finalCode = code;
-                    //success listener
-                    Response.Listener listener = new Response.Listener<String>() {
+
+                    Call<Token> loginWithCode = feedlyApi.LoginWithCode(new LoginBody(finalCode));
+                    loginWithCode.enqueue(new Callback<Token>() {
                         @Override
-                        public void onResponse(String response) {
-                            Log.d(TAG, "onResponse: " + response);
-                            Token token = JSON.parseObject(response, Token.class);
+                        public void onResponse(Call<Token> call, Response<Token> response) {
+                            Token token = response.body();
                             Settings.setAccessToken(token.getAccess_token());
                             Settings.setRefreshToken(token.getRefresh_token());
 
@@ -76,30 +72,12 @@ public class LoginActivity extends Activity {
                             setResult(Activity.RESULT_OK, intent);
                             LoginActivity.this.finish();
                         }
-                    };
-                    //error listener
-                    Response.ErrorListener errorListener = new Response.ErrorListener() {
+
                         @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e(TAG, error.getMessage(), error);
+                        public void onFailure(Call<Token> call, Throwable t) {
+                            Log.e(TAG, t.getMessage());
                         }
-                    };
-                    //POST request
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, tokenParams,
-                            listener, errorListener) {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("Content-Type", "application/json");
-                            map.put("client_id", "feedly");
-                            map.put("client_secret", "0XP4XQ07VVMDWBKUHTJM4WUQ");
-                            map.put("grant_type", "authorization_code");
-                            map.put("redirect_uri", "https://cloud.feedly.com/feedly.html");
-                            map.put("code", finalCode);
-                            return map;
-                        }
-                    };
-                    VolleyController.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
+                    });
                 }
             }
         });
