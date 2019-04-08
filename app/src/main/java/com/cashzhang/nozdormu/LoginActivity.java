@@ -41,7 +41,7 @@ public class LoginActivity extends Activity {
         String authUrl = intent.getStringExtra("authurl");
         final String tokenUrl = intent.getStringExtra("tokenurl");
         final String tokenParams = tokenUrl;
-        final FeedlyApi feedlyApi = ServiceGenerator.createService(FeedlyApi.class);
+        final FeedlyApi feedlyApi = FeedlyRequest.getInstance();
 
 
         webView.getSettings().setJavaScriptEnabled(true);
@@ -60,7 +60,7 @@ public class LoginActivity extends Activity {
                     }
                     final String finalCode = code;
 
-                    Call<Token> loginWithCode = feedlyApi.LoginWithCode(new LoginBody(finalCode));
+                    Call<Token> loginWithCode = feedlyApi.loginWithCode(new LoginBody(finalCode));
                     loginWithCode.enqueue(new Callback<Token>() {
                         @Override
                         public void onResponse(Call<Token> call, Response<Token> response) {

@@ -13,23 +13,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
-import com.android.volley.AuthFailureError;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.cashzhang.nozdormu.FeedlyApi;
+import com.cashzhang.nozdormu.FeedlyRequest;
 import com.cashzhang.nozdormu.LoginActivity;
 import com.cashzhang.nozdormu.Constants;
 import com.cashzhang.nozdormu.R;
 import com.cashzhang.nozdormu.Settings;
-import com.cashzhang.nozdormu.VolleyController;
 import com.cashzhang.nozdormu.bean.Profile;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by cz21 on 2018/5/22.
@@ -98,43 +96,33 @@ public class LeftFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 404)
+        if (requestCode == 404) {
             if (resultCode == Activity.RESULT_OK) {
                 Log.d(TAG, "auth success");
                 accessToken = Settings.getAccessToken();
                 refreshToken = Settings.getRefreshToken();
             }
-        //success listener
-        final Response.Listener listener = new Response.Listener<String>() {
+        }
+        final FeedlyApi feedlyApi = FeedlyRequest.getInstance();
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json");
+        headers.put("X-Feedly-Access-Token", accessToken);
+        Call<Profile> getProfile = feedlyApi.getProfile(headers);
+        getProfile.enqueue(new Callback<Profile>() {
             @Override
-            public void onResponse(String response) {
-                Log.d(TAG, response);
-                Profile profile = JSON.parseObject(response, Profile.class);
+            public void onResponse(Call<Profile> call, Response<Profile> response) {
+                Profile profile = response.body();
                 Settings.setId(profile.getId());
                 Settings.setEmail(profile.getEmail());
                 Settings.setGivenName(profile.getGivenName());
                 leftText.setText(Settings.getEmail());
             }
-        };
-        //error listener
-        Response.ErrorListener errorListener = new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, error.getMessage(), error);
+            public void onFailure(Call<Profile> call, Throwable t) {
+                Log.e(TAG, t.getMessage());
             }
-        };
-        //GET request
-        StringRequest stringRequest = new StringRequest(Constants.BASE_URL + Constants.PROFILE,
-                listener, errorListener) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
-                headers.put("X-Feedly-Access-Token", accessToken);
-                return headers;
-            }
-        };
-        VolleyController.getInstance(Constants.s_activity).addToRequestQueue(stringRequest);
+        });
         super.onActivityResult(requestCode, resultCode, data);
     }
 

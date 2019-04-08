@@ -34,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
     List<Fragment> fragments;
     FrogAdapter adapter;
     static Bundle bundle;
-    public List<IndexItem> m_index;
-    public static final String INDEX = "index.txt";
+//    public List<IndexItem> m_index;
+//    public static final String INDEX = "index.txt";
 
     LeftFragment leftFragment = LeftFragment.newInstance();
     CategsFragment categsFragment = CategsFragment.newInstance();
