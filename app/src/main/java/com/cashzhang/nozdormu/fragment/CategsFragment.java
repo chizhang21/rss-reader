@@ -24,6 +24,8 @@ import android.widget.ListView;
 
 import com.cashzhang.nozdormu.Constants;
 import com.cashzhang.nozdormu.DialogEditFeed;
+import com.cashzhang.nozdormu.FeedlyApi;
+import com.cashzhang.nozdormu.FeedlyRequest;
 import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.R;
 import com.cashzhang.nozdormu.Settings;
@@ -32,6 +34,9 @@ import com.cashzhang.nozdormu.adapter.FrogAdapter;
 import com.cashzhang.nozdormu.bean.Categ;
 import com.cashzhang.nozdormu.bean.CategItem;
 import com.cashzhang.nozdormu.service.SyncCatesListService;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,10 +49,14 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.cashzhang.nozdormu.Constants.s_activity;
 
@@ -141,18 +150,18 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
 //        inflater.inflate(R.menu.feeds_menu, menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_feed:
-                MainActivity activity = (MainActivity) getActivity();
-                Dialog dialog = DialogEditFeed.newInstance(activity, -1);
-                dialog.show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.add_feed:
+//                MainActivity activity = (MainActivity) getActivity();
+//                Dialog dialog = DialogEditFeed.newInstance(activity, -1);
+//                dialog.show();
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -247,6 +256,30 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public void getSubs() {
         //TODO delete categ item file
         deleteCategItemFile();
+
+        FeedlyApi feedlyApi = FeedlyRequest.getInstance();
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/json");
+        headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
+
+        Call<List<CategItem>> call = feedlyApi.getSubs(headers);
+        call.enqueue(new Callback<List<CategItem>>() {
+            @Override
+            public void onResponse(Call<List<CategItem>> call, Response<List<CategItem>> response) {
+                List<CategItem> categItemsList = response.body();
+                for (CategItem categItem : categItemsList) {
+                    for (Categ categ : categItem.getCategories()) {
+                        writeEachCategItemToFile(categ.getLabel() + ".cif", JSON.toJSONString(categItem) + ",");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<CategItem>> call, Throwable t) {
+
+            }
+        });
+
         RequestQueue mQueue = Volley.newRequestQueue(Constants.s_activity);
         //success listener
         final Response.Listener listener = new Response.Listener<String>() {
