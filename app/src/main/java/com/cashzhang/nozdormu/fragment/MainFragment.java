@@ -38,7 +38,6 @@ import com.cashzhang.nozdormu.DialogEditFeed;
 import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.R;
 import com.cashzhang.nozdormu.Settings;
-import com.cashzhang.nozdormu.VolleyController;
 import com.cashzhang.nozdormu.adapter.FrogAdapter;
 import com.cashzhang.nozdormu.adapter.LListAdapter;
 import com.cashzhang.nozdormu.bean.FeedStream;

@@ -21,15 +21,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
-import com.android.volley.AuthFailureError;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.cashzhang.nozdormu.Constants;
 import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.R;
-import com.cashzhang.nozdormu.VolleyController;
 import com.cashzhang.nozdormu.bean.Mercury;
 
 import java.io.InputStream;
