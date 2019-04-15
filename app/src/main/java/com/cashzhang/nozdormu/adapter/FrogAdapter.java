@@ -1,9 +1,5 @@
 package com.cashzhang.nozdormu.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
 import com.cashzhang.nozdormu.fragment.CategsFragment;
@@ -13,6 +9,11 @@ import com.cashzhang.nozdormu.fragment.MainFragment;
 import com.cashzhang.nozdormu.fragment.SecCategsFragment;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 /**
  * Created by cz21 on 2018/5/23.

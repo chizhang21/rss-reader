@@ -13,9 +13,8 @@
         android:icon="@mipmap/rss_icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        tools:replace="android:appComponentFactory"
-
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
         <activity android:name=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -31,11 +30,11 @@
         <service
             android:name=".service.ServiceUpdate"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
         <service
             android:name=".service.SyncCatesListService"
         android:enabled="true"
-        android:exported="true"></service>
+        android:exported="true"/>
     </application>
 
 </manifest>

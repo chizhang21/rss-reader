@@ -1,8 +1,6 @@
 package com.cashzhang.nozdormu;
 
 import android.content.res.Resources;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ListView;
 import com.cashzhang.nozdormu.fragment.CategsFragment;
 import com.cashzhang.nozdormu.fragment.MainFragment;
@@ -18,6 +16,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
 /**

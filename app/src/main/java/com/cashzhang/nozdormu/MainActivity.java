@@ -1,13 +1,8 @@
 package com.cashzhang.nozdormu;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 
+import android.os.Bundle;
+import android.view.KeyEvent;
 import com.cashzhang.nozdormu.adapter.FrogAdapter;
 import com.cashzhang.nozdormu.fragment.CategsFragment;
 import com.cashzhang.nozdormu.fragment.ContentFragment;
@@ -18,6 +13,11 @@ import com.cashzhang.nozdormu.fragment.SecCategsFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -31,6 +31,7 @@ import static com.cashzhang.nozdormu.Constants.saveInitialConstants;
 public class MainActivity extends AppCompatActivity {
 
     public FragmentSwitch fragmentSwitch;
+    ThreadLocal ad ;
     List<Fragment> fragments;
     FrogAdapter adapter;
     static Bundle bundle;
@@ -43,8 +44,10 @@ public class MainActivity extends AppCompatActivity {
     MainFragment mainFragment = MainFragment.newInstance();
     ContentFragment contentFragment = ContentFragment.newInstance();
 
-    @BindView(R.id.toolBar) Toolbar myToolbar;
-    @BindView(R.id.viewpager) ViewPager vp;
+    @BindView(R.id.toolBar)
+    Toolbar myToolbar;
+    @BindView(R.id.viewpager)
+    ViewPager vp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
