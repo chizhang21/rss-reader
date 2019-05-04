@@ -31,12 +31,9 @@ import static com.cashzhang.nozdormu.Constants.saveInitialConstants;
 public class MainActivity extends AppCompatActivity {
 
     public FragmentSwitch fragmentSwitch;
-    ThreadLocal ad ;
     List<Fragment> fragments;
     FrogAdapter adapter;
     static Bundle bundle;
-//    public List<IndexItem> m_index;
-//    public static final String INDEX = "index.txt";
 
     LeftFragment leftFragment = LeftFragment.newInstance();
     CategsFragment categsFragment = CategsFragment.newInstance();
@@ -62,21 +59,12 @@ public class MainActivity extends AppCompatActivity {
         fragments.add(secCategsFragment);
         fragments.add(mainFragment);
         fragments.add(contentFragment);
-
         adapter = new FrogAdapter(getSupportFragmentManager(), fragments);
         vp.setAdapter(adapter);
 
         setSupportActionBar(myToolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayShowTitleEnabled(false);
-
-        // Load the index from file.
-//        ObjectIO indexReader = new ObjectIO(this, INDEX);
-//        m_index = (List<IndexItem>) indexReader.read();
-//
-//        if (null == m_index) {
-//            m_index = new ArrayList<IndexItem>();
-//        }
 
         if (null == savedInstanceState) {
             s_fragmentManager.executePendingTransactions();
