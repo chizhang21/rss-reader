@@ -19,7 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.cashzhang.nozdormu.Constants;
-import com.cashzhang.nozdormu.DialogEditFeed;
+//import com.cashzhang.nozdormu.DialogEditFeed;
 import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.R;
 import com.cashzhang.nozdormu.Settings;
@@ -166,7 +166,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 //        inflater.inflate(R.menu.feeds_menu, menu);
     }
 
-    @Override
+   /* @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_feed:
@@ -177,7 +177,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
+    }*/
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -219,7 +219,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             if (feedId != null) {
                 Log.d(TAG, "MainFragment loadData: " + feedId);
 //            readFromFile(label+".cif");
-                getFeedStreamById(feedId);
+//                getFeedStreamById(feedId);
             } else {
                 Log.d(TAG, "loadData: feedId == null, ready read from file");
                 readFeedStreamFile();
@@ -231,42 +231,42 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     }
 
-    private void getFeedStreamById(final String feedId) {
-        RequestQueue mQueue = Volley.newRequestQueue(Constants.s_activity);
-        //success listener
-        final Response.Listener listener = new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Constants.tmpWrite("FeedStream", response);
-                //TODO parse for each feed item
-                parseFeedStream(response);
-            }
-        };
-        //error listener
-        Response.ErrorListener errorListener = new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, error.getMessage(), error);
-            }
-        };
-        String input = "";
-        try {
-            input = Constants.BASE_URL + "/v3/streams/contents?streamId=" + URLEncoder.encode(feedId, "UTF-8") + "&unreadOnly=true";
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        //GET request
-        StringRequest stringRequest = new StringRequest(input,
-                listener, errorListener) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
-                return headers;
-            }
-        };
-        mQueue.add(stringRequest);
-    }
+//    private void getFeedStreamById(final String feedId) {
+//        RequestQueue mQueue = Volley.newRequestQueue(Constants.s_activity);
+//        //success listener
+//        final Response.Listener listener = new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                Constants.tmpWrite("FeedStream", response);
+//                //TODO parse for each feed item
+//                parseFeedStream(response);
+//            }
+//        };
+//        //error listener
+//        Response.ErrorListener errorListener = new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.e(TAG, error.getMessage(), error);
+//            }
+//        };
+//        String input = "";
+//        try {
+//            input = Constants.BASE_URL + "/v3/streams/contents?streamId=" + URLEncoder.encode(feedId, "UTF-8") + "&unreadOnly=true";
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+//        //GET request
+//        StringRequest stringRequest = new StringRequest(input,
+//                listener, errorListener) {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
+//                return headers;
+//            }
+//        };
+//        mQueue.add(stringRequest);
+//    }
 
     public void onRefresh() {
         Log.d(TAG, "onRefresh: main fragment");
@@ -305,63 +305,63 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         contentFragment.setArguments(bundle);
 
         final MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
-            @Override
-            public void gotoFragment(ViewPager viewPager, FrogAdapter adapter) {
-                mainActivity.setBundle(bundle);
-                viewPager.setCurrentItem(4);
-            }
-        });
+//        mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
+//            @Override
+//            public void gotoFragment(ViewPager viewPager, FrogAdapter adapter) {
+//                mainActivity.setBundle(bundle);
+//                viewPager.setCurrentItem(4);
+//            }
+//        });
         mainActivity.forSkip();
-        markAsRead(getId(position));
+//        markAsRead(getId(position));
     }
 
-    private void markAsRead(final String id) throws JSONException {
-        Log.d(TAG, "markAsRead: id="+id);
-
-        entryIDs.add(id);
-        markAsRead.setAction("markAsRead");
-        markAsRead.setType("entries");
-        markAsRead.setEntryIds(entryIDs);
-
-        final String jsonString = JSONObject.toJSONString(markAsRead);
-
-        org.json.JSONObject jsonObject = new org.json.JSONObject(jsonString);
-
-        //success listener
-        Response.Listener listener = new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "markAsRead onResponse: " + response);
-            }
-        };
-        //error listener
-        Response.ErrorListener errorListener = new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, error.getMessage(), error);
-            }
-        };
-        //POST request
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.BASE_URL+"/v3/markers",
-                listener, errorListener) {
-
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                String str = jsonString;
-                return str.getBytes();
-            };
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
-                headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
-                return headers;
-            }
-        };
-        VolleyController.getInstance(s_activity).addToRequestQueue(stringRequest);
-    }
+//    private void markAsRead(final String id) throws JSONException {
+//        Log.d(TAG, "markAsRead: id="+id);
+//
+//        entryIDs.add(id);
+//        markAsRead.setAction("markAsRead");
+//        markAsRead.setType("entries");
+//        markAsRead.setEntryIds(entryIDs);
+//
+//        final String jsonString = JSONObject.toJSONString(markAsRead);
+//
+//        org.json.JSONObject jsonObject = new org.json.JSONObject(jsonString);
+//
+//        //success listener
+//        Response.Listener listener = new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                Log.d(TAG, "markAsRead onResponse: " + response);
+//            }
+//        };
+//        //error listener
+//        Response.ErrorListener errorListener = new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.e(TAG, error.getMessage(), error);
+//            }
+//        };
+//        //POST request
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.BASE_URL+"/v3/markers",
+//                listener, errorListener) {
+//
+//            @Override
+//            public byte[] getBody() throws AuthFailureError {
+//                String str = jsonString;
+//                return str.getBytes();
+//            };
+//
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Content-Type", "application/json");
+//                headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
+//                return headers;
+//            }
+//        };
+//        VolleyController.getInstance(s_activity).addToRequestQueue(stringRequest);
+//    }
 
     private String getId(int position) {
         return ((listId == null) ? null : listId.get(position));
@@ -486,43 +486,43 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             is.read(b);
             String response = new String(b);
             if (!response.equals("")) {
-                parseFeedStream(response);
+//                parseFeedStream(response);
             }
         }
     }
 
 
-    private void parseFeedStream(String response) {
-        FeedStream feedStream = JSON.parseObject(response, FeedStream.class);
-        listItems = (ArrayList<FeedStreamItems>) feedStream.getItems();
-        //TODO clear
-        if (listItems != null) {
-            listId.clear();
-            listTitle.clear();
-            listData.clear();
-            listContent.clear();
-            listTContent.clear();
-            listUrl.clear();
-            listTime.clear();
-        }
-
-        for (FeedStreamItems listItem: listItems) {
-            //listTitle, listData, listUrl , listContent, listTContent, listTime
-            listId.add(listItem.getId());
-            listTitle.add(feedStream.getTitle());
-            listData.add(listItem.getTitle());
-            if (listItem.getContent() != null)
-                listContent.add(listItem.getContent().getContent());
-            else if (listItem.getSummary() != null)
-                listContent.add(listItem.getSummary().getContent());
-            listTContent.add(ServiceUpdate.Patterns.CDATA.matcher(listItem.getSummary().getContent()).replaceAll("").trim());
-//            listUrl.add(listItem.getAlternate().get(0).getHref());
-            listUrl.add(listItem.getOriginId());
-            listTime.add(longToString(listItem.getPublished(),"MM-dd HH:mm"));
-        }
-        listAdapter.refreshData(listTitle, listData, listTContent, listTime);
-        mSwipeLayout.setRefreshing(false);
-    }
+//    private void parseFeedStream(String response) {
+//        FeedStream feedStream = JSON.parseObject(response, FeedStream.class);
+//        listItems = (ArrayList<FeedStreamItems>) feedStream.getItems();
+//        //TODO clear
+//        if (listItems != null) {
+//            listId.clear();
+//            listTitle.clear();
+//            listData.clear();
+//            listContent.clear();
+//            listTContent.clear();
+//            listUrl.clear();
+//            listTime.clear();
+//        }
+//
+//        for (FeedStreamItems listItem: listItems) {
+//            //listTitle, listData, listUrl , listContent, listTContent, listTime
+//            listId.add(listItem.getId());
+//            listTitle.add(feedStream.getTitle());
+//            listData.add(listItem.getTitle());
+//            if (listItem.getContent() != null)
+//                listContent.add(listItem.getContent().getContent());
+//            else if (listItem.getSummary() != null)
+//                listContent.add(listItem.getSummary().getContent());
+//            listTContent.add(ServiceUpdate.Patterns.CDATA.matcher(listItem.getSummary().getContent()).replaceAll("").trim());
+////            listUrl.add(listItem.getAlternate().get(0).getHref());
+//            listUrl.add(listItem.getOriginId());
+//            listTime.add(longToString(listItem.getPublished(),"MM-dd HH:mm"));
+//        }
+//        listAdapter.refreshData(listTitle, listData, listTContent, listTime);
+//        mSwipeLayout.setRefreshing(false);
+//    }
 
 }
 

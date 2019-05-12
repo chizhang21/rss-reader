@@ -3,7 +3,6 @@ package com.cashzhang.nozdormu;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,6 +13,9 @@ import com.cashzhang.nozdormu.bean.Token;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -24,13 +26,13 @@ import retrofit2.Response;
 
 public class LoginActivity extends Activity {
 
-    private final static String TAG = "nozdormu";
+    private final static String TAG = LoginActivity.class.getSimpleName();
 
     @BindView(R.id.WebView)
     WebView webView;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -60,24 +62,38 @@ public class LoginActivity extends Activity {
                     }
                     final String finalCode = code;
 
-                    Call<Token> loginWithCode = feedlyApi.loginWithCode(new LoginBody(finalCode));
-                    loginWithCode.enqueue(new Callback<Token>() {
-                        @Override
-                        public void onResponse(Call<Token> call, Response<Token> response) {
-                            Token token = response.body();
-                            Settings.setAccessToken(token.getAccess_token());
-                            Settings.setRefreshToken(token.getRefresh_token());
+//                    Call<Token> loginWithCode = feedlyApi.loginWithCode(new LoginBody(finalCode));
 
-                            Intent intent = new Intent();
-                            setResult(Activity.RESULT_OK, intent);
-                            LoginActivity.this.finish();
-                        }
+                    feedlyApi.loginWithCode(new LoginBody(finalCode))
+                            .observeOn(Schedulers.io())
+                            .subscribeOn(Schedulers.single())
+                            .subscribe(new Observer<Token>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+                                    Log.d(TAG, "onSubscribe: ");
+                                }
 
-                        @Override
-                        public void onFailure(Call<Token> call, Throwable t) {
-                            Log.e(TAG, t.getMessage());
-                        }
-                    });
+                                @Override
+                                public void onNext(Token token) {
+                                    Log.d(TAG, "onNext: ");
+                                    Settings.setAccessToken(token.getAccess_token());
+                                    Settings.setRefreshToken(token.getRefresh_token());
+
+                                    Intent intent = new Intent();
+                                    setResult(Activity.RESULT_OK, intent);
+                                    LoginActivity.this.finish();
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    Log.d(TAG, "onError: ");
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    Log.d(TAG, "onComplete: ");
+                                }
+                            });
                 }
             }
         });

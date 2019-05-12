@@ -174,7 +174,7 @@ public class ContentFragment extends Fragment {
                 return true;
             case R.id.mercury:
                 Log.d(TAG, "origin ID="+url);
-                mercuryHttp();
+//                mercuryHttp();
                 return true;
             case android.R.id.home:
                 getActivity().onBackPressed();
@@ -182,80 +182,80 @@ public class ContentFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-    private void mercuryHttp() {
-        //success listener
-        final Response.Listener listener = new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, response);
-                final Mercury mercury = JSON.parseObject(response, Mercury.class);
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        final Spanned sp = Html.fromHtml(mercury.getContent(), new Html.ImageGetter() {
-                            @Override
-                            public Drawable getDrawable(String source) {
-                                InputStream is = null;
-                                try {
-                                    is = (InputStream) new URL(source).getContent();
-
-                                    Drawable d = Drawable.createFromStream(is, "src");
-                                    if (d == null)
-                                        d = Drawable.createFromStream(is, "href");
-                                    DisplayMetrics dm = getActivity().getResources().getDisplayMetrics();
-                                    int dwidth = dm.widthPixels - 50;
-
-                                    float dheight = (float) d.getIntrinsicHeight() * (float) dwidth / (float) d.getIntrinsicWidth();
-                                    int dh = (int) (dheight - 0.5);
-                                    int wid = dwidth;
-                                    int hei = dh;
-                                    //fix blank line bewteen text and image
-                                    int radio = (int) (hei * 0.25);
-                                    d.setBounds(0, 0 - radio, wid, hei - radio);
-
-                                    is.close();
-                                    return d;
-                                } catch (Exception e) {
-                                    return null;
-                                }
-                            }
-                        }, null);
-                        try {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mContent.setText(sp);
-                                    mContent.setMovementMethod(LinkMovementMethod.getInstance());
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
-
-            }
-        };
-        //error listener
-        Response.ErrorListener errorListener = new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, error.getMessage(), error);
-            }
-        };
-        //GET request
-        StringRequest stringRequest = new StringRequest("https://mercury.postlight.com/parser?url="+url,
-                listener, errorListener) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
-                headers.put("x-api-key", "d465HuY2EIvXwPiFSFbrauq6iBBCLnT9hje40yPi");
-                return headers;
-            }
-        };
-        VolleyController.getInstance(Constants.s_activity).addToRequestQueue(stringRequest);
-    }
+//    private void mercuryHttp() {
+//        //success listener
+//        final Response.Listener listener = new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                Log.d(TAG, response);
+//                final Mercury mercury = JSON.parseObject(response, Mercury.class);
+//
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        final Spanned sp = Html.fromHtml(mercury.getContent(), new Html.ImageGetter() {
+//                            @Override
+//                            public Drawable getDrawable(String source) {
+//                                InputStream is = null;
+//                                try {
+//                                    is = (InputStream) new URL(source).getContent();
+//
+//                                    Drawable d = Drawable.createFromStream(is, "src");
+//                                    if (d == null)
+//                                        d = Drawable.createFromStream(is, "href");
+//                                    DisplayMetrics dm = getActivity().getResources().getDisplayMetrics();
+//                                    int dwidth = dm.widthPixels - 50;
+//
+//                                    float dheight = (float) d.getIntrinsicHeight() * (float) dwidth / (float) d.getIntrinsicWidth();
+//                                    int dh = (int) (dheight - 0.5);
+//                                    int wid = dwidth;
+//                                    int hei = dh;
+//                                    //fix blank line bewteen text and image
+//                                    int radio = (int) (hei * 0.25);
+//                                    d.setBounds(0, 0 - radio, wid, hei - radio);
+//
+//                                    is.close();
+//                                    return d;
+//                                } catch (Exception e) {
+//                                    return null;
+//                                }
+//                            }
+//                        }, null);
+//                        try {
+//                            getActivity().runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    mContent.setText(sp);
+//                                    mContent.setMovementMethod(LinkMovementMethod.getInstance());
+//                                }
+//                            });
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }).start();
+//
+//            }
+//        };
+//        //error listener
+//        Response.ErrorListener errorListener = new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.e(TAG, error.getMessage(), error);
+//            }
+//        };
+//        //GET request
+//        StringRequest stringRequest = new StringRequest("https://mercury.postlight.com/parser?url="+url,
+//                listener, errorListener) {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Content-Type", "application/json");
+//                headers.put("x-api-key", "d465HuY2EIvXwPiFSFbrauq6iBBCLnT9hje40yPi");
+//                return headers;
+//            }
+//        };
+//        VolleyController.getInstance(Constants.s_activity).addToRequestQueue(stringRequest);
+//    }
 }
 

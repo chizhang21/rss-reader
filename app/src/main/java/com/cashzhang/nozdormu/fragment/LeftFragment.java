@@ -25,6 +25,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,7 +38,7 @@ import retrofit2.Response;
 
 public class LeftFragment extends Fragment {
 
-    private final static String TAG = "nozdormu";
+    private final static String TAG = LeftFragment.class.getSimpleName();
 
     private static String accessToken = null;
     private static String refreshToken = null;
@@ -107,22 +110,39 @@ public class LeftFragment extends Fragment {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
         headers.put("X-Feedly-Access-Token", accessToken);
-        Call<Profile> getProfile = feedlyApi.getProfile(headers);
-        getProfile.enqueue(new Callback<Profile>() {
-            @Override
-            public void onResponse(Call<Profile> call, Response<Profile> response) {
-                Profile profile = response.body();
-                Settings.setId(profile.getId());
-                Settings.setEmail(profile.getEmail());
-                Settings.setGivenName(profile.getGivenName());
-                leftText.setText(Settings.getEmail());
-            }
+//        Call<Profile> getProfile = feedlyApi.getProfile(headers);
 
-            @Override
-            public void onFailure(Call<Profile> call, Throwable t) {
-                Log.e(TAG, t.getMessage());
-            }
-        });
+        feedlyApi.getProfile(headers)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.single())
+                .subscribe(new Observer<Profile>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(TAG, "onSubscribe: ");
+                    }
+
+                    @Override
+                    public void onNext(Profile profile) {
+                        Log.d(TAG, "onNext: ");
+                        Log.d(TAG, "onNext: profile.id = " + profile.getId());
+                        Log.d(TAG, "onNext: profile.email = " + profile.getEmail());
+                        Log.d(TAG, "onNext: profile.FamilyName = Mr./Ms. " + profile.getFamilyName());
+                        Settings.setId(profile.getId());
+                        Settings.setEmail(profile.getEmail());
+                        Settings.setGivenName(profile.getGivenName());
+                        leftText.setText(Settings.getEmail());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, "onError: " + e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete: ");
+                    }
+                });
         super.onActivityResult(requestCode, resultCode, data);
     }
 

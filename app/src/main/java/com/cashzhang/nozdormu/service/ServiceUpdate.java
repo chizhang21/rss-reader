@@ -2,7 +2,6 @@ package com.cashzhang.nozdormu.service;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.text.format.Time;
 import android.util.Log;
 
@@ -54,9 +53,9 @@ public class ServiceUpdate extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
+    protected void onHandleIntent(Intent intent) {
         Log.d(TAG, "onHandleIntent: service update");
-        ObjectIO reader = new ObjectIO(this, MainActivity.INDEX);
+        /*ObjectIO reader = new ObjectIO(this, MainActivity.INDEX);
         Iterable<IndexItem> indexItems = (Iterable<IndexItem>) reader.read();
 
         if (indexItems != null) {
@@ -74,7 +73,7 @@ public class ServiceUpdate extends IntentService {
 
         Intent broadcast = new Intent(FEED_BROADCAST_ACTION);
         sendBroadcast(broadcast);
-        stopSelf();
+        stopSelf();*/
     }
 
     private void parseFeed(CharSequence urlString, long uid) throws XmlPullParserException, IOException {

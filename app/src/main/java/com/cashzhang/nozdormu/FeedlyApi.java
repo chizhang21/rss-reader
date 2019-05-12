@@ -8,24 +8,22 @@ import com.cashzhang.nozdormu.bean.Token;
 import java.util.List;
 import java.util.Map;
 
-import retrofit2.Call;
+import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 public interface FeedlyApi {
 
     @POST("/v3/auth/token")
-    Call<Token> loginWithCode(@Body LoginBody loginBody);
+    Observable<Token> loginWithCode(@Body LoginBody loginBody);
 
     @GET("/v3/profile")
-    Call<Profile> getProfile(@HeaderMap Map<String, String> headers);
+    Observable<Profile> getProfile(@HeaderMap Map<String, String> headers);
 
     @GET("/v3/subscriptions")
-    Call<List<CategItem>> getSubs(@HeaderMap Map<String, String> headers);
+    Observable<List<CategItem>> getSubs(@HeaderMap Map<String, String> headers);
 
 
 }

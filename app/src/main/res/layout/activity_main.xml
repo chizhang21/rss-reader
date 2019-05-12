@@ -9,7 +9,7 @@
     android:orientation="vertical"
     tools:context="com.cashzhang.nozdormu.MainActivity">
 
-    <android.support.v7.widget.Toolbar
+    <Toolbar
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -26,10 +26,10 @@
             android:text="NOZDORMU"
             android:textColor="@color/black"
             android:textSize="@dimen/title_center_textsize" />
-    </android.support.v7.widget.Toolbar>
+    </Toolbar>
 
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

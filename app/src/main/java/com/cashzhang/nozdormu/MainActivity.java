@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
     SecCategsFragment secCategsFragment = SecCategsFragment.newInstance();
     MainFragment mainFragment = MainFragment.newInstance();
     ContentFragment contentFragment = ContentFragment.newInstance();
-
-    @BindView(R.id.toolBar)
-    Toolbar myToolbar;
+//
+//    @BindView(R.id.toolBar)
+//    Toolbar myToolbar;
     @BindView(R.id.viewpager)
     ViewPager vp;
 
@@ -61,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
         fragments.add(contentFragment);
         adapter = new FrogAdapter(getSupportFragmentManager(), fragments);
         vp.setAdapter(adapter);
-
-        setSupportActionBar(myToolbar);
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayShowTitleEnabled(false);
+//
+//        setSupportActionBar(myToolbar);
+//        ActionBar ab = getSupportActionBar();
+//        ab.setDisplayShowTitleEnabled(false);
 
         if (null == savedInstanceState) {
             s_fragmentManager.executePendingTransactions();

@@ -1,8 +1,11 @@
+/*
 package com.cashzhang.nozdormu;
 
+*/
 /**
  * Created by cz21 on 2018/2/7.
- */
+ *//*
+
 
 import android.app.Dialog;
 import android.content.Context;
@@ -128,20 +131,28 @@ class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
         Locale locale = Locale.getDefault();
         String lowerTags = inputTags.toLowerCase(locale);
 
-      /* + 10 in case the user did not put spaces after the commas. */
+      */
+/* + 10 in case the user did not put spaces after the commas. *//*
+
         StringBuilder tagBuilder = new StringBuilder(lowerTags.length());
         String[] tags = SPLIT_COMMA.split(lowerTags);
 
-      /* For each tag. */
+      */
+/* For each tag. *//*
+
         for (String tag : tags) {
             String tagTrimmed = tag.trim();
             if (!tagTrimmed.isEmpty()) {
                 tagBuilder.setLength(0);
 
-            /* In case the tag is multiple words. */
+            */
+/* In case the tag is multiple words. *//*
+
                 String[] words = SPLIT_SPACE.split(tag);
 
-            /* The input tag is all lowercase. */
+            */
+/* The input tag is all lowercase. *//*
+
                 for (String word : words) {
                     if (!word.isEmpty()) {
                         char firstLetter = word.charAt(0);
@@ -154,7 +165,9 @@ class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
                         tagBuilder.append(' ');
                     }
                 }
-            /* Delete the last space. */
+            */
+/* Delete the last space. *//*
+
                 int builderLength = tagBuilder.length();
                 tagBuilder.deleteCharAt(builderLength - 1);
 
@@ -180,7 +193,9 @@ class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
             Toast toast = Toast.makeText(context, R.string.toast_invalid_feed, Toast.LENGTH_SHORT);
             toast.show();
         } else {
-         /* Create the csv. */
+         */
+/* Create the csv. *//*
+
             int oldPos = m_activity.m_index.indexOf(m_oldIndexItem);
             Log.d(TAG, "onPostExecute: oldPos = " + oldPos);
             if (-1 == oldPos) {
@@ -200,3 +215,4 @@ class AsyncCheckFeed extends AsyncTask<Void, Void, IndexItem> {
         }
     }
 }
+*/

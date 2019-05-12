@@ -18,7 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.cashzhang.nozdormu.Constants;
-import com.cashzhang.nozdormu.DialogEditFeed;
+//import com.cashzhang.nozdormu.DialogEditFeed;
 import com.cashzhang.nozdormu.FeedlyApi;
 import com.cashzhang.nozdormu.FeedlyRequest;
 import com.cashzhang.nozdormu.MainActivity;
@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
@@ -86,7 +87,7 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 Log.d(TAG, "onReceive: categs fragment");
                 try {
                     readFromFile();
-                    getSubs();
+//                    getSubs();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
@@ -204,13 +205,13 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
         secCategsFragment.setArguments(bundle);
 
         final MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
+        /*mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
             @Override
             public void gotoFragment(ViewPager viewPager, FrogAdapter adapter) {
                 mainActivity.setBundle(bundle);
                 viewPager.setCurrentItem(2);
             }
-        });
+        });*/
         mainActivity.forSkip();
 
     }
@@ -239,85 +240,85 @@ public class CategsFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 if (listId != null)
                     listId.clear();
 
-                JSONArray jsonArray = JSONArray.parseArray(response);
+                /*JSONArray jsonArray = JSONArray.parseArray(response);
                 for (Iterator iterator = jsonArray.iterator(); iterator.hasNext(); ) {
                     JSONObject jsonObject = (JSONObject) iterator.next();
                     listId.add(jsonObject.get("id").toString());
                     listLabel.add(jsonObject.get("label").toString());
-                }
+                }*/
                 listAdapter.refreshData(listLabel);
             }
         }
         mSwipeLayout.setRefreshing(false);
     }
 
-    public void getSubs() {
-        //TODO delete categ item file
-        deleteCategItemFile();
-
-        FeedlyApi feedlyApi = FeedlyRequest.getInstance();
-        HashMap<String, String> headers = new HashMap<String, String>();
-        headers.put("Content-Type", "application/json");
-        headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
-
-        Call<List<CategItem>> call = feedlyApi.getSubs(headers);
-        call.enqueue(new Callback<List<CategItem>>() {
-            @Override
-            public void onResponse(Call<List<CategItem>> call, Response<List<CategItem>> response) {
-                List<CategItem> categItemsList = response.body();
-                for (CategItem categItem : categItemsList) {
-                    for (Categ categ : categItem.getCategories()) {
-                        writeEachCategItemToFile(categ.getLabel() + ".cif", JSON.toJSONString(categItem) + ",");
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<CategItem>> call, Throwable t) {
-
-            }
-        });
-
-        RequestQueue mQueue = Volley.newRequestQueue(Constants.s_activity);
-        //success listener
-        final Response.Listener listener = new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                JSONArray jsonArray = JSONArray.parseArray(response);
-                for (Iterator iterator = jsonArray.iterator(); iterator.hasNext(); ) {
-                    JSONObject jsonObject = (JSONObject) iterator.next();
-                    CategItem categItem = JSONObject.toJavaObject(jsonObject, CategItem.class);
-                    for (Categ categ : categItem.getCategories()) {
-                        writeEachCategItemToFile(categ.getLabel() + ".cif", JSON.toJSONString(categItem) + ",");
-                    }
-                }
-                try {
-                    modifyEachFile(listLabel);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        //error listener
-        Response.ErrorListener errorListener = new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, error.getMessage(), error);
-            }
-        };
-        //GET request
-        StringRequest stringRequest = new StringRequest(Constants.BASE_URL + Constants.SUBSCRIPTIONS,
-                listener, errorListener) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
-                headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
-                return headers;
-            }
-        };
-        mQueue.add(stringRequest);
-    }
+//    public void getSubs() {
+//        //TODO delete categ item file
+//        deleteCategItemFile();
+//
+//        FeedlyApi feedlyApi = FeedlyRequest.getInstance();
+//        HashMap<String, String> headers = new HashMap<String, String>();
+//        headers.put("Content-Type", "application/json");
+//        headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
+//
+//        Call<List<CategItem>> call = feedlyApi.getSubs(headers);
+//        call.enqueue(new Callback<List<CategItem>>() {
+//            @Override
+//            public void onResponse(Call<List<CategItem>> call, Response<List<CategItem>> response) {
+//                List<CategItem> categItemsList = response.body();
+//                for (CategItem categItem : categItemsList) {
+//                    for (Categ categ : categItem.getCategories()) {
+//                        writeEachCategItemToFile(categ.getLabel() + ".cif", JSON.toJSONString(categItem) + ",");
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<CategItem>> call, Throwable t) {
+//
+//            }
+//        });
+//
+//        RequestQueue mQueue = Volley.newRequestQueue(Constants.s_activity);
+//        //success listener
+//        final Response.Listener listener = new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                JSONArray jsonArray = JSONArray.parseArray(response);
+//                for (Iterator iterator = jsonArray.iterator(); iterator.hasNext(); ) {
+//                    JSONObject jsonObject = (JSONObject) iterator.next();
+//                    CategItem categItem = JSONObject.toJavaObject(jsonObject, CategItem.class);
+//                    for (Categ categ : categItem.getCategories()) {
+//                        writeEachCategItemToFile(categ.getLabel() + ".cif", JSON.toJSONString(categItem) + ",");
+//                    }
+//                }
+//                try {
+//                    modifyEachFile(listLabel);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+//        //error listener
+//        Response.ErrorListener errorListener = new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.e(TAG, error.getMessage(), error);
+//            }
+//        };
+//        //GET request
+//        StringRequest stringRequest = new StringRequest(Constants.BASE_URL + Constants.SUBSCRIPTIONS,
+//                listener, errorListener) {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Content-Type", "application/json");
+//                headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
+//                return headers;
+//            }
+//        };
+//        mQueue.add(stringRequest);
+//    }
 
     private void writeEachCategItemToFile(String fileName, String categItemJson) {
         String currentUserDir = "data/data/com.cashzhang.nozdormu/files/";

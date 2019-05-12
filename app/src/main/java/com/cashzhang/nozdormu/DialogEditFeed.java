@@ -1,3 +1,4 @@
+/*
 package com.cashzhang.nozdormu;
 
 import android.app.Dialog;
@@ -11,9 +12,11 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+*/
 /**
  * Created by cz21 on 2018/2/7.
- */
+ *//*
+
 
 
 public class DialogEditFeed extends Dialog {
@@ -87,3 +90,4 @@ public class DialogEditFeed extends Dialog {
         });
     }
 }
+*/

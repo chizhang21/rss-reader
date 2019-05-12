@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.cashzhang.nozdormu.Constants;
-import com.cashzhang.nozdormu.DialogEditFeed;
+//import com.cashzhang.nozdormu.DialogEditFeed;
 import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.R;
 import com.cashzhang.nozdormu.adapter.CategListAdapter;
@@ -131,7 +131,7 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
 //        inflater.inflate(R.menu.feeds_menu, menu);
     }
 
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_feed:
@@ -142,7 +142,7 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
+    }*/
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -190,13 +190,13 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
         mainFragment.setArguments(bundle);
 
         final MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
+        /*mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
             @Override
             public void gotoFragment(ViewPager viewPager, FrogAdapter adapter) {
                 mainActivity.setBundle(bundle);
                 viewPager.setCurrentItem(3);
             }
-        });
+        });*/
         mainActivity.forSkip();
 
     }
@@ -261,12 +261,12 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
                     listFeedId.clear();
 
 
-                JSONArray jsonArray = JSONArray.parseArray(response);
+                /*JSONArray jsonArray = JSONArray.parseArray(response);
                 for (Iterator iterator = jsonArray.iterator(); iterator.hasNext(); ) {
                     JSONObject jsonObject = (JSONObject) iterator.next();
                     listFeedId.add(jsonObject.get("id").toString());
                     listTitle.add(jsonObject.get("title").toString());
-                }
+                }*/
                 listAdapter.refreshData(listTitle);
             }
         }
