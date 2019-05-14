@@ -1,6 +1,7 @@
 package com.cashzhang.nozdormu;
 
-import com.cashzhang.nozdormu.bean.CategItem;
+import com.cashzhang.nozdormu.bean.Feed;
+import com.cashzhang.nozdormu.bean.Collection;
 import com.cashzhang.nozdormu.bean.LoginBody;
 import com.cashzhang.nozdormu.bean.Profile;
 import com.cashzhang.nozdormu.bean.Token;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
+import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.HeaderMap;
@@ -22,8 +24,11 @@ public interface FeedlyApi {
     @GET("/v3/profile")
     Observable<Profile> getProfile(@HeaderMap Map<String, String> headers);
 
-    @GET("/v3/subscriptions")
-    Observable<List<CategItem>> getSubs(@HeaderMap Map<String, String> headers);
+    @GET("/v3/collections")
+    Observable<List<Collection>> getCollections(@HeaderMap Map<String, String> headers);
+
+    @GET("/v3/collections")
+    Call<String> getCollectionsString(@HeaderMap Map<String, String> headers);
 
 
 }

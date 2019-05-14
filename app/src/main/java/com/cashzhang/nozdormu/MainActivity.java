@@ -4,18 +4,16 @@ package com.cashzhang.nozdormu;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import com.cashzhang.nozdormu.adapter.FrogAdapter;
-import com.cashzhang.nozdormu.fragment.CategsFragment;
+import com.cashzhang.nozdormu.fragment.CollectionsFragment;
 import com.cashzhang.nozdormu.fragment.ContentFragment;
+import com.cashzhang.nozdormu.fragment.FeedsFragment;
 import com.cashzhang.nozdormu.fragment.LeftFragment;
 import com.cashzhang.nozdormu.fragment.MainFragment;
-import com.cashzhang.nozdormu.fragment.SecCategsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
@@ -36,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
     static Bundle bundle;
 
     LeftFragment leftFragment = LeftFragment.newInstance();
-    CategsFragment categsFragment = CategsFragment.newInstance();
-    SecCategsFragment secCategsFragment = SecCategsFragment.newInstance();
+    CollectionsFragment collectionsFragment = CollectionsFragment.newInstance();
+    FeedsFragment feedsFragment = FeedsFragment.newInstance();
     MainFragment mainFragment = MainFragment.newInstance();
     ContentFragment contentFragment = ContentFragment.newInstance();
 //
@@ -55,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
         fragments = new ArrayList<Fragment>();
         fragments.add(leftFragment);
-        fragments.add(categsFragment);
-        fragments.add(secCategsFragment);
+        fragments.add(collectionsFragment);
+        fragments.add(feedsFragment);
         fragments.add(mainFragment);
         fragments.add(contentFragment);
         adapter = new FrogAdapter(getSupportFragmentManager(), fragments);

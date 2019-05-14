@@ -2,11 +2,11 @@ package com.cashzhang.nozdormu.adapter;
 
 import android.util.Log;
 
-import com.cashzhang.nozdormu.fragment.CategsFragment;
+import com.cashzhang.nozdormu.fragment.CollectionsFragment;
 import com.cashzhang.nozdormu.fragment.ContentFragment;
 import com.cashzhang.nozdormu.fragment.LeftFragment;
 import com.cashzhang.nozdormu.fragment.MainFragment;
-import com.cashzhang.nozdormu.fragment.SecCategsFragment;
+import com.cashzhang.nozdormu.fragment.FeedsFragment;
 
 import java.util.List;
 
@@ -36,9 +36,9 @@ public class FrogAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return LeftFragment.newInstance();
             case 1:
-                return CategsFragment.newInstance();
+                return CollectionsFragment.newInstance();
             case 2:
-                return SecCategsFragment.newInstance();
+                return FeedsFragment.newInstance();
             case 3:
                 return MainFragment.newInstance();
             case 4:

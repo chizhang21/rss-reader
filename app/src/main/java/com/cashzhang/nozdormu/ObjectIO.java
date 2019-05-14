@@ -28,19 +28,23 @@ public class ObjectIO {
         m_context = context;
         m_fileName = fileName;
     }
+    public ObjectIO(Context context) {
+        m_context = context;
+    }
 
     public void setNewFileName(String fileName) {
         m_fileName = fileName;
         m_object = null;
     }
 
-    public void write(Object object) {
+    public boolean write(Object object) {
         try {
             FileOutputStream fos = m_context.openFileOutput(m_fileName, Context.MODE_PRIVATE);
             BufferedOutputStream bos = new BufferedOutputStream(fos);
             ObjectOutput out = new ObjectOutputStream(bos);
             try {
                 out.writeObject(object);
+                return true;
             } finally {
                 out.close();
             }
@@ -49,6 +53,7 @@ public class ObjectIO {
         } catch (IOException e) {
             String message = e.getMessage();
         }
+        return false;
     }
 
     int getElementCount() {

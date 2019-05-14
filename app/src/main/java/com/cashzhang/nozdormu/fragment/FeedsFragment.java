@@ -1,8 +1,6 @@
 package com.cashzhang.nozdormu.fragment;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -11,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,9 +17,7 @@ import com.cashzhang.nozdormu.Constants;
 //import com.cashzhang.nozdormu.DialogEditFeed;
 import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.R;
-import com.cashzhang.nozdormu.adapter.CategListAdapter;
-import com.cashzhang.nozdormu.adapter.FrogAdapter;
-import com.cashzhang.nozdormu.service.SyncCatesListService;
+import com.cashzhang.nozdormu.adapter.CollectionsListAdapter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,7 +25,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -38,18 +32,17 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.cashzhang.nozdormu.Constants.s_activity;
 
+public class FeedsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-
-    private final static String TAG = "nozdormu";
+    private final static String TAG = FeedsFragment.class.getSimpleName();
 
     private ArrayList<String> listTitle;
     private ArrayList<String> listFeedId;
     Bundle bundle;
-    CategListAdapter listAdapter = null;
+    CollectionsListAdapter listAdapter = null;
     MainFragment mainFragment;
+    Activity activity;
 
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout mSwipeLayout;
@@ -58,34 +51,16 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
 
     private String label;
 
-    public static SecCategsFragment newInstance() {
-        SecCategsFragment secCategsFragment = new SecCategsFragment();
-        return secCategsFragment;
+    public static FeedsFragment newInstance() {
+        FeedsFragment feedsFragment = new FeedsFragment();
+        return feedsFragment;
     }
-
-    private final BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (null != s_activity) {
-                Log.d(TAG, "onReceive: sec categs fragment");
-                try {
-                    readFromFile(label+".cif");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    };
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Activity activity;
         if (context instanceof Activity) {
             activity = (Activity) context;
-            activity.registerReceiver(m_broadcastReceiver, new IntentFilter(SyncCatesListService.CATEG_BROADCAST_ACTION));
         }
     }
 
@@ -99,7 +74,7 @@ public class SecCategsFragment extends Fragment implements SwipeRefreshLayout.On
         ButterKnife.bind(this, layout);
 
         mSwipeLayout.setOnRefreshListener(this);
-        listAdapter = new CategListAdapter(getActivity());
+        listAdapter = new CollectionsListAdapter(activity);
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(itemClickListener);
 

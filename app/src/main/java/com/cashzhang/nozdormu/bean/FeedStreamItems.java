@@ -27,7 +27,6 @@ public class FeedStreamItems {
     private List<Enclosure> enclosure;
     private Visual visual;
     private boolean unread;
-    private List<Categ> categories;
     private int engagement;
     private int engagementRate;
     public void setId(String id) {
@@ -135,12 +134,7 @@ public class FeedStreamItems {
          return unread;
      }
 
-    public void setCategories(List<Categ> categories) {
-         this.categories = categories;
-     }
-     public List<Categ> getCategories() {
-         return categories;
-     }
+
 
     public void setEngagement(int engagement) {
          this.engagement = engagement;

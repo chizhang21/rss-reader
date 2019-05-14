@@ -75,7 +75,7 @@ public class LoginActivity extends Activity {
 
                                 @Override
                                 public void onNext(Token token) {
-                                    Log.d(TAG, "onNext: ");
+                                    Log.d(TAG, "onNext: token=" + token.toString());
                                     Settings.setAccessToken(token.getAccess_token());
                                     Settings.setRefreshToken(token.getRefresh_token());
 

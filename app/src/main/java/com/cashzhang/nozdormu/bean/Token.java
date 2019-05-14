@@ -48,4 +48,8 @@ public class Token implements Serializable{
     public void setId(String id) {
         this.id = id;
     }
+    @Override
+    public String toString() {
+        return "access_token: "+access_token+" refresh_token: "+refresh_token+" id: "+id;
+    }
 }

@@ -10,11 +10,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cashzhang.nozdormu.CustomObserver;
 import com.cashzhang.nozdormu.FeedlyApi;
 import com.cashzhang.nozdormu.FeedlyRequest;
 import com.cashzhang.nozdormu.LoginActivity;
 import com.cashzhang.nozdormu.Constants;
+import com.cashzhang.nozdormu.OnNextListener;
 import com.cashzhang.nozdormu.R;
+import com.cashzhang.nozdormu.RxUtils;
 import com.cashzhang.nozdormu.Settings;
 import com.cashzhang.nozdormu.bean.Profile;
 
@@ -110,39 +113,20 @@ public class LeftFragment extends Fragment {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
         headers.put("X-Feedly-Access-Token", accessToken);
-//        Call<Profile> getProfile = feedlyApi.getProfile(headers);
 
-        feedlyApi.getProfile(headers)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.single())
-                .subscribe(new Observer<Profile>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        Log.d(TAG, "onSubscribe: ");
-                    }
+        OnNextListener<Profile> listener = new OnNextListener<Profile>() {
+            @Override
+            public void onNext(Profile profile) {
+                Log.d(TAG, "onNext: profile.email = " + profile.getEmail());
+                Log.d(TAG, "onNext: profile.FamilyName = Mr./Ms. " + profile.getFamilyName());
+                Settings.setId(profile.getId());
+                Settings.setEmail(profile.getEmail());
+                Settings.setGivenName(profile.getGivenName());
+                leftText.setText(Settings.getEmail());
+            }
+        };
+        RxUtils.CustomSubscribe(feedlyApi.getProfile(headers), new CustomObserver<>(listener));
 
-                    @Override
-                    public void onNext(Profile profile) {
-                        Log.d(TAG, "onNext: ");
-                        Log.d(TAG, "onNext: profile.id = " + profile.getId());
-                        Log.d(TAG, "onNext: profile.email = " + profile.getEmail());
-                        Log.d(TAG, "onNext: profile.FamilyName = Mr./Ms. " + profile.getFamilyName());
-                        Settings.setId(profile.getId());
-                        Settings.setEmail(profile.getEmail());
-                        Settings.setGivenName(profile.getGivenName());
-                        leftText.setText(Settings.getEmail());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(TAG, "onError: " + e.getMessage());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete: ");
-                    }
-                });
         super.onActivityResult(requestCode, resultCode, data);
     }
 

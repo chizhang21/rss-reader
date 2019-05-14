@@ -6,7 +6,6 @@ public class Profile {
     private String id;
     private String client;
     private String email;
-    private ArrayList<String> logins;
     private String picture;
     private String givenName;
     private String familyName;
@@ -34,14 +33,6 @@ public class Profile {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public ArrayList<String> getLogins() {
-        return logins;
-    }
-
-    public void setLogins(ArrayList<String> logins) {
-        this.logins = logins;
     }
 
     public String getPicture() {

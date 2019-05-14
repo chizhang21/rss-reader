@@ -2,9 +2,8 @@ package com.cashzhang.nozdormu;
 
 import android.content.res.Resources;
 import android.widget.ListView;
-import com.cashzhang.nozdormu.fragment.CategsFragment;
+import com.cashzhang.nozdormu.fragment.FeedsFragment;
 import com.cashzhang.nozdormu.fragment.MainFragment;
-import com.cashzhang.nozdormu.fragment.SecCategsFragment;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -42,8 +41,7 @@ public class Constants {
     public static MainActivity s_activity;
     public static Resources s_resources;
     public static MainFragment s_fragmentFeeds;
-    public static CategsFragment s_fragmentCateg;
-    public static SecCategsFragment s_fragmentSecCateg;
+    public static FeedsFragment s_fragmentSecCateg;
     public static FragmentManager s_fragmentManager;
     public static ListView s_listView;
     public static SwipeRefreshLayout s_swipeSLayout;
@@ -62,13 +60,8 @@ public class Constants {
         s_swipeMLayout = s_fragmentFeeds.getView().findViewById(R.id.swipe_refresh);
     }
 
-    static public void getCatesFragmentView(CategsFragment categsFragment) {
-        s_fragmentCateg = categsFragment;
-        s_swipeCLayout = s_fragmentCateg.getView().findViewById(R.id.swipe_refresh);
-    }
-
-    static public void getSecCatesFragmentView(SecCategsFragment secCategsFragment) {
-        s_fragmentSecCateg = secCategsFragment;
+    static public void getSecCatesFragmentView(FeedsFragment feedsFragment) {
+        s_fragmentSecCateg = feedsFragment;
         s_swipeSLayout = s_fragmentSecCateg.getView().findViewById(R.id.swipe_refresh);
     }
 

@@ -1,6 +1,7 @@
 package com.cashzhang.nozdormu.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,38 +15,40 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CategListAdapter extends BaseAdapter {
-    private final static String TAG = "nozdormu";
+public class CollectionsListAdapter extends BaseAdapter {
+    private final static String TAG = CollectionsListAdapter.class.getSimpleName();
 
 
-    private ArrayList<String> arrayListLabel;
+    private ArrayList<String> collectionsList;
 
     private LayoutInflater layoutInflater;
 
     static class Component {
-        @BindView(R.id.categ_content) TextView content;
+        @BindView(R.id.collection_content) TextView content;
+
         public Component(View view) {
             ButterKnife.bind(this, view);
         }
     }
 
-    public CategListAdapter(Context context) {
+    public CollectionsListAdapter(Context context) {
         this.layoutInflater = LayoutInflater.from(context);
     }
 
-    public void refreshData( ArrayList<String> listContent) {
-        arrayListLabel = listContent;
+    public void refreshData(ArrayList<String> collectionContent) {
+        Log.d(TAG, "refreshData: ");
+        collectionsList = collectionContent;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return ((arrayListLabel == null) ? 0 :arrayListLabel.size());
+        return ((collectionsList == null) ? 0 :collectionsList.size());
     }
 
     @Override
     public Object getItem(int i) {
-        return ((arrayListLabel == null) ? null : arrayListLabel.get(i));
+        return ((collectionsList == null) ? null : collectionsList.get(i));
     }
 
     @Override
@@ -55,15 +58,15 @@ public class CategListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        CategListAdapter.Component component;
+        CollectionsListAdapter.Component component;
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.categ_item, null);
-            component = new CategListAdapter.Component(convertView);
+            convertView = layoutInflater.inflate(R.layout.collection_item, null);
+            component = new CollectionsListAdapter.Component(convertView);
             convertView.setTag(component);
         } else {
-            component = (CategListAdapter.Component) convertView.getTag();
+            component = (CollectionsListAdapter.Component) convertView.getTag();
         }
-        component.content.setText((arrayListLabel == null) ? null : arrayListLabel.get(position));
+        component.content.setText((collectionsList == null) ? null : collectionsList.get(position));
 
         return convertView;
     }
