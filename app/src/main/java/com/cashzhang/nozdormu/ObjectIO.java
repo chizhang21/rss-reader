@@ -1,9 +1,11 @@
 package com.cashzhang.nozdormu;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,16 +22,25 @@ import java.util.Collection;
 
 
 public class ObjectIO {
+    private static final String TAG = ObjectIO.class.getSimpleName();
     private final Context m_context;
     private String m_fileName;
     private Object m_object;
+    private int m_type;
 
-    public ObjectIO(Context context, String fileName) {
+    private int TYPE_FILE = 0;
+    private int TYPE_COLLECTION = 1;
+    private int TYPE_CONTENT = 2;
+
+    public ObjectIO(Context context, String fileName, int type) {
         m_context = context;
         m_fileName = fileName;
+        m_type = type;
+
     }
-    public ObjectIO(Context context) {
+    public ObjectIO(Context context, int type) {
         m_context = context;
+        m_type = type;
     }
 
     public void setNewFileName(String fileName) {
@@ -39,9 +50,27 @@ public class ObjectIO {
 
     public boolean write(Object object) {
         try {
-            FileOutputStream fos = m_context.openFileOutput(m_fileName, Context.MODE_PRIVATE);
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(m_context.getFilesDir().getAbsolutePath());
+            switch (m_type) {
+                case 1:
+                    stringBuilder.append("/collection/");
+                    break;
+                case 2:
+                    stringBuilder.append("/content/");
+                    break;
+                default:
+                    break;
+            }
+            File file = new File(stringBuilder.toString()+m_fileName);
+            FileOutputStream fos = new FileOutputStream(file);
+            ObjectOutputStream out = new ObjectOutputStream(fos);
+
+            /*FileOutputStream fos;
+            fos = m_context.openFileOutput(m_fileName, Context.MODE_PRIVATE);
             BufferedOutputStream bos = new BufferedOutputStream(fos);
-            ObjectOutput out = new ObjectOutputStream(bos);
+
+            ObjectOutput out = new ObjectOutputStream(bos);*/
             try {
                 out.writeObject(object);
                 return true;
@@ -49,9 +78,9 @@ public class ObjectIO {
                 out.close();
             }
         } catch (FileNotFoundException e) {
-            String message = e.getMessage();
+            e.printStackTrace();
         } catch (IOException e) {
-            String message = e.getMessage();
+            e.printStackTrace();
         }
         return false;
     }

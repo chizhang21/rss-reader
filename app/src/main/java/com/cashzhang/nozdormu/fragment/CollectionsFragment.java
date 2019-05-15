@@ -3,7 +3,6 @@ package com.cashzhang.nozdormu.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,45 +12,23 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.cashzhang.nozdormu.Constants;
-//import com.cashzhang.nozdormu.DialogEditFeed;
-import com.cashzhang.nozdormu.CustomObserver;
 import com.cashzhang.nozdormu.FeedlyApi;
 import com.cashzhang.nozdormu.FeedlyRequest;
 import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.ObjectIO;
-import com.cashzhang.nozdormu.OnNextListener;
 import com.cashzhang.nozdormu.R;
 import com.cashzhang.nozdormu.RxUtils;
 import com.cashzhang.nozdormu.Settings;
 import com.cashzhang.nozdormu.adapter.CollectionsListAdapter;
 import com.cashzhang.nozdormu.adapter.FrogAdapter;
 import com.cashzhang.nozdormu.bean.Collection;
-import com.cashzhang.nozdormu.bean.Feed;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
@@ -60,15 +37,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import retrofit2.Response;
-
 
 public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private final static String TAG = CollectionsFragment.class.getSimpleName();
 
-    private ArrayList<String> listLabel;
-    private ArrayList<String> listId;
+    private ArrayList<String> collectionLabelList;
+    private ArrayList<String> collectionIdList;
 
     CollectionsListAdapter collectionsAdapter = null;
     FeedsFragment feedsFragment;
@@ -117,15 +92,14 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        Constants.getCatesFragmentView(this);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        listLabel = new ArrayList<String>();
-        listId = new ArrayList<String>();
+        collectionLabelList = new ArrayList<>();
+        collectionIdList = new ArrayList<>();
     }
 
     @Override
@@ -134,42 +108,24 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-//        inflater.inflate(R.menu.feeds_menu, menu);
-    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.add_feed:
-//                MainActivity activity = (MainActivity) getActivity();
-//                Dialog dialog = DialogEditFeed.newInstance(activity, -1);
-//                dialog.show();
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
-
-    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //readCollections();
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        Log.d(TAG, "setUserVisibleHint() -> isVisibleToUser: " + isVisibleToUser);
+        Log.d(TAG, "isVisibleToUser: " + isVisibleToUser);
         if (isVisibleToUser) {
 //            ((AppCompatActivity)activity).getSupportActionBar().show();
+            mSwipeLayout.setRefreshing(true);
+            getCollections();
         }
     }
 
     public void onRefresh() {
-        Log.d(TAG, "onRefresh: categ fragment");
+        Log.d(TAG, "onRefresh: CollectionsFragment");
         getCollections();
     }
 
@@ -188,7 +144,7 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
         bundle.putString("categ_lebel", getLabel(position));
         feedsFragment.setArguments(bundle);
 
-        final MainActivity mainActivity = (MainActivity) getActivity();
+        final MainActivity mainActivity = (MainActivity) activity;
         mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
             @Override
             public void gotoFragment(ViewPager viewPager, FrogAdapter adapter) {
@@ -201,24 +157,24 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
     }
 
     private String getLabel(int position) {
-        return ((listLabel == null) ? null : listLabel.get(position));
+        return ((collectionLabelList == null) ? null : collectionLabelList.get(position));
     }
 
-    private String getCategId(int position) {
-        return ((listId == null) ? null : listId.get(position));
+    private String getCollectionId(int position) {
+        return ((collectionIdList == null) ? null : collectionIdList.get(position));
     }
 
     public void readCollections() {
-        /*for (String label: listLabel) {
+        /*for (String label: collectionLabelList) {
             objectIO.setNewFileName(label);
             objectIO.read();
         }*/
         for (String string :
-                listLabel) {
+                collectionLabelList) {
             Log.d(TAG, "readCollections: "+string);
         }
 
-        collectionsAdapter.refreshData(listLabel);
+        collectionsAdapter.refreshData(collectionLabelList);
         mSwipeLayout.setRefreshing(false);
     }
 
@@ -234,8 +190,8 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
             @Override
             public void onNext(List<Collection> collections) throws IOException, ClassNotFoundException {
                 for (Collection collection : collections) {
-                    listLabel.add(collection.getLabel());
-                    listId.add(collection.getId());
+                    collectionLabelList.add(collection.getLabel());
+                    collectionIdList.add(collection.getId());
 
                     boolean writeStatus = false;
                     try {
@@ -252,14 +208,16 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
         Observer<List<Collection>> observer = new Observer<List<Collection>>() {
             @Override
             public void onSubscribe(Disposable d) {
-                Log.d(TAG, "onSubscribe: Current Thread="+Thread.currentThread());
+                Log.d(TAG, "onSubscribe: Current Thread="+Thread.currentThread().getName());
             }
 
             @Override
             public void onNext(List<Collection> collections) {
+                collectionLabelList.clear();
+                collectionIdList.clear();
                 for (Collection collection : collections) {
-                    listLabel.add(collection.getLabel());
-                    listId.add(collection.getId());
+                    collectionLabelList.add(collection.getLabel());
+                    collectionIdList.add(collection.getId());
 
                     boolean writeStatus = false;
                     try {
@@ -278,7 +236,7 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
 
             @Override
             public void onComplete() {
-                Log.d(TAG, "onComplete: Current Thread="+Thread.currentThread());
+                Log.d(TAG, "onComplete: Current Thread="+Thread.currentThread().getName());
                 readCollections();
             }
         };

@@ -2,8 +2,6 @@ package com.cashzhang.nozdormu.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +12,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.cashzhang.nozdormu.Constants;
-//import com.cashzhang.nozdormu.DialogEditFeed;
 import com.cashzhang.nozdormu.MainActivity;
+import com.cashzhang.nozdormu.ObjectIO;
 import com.cashzhang.nozdormu.R;
 import com.cashzhang.nozdormu.adapter.CollectionsListAdapter;
+import com.cashzhang.nozdormu.adapter.FrogAdapter;
+import com.cashzhang.nozdormu.bean.Collection;
+import com.cashzhang.nozdormu.bean.Feed;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +30,8 @@ import java.util.ArrayList;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -39,10 +42,11 @@ public class FeedsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private ArrayList<String> listTitle;
     private ArrayList<String> listFeedId;
-    Bundle bundle;
-    CollectionsListAdapter listAdapter = null;
-    MainFragment mainFragment;
-    Activity activity;
+    private ArrayList<Feed> feedsList;
+    private Bundle bundle;
+    private CollectionsListAdapter listAdapter = null;
+    private MainFragment mainFragment;
+    private Activity activity;
 
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout mSwipeLayout;
@@ -121,7 +125,7 @@ public class FeedsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        Log.d(TAG, "setUserVisibleHint() -> isVisibleToUser: " + isVisibleToUser);
+        Log.d(TAG, "isVisibleToUser: " + isVisibleToUser);
         if (isVisibleToUser) {
             try {
                 loadData(MainActivity.getBundle());
@@ -165,18 +169,18 @@ public class FeedsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mainFragment.setArguments(bundle);
 
         final MainActivity mainActivity = (MainActivity) getActivity();
-        /*mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
+        mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
             @Override
             public void gotoFragment(ViewPager viewPager, FrogAdapter adapter) {
                 mainActivity.setBundle(bundle);
                 viewPager.setCurrentItem(3);
             }
-        });*/
+        });
         mainActivity.forSkip();
 
     }
     private String getFeedId(int position) {
-        return ((listFeedId == null) ? null : listFeedId.get(position));
+        return feedsList.get(position).getFeedId();
     }
 
     public void loadData(Bundle tmpBundle) throws IOException, ClassNotFoundException {
@@ -190,34 +194,20 @@ public class FeedsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             label = bundle.getString("categ_lebel");
             Log.d(TAG, "SecFragm: bundle != null, label == " + label);
             if (label != null) {
-                File src = new File("data/data/com.cashzhang.nozdormu/files/" + label + ".cif");
-                File dst = new File("data/data/com.cashzhang.nozdormu/files/tmp.cif");
-                if (!dst.exists()) {
-                    try {
-                        dst.createNewFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                //begin reading data, set refreshing
+                mSwipeLayout.setRefreshing(true);
+                ObjectIO objectIO = new ObjectIO(activity, label);
+                Collection collection = (Collection) objectIO.read();
+                feedsList = (ArrayList<Feed>) collection.getFeeds();
+                for (Feed feed: feedsList) {
+                    Log.d(TAG, "loadData: feedLabel="+feed.getTitle());
                 }
-                copyLabelFileToDefault(src, dst);
-                readFromFile(label+".cif");
-            } else
-                readFromFile("tmp.cif");
+
+            }
         }
     }
 
-    private void copyLabelFileToDefault(File src, File dst) throws IOException {
-        FileChannel inputChannel = null;
-        FileChannel outputChannel = null;
-        try {
-            inputChannel = new FileInputStream(src).getChannel();
-            outputChannel = new FileOutputStream(dst).getChannel();
-            outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
-        } finally {
-            inputChannel.close();
-            outputChannel.close();
-        }
-    }
+
 
     public void readFromFile(String fileLabelName) throws IOException, ClassNotFoundException {
         String response;

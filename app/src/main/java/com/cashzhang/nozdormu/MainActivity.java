@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         saveInitialConstants(this);
         ButterKnife.bind(this);
 
-        fragments = new ArrayList<Fragment>();
+        fragments = new ArrayList<>();
         fragments.add(leftFragment);
         fragments.add(collectionsFragment);
         fragments.add(feedsFragment);

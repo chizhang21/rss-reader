@@ -60,7 +60,7 @@ import static com.cashzhang.nozdormu.Constants.s_activity;
 
 public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private final static String TAG = "nozdormu";
+    private final static String TAG = MainFragment.class.getSimpleName();
 
     private ArrayList<String> listId;
     private ArrayList<String> listTitle;//web title
