@@ -6,89 +6,45 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="5dp"
         android:background="#DCDCDC"
-        android:orientation="vertical">
-
-        <!-- web title block -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/webtitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_weight="1"
-                android:text="hello title"
-                android:textColor="#363636"
-                android:textSize="12dp" />
-
-            <TextView
-                android:id="@+id/timestamp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:text="2:42 PM"
-                android:textColor="#363636"
-                android:textSize="12dp" />
-
-        </LinearLayout>
+        android:orientation="horizontal">
 
         <!-- image and content block -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
+            android:layout_gravity="center"
+            android:orientation="vertical">
             <LinearLayout
                 android:layout_width="18dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <!-- add image in here -->
                 <!-- ImageView
-                    android:id="@+id/image"
+                    android:id="@+id/categ_image"
                     android:layout_width="match_parent"
                     android:layout_height="18dp"
-                    android:layout_gravity="top"
+                    android:layout_gravity="center"
                     android:src="@mipmap/rss_symbol" /-->
 
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#363636"
-                    android:maxLines="2"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
         </LinearLayout>
 
-        <!--content block -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            android:layout_height="30dp"
+            android:layout_gravity="center">
             <TextView
-                android:id="@+id/content"
+                android:id="@+id/label_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginStart="15dp"
                 android:singleLine="true"
                 android:text=""
-                android:textColor="#828282"
-                android:textSize="12dp" />
+                android:textColor="#363636"
+                android:textSize="24sp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

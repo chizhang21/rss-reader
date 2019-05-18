@@ -3,7 +3,7 @@ package com.cashzhang.nozdormu;
 import android.content.res.Resources;
 import android.widget.ListView;
 import com.cashzhang.nozdormu.fragment.FeedsFragment;
-import com.cashzhang.nozdormu.fragment.MainFragment;
+import com.cashzhang.nozdormu.fragment.StreamsFragment;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -40,7 +40,7 @@ public class Constants {
 
     public static MainActivity s_activity;
     public static Resources s_resources;
-    public static MainFragment s_fragmentFeeds;
+    public static StreamsFragment s_fragmentFeeds;
     public static FeedsFragment s_fragmentSecCateg;
     public static FragmentManager s_fragmentManager;
     public static ListView s_listView;
@@ -51,12 +51,12 @@ public class Constants {
     static void saveInitialConstants(MainActivity activity) {
         s_activity = activity;
         s_resources = activity.getResources();
-        s_listView = activity.findViewById(R.id.l_list);
+//        s_listView = activity.findViewById(R.id.l_list);
         s_fragmentManager = activity.getSupportFragmentManager();
     }
 
-    static public void getFragmentView(MainFragment mainFragment) {
-        s_fragmentFeeds = mainFragment;
+    static public void getFragmentView(StreamsFragment streamsFragment) {
+        s_fragmentFeeds = streamsFragment;
         s_swipeMLayout = s_fragmentFeeds.getView().findViewById(R.id.swipe_refresh);
     }
 

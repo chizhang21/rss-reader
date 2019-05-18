@@ -3,12 +3,13 @@ package com.cashzhang.nozdormu;
 
 import android.os.Bundle;
 import android.view.KeyEvent;
-import com.cashzhang.nozdormu.adapter.FrogAdapter;
+
+import com.cashzhang.nozdormu.adapter.FragmentAdapter;
 import com.cashzhang.nozdormu.fragment.CollectionsFragment;
 import com.cashzhang.nozdormu.fragment.ContentFragment;
 import com.cashzhang.nozdormu.fragment.FeedsFragment;
 import com.cashzhang.nozdormu.fragment.LeftFragment;
-import com.cashzhang.nozdormu.fragment.MainFragment;
+import com.cashzhang.nozdormu.fragment.StreamsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +31,13 @@ public class MainActivity extends AppCompatActivity {
 
     public FragmentSwitch fragmentSwitch;
     List<Fragment> fragments;
-    FrogAdapter adapter;
+    FragmentAdapter adapter;
     static Bundle bundle;
 
     LeftFragment leftFragment = LeftFragment.newInstance();
     CollectionsFragment collectionsFragment = CollectionsFragment.newInstance();
     FeedsFragment feedsFragment = FeedsFragment.newInstance();
-    MainFragment mainFragment = MainFragment.newInstance();
+    StreamsFragment streamsFragment = StreamsFragment.newInstance();
     ContentFragment contentFragment = ContentFragment.newInstance();
 //
 //    @BindView(R.id.toolBar)
@@ -55,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
         fragments.add(leftFragment);
         fragments.add(collectionsFragment);
         fragments.add(feedsFragment);
-        fragments.add(mainFragment);
+        fragments.add(streamsFragment);
         fragments.add(contentFragment);
-        adapter = new FrogAdapter(getSupportFragmentManager(), fragments);
+        adapter = new FragmentAdapter(getSupportFragmentManager(), fragments);
         vp.setAdapter(adapter);
 //
 //        setSupportActionBar(myToolbar);
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public interface FragmentSwitch {
-        void gotoFragment(ViewPager viewPager, FrogAdapter adapter);
+        void gotoFragment(ViewPager viewPager, FragmentAdapter adapter);
     }
 
     public void setFragmentSwitch(FragmentSwitch fragmentSwitch) {

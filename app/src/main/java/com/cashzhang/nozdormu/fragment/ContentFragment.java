@@ -40,7 +40,7 @@ import butterknife.ButterKnife;
 
 public class ContentFragment extends Fragment {
 
-    private final static String TAG = "nozdormu";
+    private final static String TAG = ContentFragment.class.getSimpleName();
     private String title = null;
     private String time = null;
     private String url = null;

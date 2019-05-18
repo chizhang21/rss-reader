@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 
 public class LListAdapter extends BaseAdapter {
 
-    private final static String TAG = "nozdormu";
+    private final static String TAG = LListAdapter.class.getSimpleName();
     private ArrayList<String> arrayListTitle;
     private ArrayList<String> arrayListData;
     private ArrayList<String> arrayListContent;
@@ -72,7 +72,7 @@ public class LListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         Component component;
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.feed_item, null);
+            convertView = layoutInflater.inflate(R.layout.stream_item, null);
             component = new Component(convertView);
             convertView.setTag(component);
         } else {

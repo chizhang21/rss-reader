@@ -6,6 +6,7 @@ import android.util.Log;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,9 +29,9 @@ public class ObjectIO {
     private Object m_object;
     private int m_type;
 
-    private int TYPE_FILE = 0;
-    private int TYPE_COLLECTION = 1;
-    private int TYPE_CONTENT = 2;
+    private static final int TYPE_FILE = 0;
+    private static final int TYPE_COLLECTION = 1;
+    private static final int TYPE_CONTENT = 2;
 
     public ObjectIO(Context context, String fileName, int type) {
         m_context = context;
@@ -51,26 +52,23 @@ public class ObjectIO {
     public boolean write(Object object) {
         try {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(m_context.getFilesDir().getAbsolutePath());
+
             switch (m_type) {
-                case 1:
-                    stringBuilder.append("/collection/");
+                case TYPE_COLLECTION:
+                    stringBuilder.append(m_context.getExternalFilesDir("collection"));
                     break;
-                case 2:
-                    stringBuilder.append("/content/");
+                case TYPE_CONTENT:
+                    stringBuilder.append(m_context.getExternalFilesDir("content"));
                     break;
                 default:
                     break;
             }
-            File file = new File(stringBuilder.toString()+m_fileName);
-            FileOutputStream fos = new FileOutputStream(file);
-            ObjectOutputStream out = new ObjectOutputStream(fos);
+            File file = new File(stringBuilder.toString()+"/"+m_fileName);
+            Log.d(TAG, "write: filePath="+file.getAbsolutePath());
+            if (!file.exists())
+                file.createNewFile();
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
 
-            /*FileOutputStream fos;
-            fos = m_context.openFileOutput(m_fileName, Context.MODE_PRIVATE);
-            BufferedOutputStream bos = new BufferedOutputStream(fos);
-
-            ObjectOutput out = new ObjectOutputStream(bos);*/
             try {
                 out.writeObject(object);
                 return true;
@@ -103,7 +101,21 @@ public class ObjectIO {
 
     public Object read() {
         try {
-            ObjectInput in = new ObjectInputStream(new BufferedInputStream(m_context.openFileInput(m_fileName)));
+            StringBuilder stringBuilder = new StringBuilder();
+            switch (m_type) {
+                case 1:
+                    stringBuilder.append(m_context.getExternalFilesDir("collection"));
+                    break;
+                case 2:
+                    stringBuilder.append(m_context.getExternalFilesDir("content"));
+                    break;
+                default:
+                    break;
+            }
+            File file = new File(stringBuilder.toString()+"/"+m_fileName);
+            Log.d(TAG, "write: filePath="+file.getAbsolutePath());
+
+            ObjectInput in = new ObjectInputStream(new FileInputStream(file));
             try {
                 m_object = in.readObject();
                 return m_object;

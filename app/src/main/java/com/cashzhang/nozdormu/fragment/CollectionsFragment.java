@@ -5,22 +5,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
+import com.cashzhang.nozdormu.CustomObserver;
 import com.cashzhang.nozdormu.FeedlyApi;
 import com.cashzhang.nozdormu.FeedlyRequest;
 import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.ObjectIO;
+import com.cashzhang.nozdormu.OnNextListener;
 import com.cashzhang.nozdormu.R;
 import com.cashzhang.nozdormu.RxUtils;
 import com.cashzhang.nozdormu.Settings;
-import com.cashzhang.nozdormu.adapter.CollectionsListAdapter;
-import com.cashzhang.nozdormu.adapter.FrogAdapter;
+import com.cashzhang.nozdormu.adapter.FragmentAdapter;
+import com.cashzhang.nozdormu.adapter.CollectionAdapter;
 import com.cashzhang.nozdormu.bean.Collection;
 
 import java.io.FileNotFoundException;
@@ -30,13 +28,13 @@ import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 
 public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -45,30 +43,30 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
     private ArrayList<String> collectionLabelList;
     private ArrayList<String> collectionIdList;
 
-    CollectionsListAdapter collectionsAdapter = null;
-    FeedsFragment feedsFragment;
-    Activity activity;
-
-    ObjectIO objectIO;
+    private FeedsFragment feedsFragment;
+    private Activity activity;
+    private ObjectIO objectIO;
+    
+    private CollectionAdapter mAdapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout mSwipeLayout;
-
-    @BindView(R.id.l_list)
-    ListView listView;
+    @BindView(R.id.recycler)
+    RecyclerView recyclerView;
 
     public static CollectionsFragment newInstance() {
-        CollectionsFragment collectionsFragment = new CollectionsFragment();
-        return collectionsFragment;
+        return new CollectionsFragment();
     }
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.d(TAG, "onAttach");
         if (context instanceof Activity) {
             activity = (Activity) context;
-            objectIO = new ObjectIO(activity);
+            objectIO = new ObjectIO(activity,1);
         }
     }
 
@@ -77,26 +75,30 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        Log.d(TAG, "onCreateView: categ fragment");
-        View layout = inflater.inflate(R.layout.feed_list, container, false);
+        Log.d(TAG, "onCreateView");
+        View layout = inflater.inflate(R.layout.collection_list, container, false);
         ButterKnife.bind(this, layout);
+        
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(activity);
+        mAdapter = new CollectionAdapter(collectionLabelList);
+        mAdapter.setOnItemClickListener(itemClickListener);
+        recyclerView.setLayoutManager(layoutManager);
 
         mSwipeLayout.setOnRefreshListener(this);
-        collectionsAdapter = new CollectionsListAdapter(activity);
-        listView.setAdapter(collectionsAdapter);
-        listView.setOnItemClickListener(itemClickListener);
-
         return layout;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG, "onViewCreated");
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
         setHasOptionsMenu(true);
         collectionLabelList = new ArrayList<>();
         collectionIdList = new ArrayList<>();
@@ -105,12 +107,13 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        Log.d(TAG, "onActivityCreated");
     }
 
     @Override
@@ -118,23 +121,37 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
         super.setUserVisibleHint(isVisibleToUser);
         Log.d(TAG, "isVisibleToUser: " + isVisibleToUser);
         if (isVisibleToUser) {
-//            ((AppCompatActivity)activity).getSupportActionBar().show();
-            mSwipeLayout.setRefreshing(true);
+            recyclerView.setAdapter(mAdapter);
             getCollections();
         }
     }
 
     public void onRefresh() {
-        Log.d(TAG, "onRefresh: CollectionsFragment");
+        Log.d(TAG, "onRefresh");
         getCollections();
     }
 
-    AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+    /*AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             goContentFragment(position);
         }
+    };*/
+
+   CollectionAdapter.ClickListener itemClickListener =  new CollectionAdapter.ClickListener() {
+
+        @Override
+        public void onItemClick(int position, View v) {
+            Log.d(TAG, "onItemClick position: " + position);
+            goContentFragment(position);
+        }
+
+        @Override
+        public void onItemLongClick(int position, View v) {
+            Log.d(TAG, "onItemLongClick pos = " + position);
+        }
     };
+
 
     private void goContentFragment(int position) {
         Log.d(TAG, "goContentFragment: ");
@@ -147,7 +164,7 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
         final MainActivity mainActivity = (MainActivity) activity;
         mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
             @Override
-            public void gotoFragment(ViewPager viewPager, FrogAdapter adapter) {
+            public void gotoFragment(ViewPager viewPager, FragmentAdapter adapter) {
                 mainActivity.setBundle(bundle);
                 viewPager.setCurrentItem(2);
             }
@@ -174,7 +191,7 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
             Log.d(TAG, "readCollections: "+string);
         }
 
-        collectionsAdapter.refreshData(collectionLabelList);
+        mAdapter.refreshData(collectionLabelList);
         mSwipeLayout.setRefreshing(false);
     }
 
@@ -186,9 +203,11 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
         headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
 
 
-        /*OnNextListener<List<Collection>> listener = new OnNextListener<List<Collection>>() {
+        OnNextListener<List<Collection>> listener = new OnNextListener<List<Collection>>() {
             @Override
-            public void onNext(List<Collection> collections) throws IOException, ClassNotFoundException {
+            public void onNext(List<Collection> collections) {
+                collectionLabelList.clear();
+                collectionIdList.clear();
                 for (Collection collection : collections) {
                     collectionLabelList.add(collection.getLabel());
                     collectionIdList.add(collection.getId());
@@ -201,11 +220,11 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
                     }
                     Log.d(TAG, "writeStatus: "+writeStatus);
                 }
-//                readCollections();
+                readCollections();
             }
-        };*/
+        };
 
-        Observer<List<Collection>> observer = new Observer<List<Collection>>() {
+        /*Observer<List<Collection>> observer = new Observer<List<Collection>>() {
             @Override
             public void onSubscribe(Disposable d) {
                 Log.d(TAG, "onSubscribe: Current Thread="+Thread.currentThread().getName());
@@ -239,9 +258,9 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
                 Log.d(TAG, "onComplete: Current Thread="+Thread.currentThread().getName());
                 readCollections();
             }
-        };
+        };*/
 
-        RxUtils.CustomSubscribe(feedlyApi.getCollections(headers), observer);
+        RxUtils.CustomSubscribe(feedlyApi.getCollections(headers), new CustomObserver(listener));
     }
 
     private boolean writeEachCollectionToFile(Collection collection) throws FileNotFoundException {

@@ -1,18 +1,13 @@
 package com.cashzhang.nozdormu.fragment;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.ParseException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,47 +15,48 @@ import android.widget.ListView;
 
 import com.cashzhang.nozdormu.Constants;
 //import com.cashzhang.nozdormu.DialogEditFeed;
+import com.cashzhang.nozdormu.CustomObserver;
+import com.cashzhang.nozdormu.FeedlyApi;
+import com.cashzhang.nozdormu.FeedlyRequest;
 import com.cashzhang.nozdormu.MainActivity;
+import com.cashzhang.nozdormu.OnNextListener;
 import com.cashzhang.nozdormu.R;
+import com.cashzhang.nozdormu.RxUtils;
 import com.cashzhang.nozdormu.Settings;
-import com.cashzhang.nozdormu.adapter.FrogAdapter;
 import com.cashzhang.nozdormu.adapter.LListAdapter;
-import com.cashzhang.nozdormu.bean.FeedStream;
+import com.cashzhang.nozdormu.bean.Collection;
 import com.cashzhang.nozdormu.bean.FeedStreamItems;
 import com.cashzhang.nozdormu.bean.MarkAsRead;
-import com.cashzhang.nozdormu.service.ServiceUpdate;
 
 import org.json.JSONException;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.cashzhang.nozdormu.Constants.s_activity;
 
 /**
  * Created by cz21 on 02/02/2018.
  */
 
-public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private final static String TAG = MainFragment.class.getSimpleName();
+    private final static String TAG = StreamsFragment.class.getSimpleName();
 
     private ArrayList<String> listId;
     private ArrayList<String> listTitle;//web title
@@ -77,45 +73,26 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     LListAdapter listAdapter = null;
     ContentFragment contentFragment;
     Bundle bundle;
+    private Activity activity;
     private String feedId;
 
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout mSwipeLayout;
 
-    @BindView(R.id.l_list)
-    ListView listView;
+    @BindView(R.id.recycler)
+    RecyclerView listView;
 
-    private FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
-
-    public static MainFragment newInstance() {
-        MainFragment mainFragment = new MainFragment();
-        return mainFragment;
+    public static StreamsFragment newInstance() {
+        StreamsFragment streamsFragment = new StreamsFragment();
+        return streamsFragment;
     }
 
-    private final BroadcastReceiver m_broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (null != s_activity) {
-                Log.d(TAG, "onReceive: main fragment");
-                /*try {
-                    readFromFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }*/
-            }
-        }
-    };
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Activity activity;
         if (context instanceof Activity) {
             activity = (Activity) context;
-            activity.registerReceiver(m_broadcastReceiver, new IntentFilter(ServiceUpdate.FEED_BROADCAST_ACTION));
         }
     }
 
@@ -130,8 +107,8 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         mSwipeLayout.setOnRefreshListener(this);
         listAdapter = new LListAdapter(getActivity());
-        listView.setAdapter(listAdapter);
-        listView.setOnItemClickListener(itemClickListener);
+//        listView.setAdapter(listAdapter);
+//        listView.setOnItemClickListener(itemClickListener);
 
         return layout;
     }
@@ -163,38 +140,18 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-//        inflater.inflate(R.menu.feeds_menu, menu);
     }
 
-   /* @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_feed:
-                MainActivity activity = (MainActivity) getActivity();
-                Dialog dialog = DialogEditFeed.newInstance(activity, -1);
-                dialog.show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }*/
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        try {
-//            readFromFile();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        Log.d(TAG, "setUserVisibleHint() -> isVisibleToUser: " + isVisibleToUser);
+        Log.d(TAG, "isVisibleToUser: " + isVisibleToUser);
         if (isVisibleToUser) {
             try {
                 loadData(MainActivity.getBundle());
@@ -210,6 +167,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void loadData(Bundle tmpBundle) throws IOException, ClassNotFoundException {
         try {
             bundle = tmpBundle;
+            Log.d(TAG, "loadData: bundle == null? " + (bundle == null));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -217,56 +175,81 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             String tmpFeedId = bundle.getString("feed_id");
             if (tmpFeedId != null && !tmpFeedId.equals("")) feedId = tmpFeedId;
             if (feedId != null) {
-                Log.d(TAG, "MainFragment loadData: " + feedId);
+                Log.d(TAG, "StreamsFragment loadData: " + feedId);
 //            readFromFile(label+".cif");
-//                getFeedStreamById(feedId);
+                getFeedStream(feedId);
             } else {
                 Log.d(TAG, "loadData: feedId == null, ready read from file");
                 readFeedStreamFile();
             }
-        } else {
-            Log.d(TAG, "loadData: bundle == null, ready read from file");
-            readFeedStreamFile();
         }
 
     }
 
-//    private void getFeedStreamById(final String feedId) {
-//        RequestQueue mQueue = Volley.newRequestQueue(Constants.s_activity);
-//        //success listener
-//        final Response.Listener listener = new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                Constants.tmpWrite("FeedStream", response);
-//                //TODO parse for each feed item
-//                parseFeedStream(response);
-//            }
-//        };
-//        //error listener
-//        Response.ErrorListener errorListener = new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.e(TAG, error.getMessage(), error);
-//            }
-//        };
-//        String input = "";
-//        try {
-//            input = Constants.BASE_URL + "/v3/streams/contents?streamId=" + URLEncoder.encode(feedId, "UTF-8") + "&unreadOnly=true";
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-//        //GET request
-//        StringRequest stringRequest = new StringRequest(input,
-//                listener, errorListener) {
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
-//                return headers;
-//            }
-//        };
-//        mQueue.add(stringRequest);
-//    }
+    private void getFeedStream(final String feedId) {
+
+        FeedlyApi feedlyApi = FeedlyRequest.getInstance();
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json");
+        headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
+
+        OnNextListener<List<Collection>> listener = new OnNextListener<List<Collection>>() {
+            @Override
+            public void onNext(List<Collection> collections) {
+//                collectionLabelList.clear();
+//                collectionIdList.clear();
+//                for (Collection collection : collections) {
+//                    collectionLabelList.add(collection.getLabel());
+//                    collectionIdList.add(collection.getId());
+
+                    boolean writeStatus = false;
+//                    try {
+//                        writeStatus = writeEachCollectionToFile(collection);
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//                    Log.d(TAG, "writeStatus: "+writeStatus);
+//                }
+//                readCollections();
+            }
+        };
+//        RxUtils.CustomSubscribe(feedlyApi.getStreams(feedId,headers), new CustomObserver(listener));
+
+        /*RequestQueue mQueue = Volley.newRequestQueue(Constants.s_activity);
+        //success listener
+        final Response.Listener listener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Constants.tmpWrite("FeedStream", response);
+                //TODO parse for each feed item
+                parseFeedStream(response);
+            }
+        };
+        //error listener
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, error.getMessage(), error);
+            }
+        };
+        String input = "";
+        try {
+            input = Constants.BASE_URL + "/v3/streams/contents?streamId=" + URLEncoder.encode(feedId, "UTF-8") + "&unreadOnly=true";
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        //GET request
+        StringRequest stringRequest = new StringRequest(input,
+                listener, errorListener) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
+                return headers;
+            }
+        };
+        mQueue.add(stringRequest);*/
+    }
 
     public void onRefresh() {
         Log.d(TAG, "onRefresh: main fragment");
@@ -307,7 +290,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         final MainActivity mainActivity = (MainActivity) getActivity();
 //        mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
 //            @Override
-//            public void gotoFragment(ViewPager viewPager, FrogAdapter adapter) {
+//            public void gotoFragment(ViewPager viewPager, FragmentAdapter adapter) {
 //                mainActivity.setBundle(bundle);
 //                viewPager.setCurrentItem(4);
 //            }

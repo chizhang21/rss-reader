@@ -1,38 +1,48 @@
-/**
-  * Copyright 2018 bejson.com 
-  */
 package com.cashzhang.nozdormu.bean;
 
-/**
- * Auto-generated: 2018-08-04 21:36:17
- *
- * @author bejson.com (i@bejson.com)
- * @website http://www.bejson.com/java2pojo/
- */
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class Origin {
 
+    @SerializedName("streamId")
+    @Expose
     private String streamId;
+    @SerializedName("title")
+    @Expose
     private String title;
+    @SerializedName("htmlUrl")
+    @Expose
     private String htmlUrl;
+
+    public String getStreamId() {
+        return streamId;
+    }
+
     public void setStreamId(String streamId) {
-         this.streamId = streamId;
-     }
-     public String getStreamId() {
-         return streamId;
-     }
+        this.streamId = streamId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 
     public void setTitle(String title) {
-         this.title = title;
-     }
-     public String getTitle() {
-         return title;
-     }
+        this.title = title;
+    }
+
+    public String getHtmlUrl() {
+        return htmlUrl;
+    }
 
     public void setHtmlUrl(String htmlUrl) {
-         this.htmlUrl = htmlUrl;
-     }
-     public String getHtmlUrl() {
-         return htmlUrl;
-     }
+        this.htmlUrl = htmlUrl;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).append("streamId", streamId).append("title", title).append("htmlUrl", htmlUrl).toString();
+    }
 
 }

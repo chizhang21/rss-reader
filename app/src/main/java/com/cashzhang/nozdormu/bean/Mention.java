@@ -4,23 +4,23 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Visual {
+public class Mention {
 
-    @SerializedName("url")
+    @SerializedName("text")
     @Expose
-    private String url;
+    private String text;
 
-    public String getUrl() {
-        return url;
+    public String getText() {
+        return text;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setText(String text) {
+        this.text = text;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("url", url).toString();
+        return new ToStringBuilder(this).append("text", text).toString();
     }
 
 }

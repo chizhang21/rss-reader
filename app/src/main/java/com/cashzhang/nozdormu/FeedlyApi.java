@@ -4,6 +4,7 @@ import com.cashzhang.nozdormu.bean.Feed;
 import com.cashzhang.nozdormu.bean.Collection;
 import com.cashzhang.nozdormu.bean.LoginBody;
 import com.cashzhang.nozdormu.bean.Profile;
+import com.cashzhang.nozdormu.bean.Streams;
 import com.cashzhang.nozdormu.bean.Token;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface FeedlyApi {
 
@@ -27,8 +29,7 @@ public interface FeedlyApi {
     @GET("/v3/collections")
     Observable<List<Collection>> getCollections(@HeaderMap Map<String, String> headers);
 
-    @GET("/v3/collections")
-    Call<String> getCollectionsString(@HeaderMap Map<String, String> headers);
-
+    @GET("/v3/streams/{streamId}/ids")
+    Observable<Streams> getStreams(@Path("streamId") String streamId, @HeaderMap Map<String, String> headers);
 
 }

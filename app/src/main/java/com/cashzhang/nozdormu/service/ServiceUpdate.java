@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 public class ServiceUpdate extends IntentService {
     public static final String FEED_BROADCAST_ACTION = "com.cashzhang.serviceupdate.handle";
     public static final String ITEM_LIST = "-item_list.txt";
-    private final static String TAG = "nozdormu";
+    private final static String TAG = ServiceUpdate.class.getSimpleName();
     private String tmpTitle = "";
 
     private static class Tags {
@@ -81,11 +81,11 @@ public class ServiceUpdate extends IntentService {
         Log.d(TAG, "parseFeed");
 
         if (new File(getFilesDir(), contentFile + "-content.txt").exists()) {
-            ObjectIO reader = new ObjectIO(this, uid + "-content.txt");
+            ObjectIO reader = new ObjectIO(this, uid + "-content.txt",2);
             Map<Long, FeedItem> tempMap = (Map<Long, FeedItem>) reader.read();
             deleteFile(uid + "-content.txt");
 
-            ObjectIO writer = new ObjectIO(this, Long.toString(uid));
+            ObjectIO writer = new ObjectIO(this, Long.toString(uid),2);
             writer.write(tempMap);
         }
 
@@ -93,7 +93,7 @@ public class ServiceUpdate extends IntentService {
 
         Map<Long, FeedItem> map = new TreeMap<Long, FeedItem>(Collections.reverseOrder());
 
-        ObjectIO reader = new ObjectIO(this, contentFile);
+        ObjectIO reader = new ObjectIO(this, contentFile,2);
         Map<Long, FeedItem> mapFromFile = (Map<Long, FeedItem>) reader.read();
 
         if (null != mapFromFile) {
@@ -162,7 +162,7 @@ public class ServiceUpdate extends IntentService {
         }
 
         // Write the map to file.
-        ObjectIO out = new ObjectIO(this, contentFile);
+        ObjectIO out = new ObjectIO(this, contentFile,2);
         out.write(map);
 
         // Write the key set to file.

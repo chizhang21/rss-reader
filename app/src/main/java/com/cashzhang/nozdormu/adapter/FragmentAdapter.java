@@ -5,7 +5,7 @@ import android.util.Log;
 import com.cashzhang.nozdormu.fragment.CollectionsFragment;
 import com.cashzhang.nozdormu.fragment.ContentFragment;
 import com.cashzhang.nozdormu.fragment.LeftFragment;
-import com.cashzhang.nozdormu.fragment.MainFragment;
+import com.cashzhang.nozdormu.fragment.StreamsFragment;
 import com.cashzhang.nozdormu.fragment.FeedsFragment;
 
 import java.util.List;
@@ -19,12 +19,12 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
  * Created by cz21 on 2018/5/23.
  */
 
-public class FrogAdapter extends FragmentStatePagerAdapter {
+public class FragmentAdapter extends FragmentStatePagerAdapter {
 
-    private final static String TAG = "nozdormu";
+    private final static String TAG = FragmentAdapter.class.getSimpleName();
     private List<Fragment> mFragments;
 
-    public FrogAdapter(FragmentManager fm, List<Fragment> fragments) {
+    public FragmentAdapter(FragmentManager fm, List<Fragment> fragments) {
         super(fm);
         // TODO Auto-generated constructor stub
         mFragments=fragments;
@@ -40,7 +40,7 @@ public class FrogAdapter extends FragmentStatePagerAdapter {
             case 2:
                 return FeedsFragment.newInstance();
             case 3:
-                return MainFragment.newInstance();
+                return StreamsFragment.newInstance();
             case 4:
                 return ContentFragment.newInstance();
             default:
