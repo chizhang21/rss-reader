@@ -1,10 +1,11 @@
 package com.cashzhang.nozdormu.bean;
 
+import java.io.Serializable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Category {
+public class Category implements Serializable {
 
     @SerializedName("id")
     @Expose
@@ -12,6 +13,7 @@ public class Category {
     @SerializedName("label")
     @Expose
     private String label;
+    private final static long serialVersionUID = 841372717397246658L;
 
     public String getId() {
         return id;

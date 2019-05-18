@@ -1,10 +1,11 @@
 package com.cashzhang.nozdormu.bean;
 
+import java.io.Serializable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Origin {
+public class Origin implements Serializable {
 
     @SerializedName("streamId")
     @Expose
@@ -15,6 +16,7 @@ public class Origin {
     @SerializedName("htmlUrl")
     @Expose
     private String htmlUrl;
+    private final static long serialVersionUID = -174037031250207312L;
 
     public String getStreamId() {
         return streamId;

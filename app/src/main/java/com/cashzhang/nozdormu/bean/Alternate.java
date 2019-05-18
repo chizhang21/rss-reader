@@ -1,10 +1,11 @@
 package com.cashzhang.nozdormu.bean;
 
+import java.io.Serializable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Alternate {
+public class Alternate implements Serializable {
 
     @SerializedName("href")
     @Expose
@@ -12,6 +13,7 @@ public class Alternate {
     @SerializedName("type")
     @Expose
     private String type;
+    private final static long serialVersionUID = 2851489861253424554L;
 
     public String getHref() {
         return href;

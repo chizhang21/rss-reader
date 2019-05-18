@@ -11,28 +11,24 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.cashzhang.nozdormu.Constants;
 //import com.cashzhang.nozdormu.DialogEditFeed;
-import com.cashzhang.nozdormu.CustomObserver;
 import com.cashzhang.nozdormu.FeedlyApi;
 import com.cashzhang.nozdormu.FeedlyRequest;
 import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.OnNextListener;
 import com.cashzhang.nozdormu.R;
-import com.cashzhang.nozdormu.RxUtils;
 import com.cashzhang.nozdormu.Settings;
 import com.cashzhang.nozdormu.adapter.LListAdapter;
 import com.cashzhang.nozdormu.bean.Collection;
-import com.cashzhang.nozdormu.bean.FeedStreamItems;
+import com.cashzhang.nozdormu.bean.Item;
 import com.cashzhang.nozdormu.bean.MarkAsRead;
 
 import org.json.JSONException;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,8 +38,6 @@ import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
@@ -58,21 +52,20 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     private final static String TAG = StreamsFragment.class.getSimpleName();
 
-    private ArrayList<String> listId;
-    private ArrayList<String> listTitle;//web title
-    private ArrayList<String> listData;//title
-    private ArrayList<String> listUrl;//url
-    private ArrayList<String> listContent;//content should display in content fragment
-    private ArrayList<String> listTContent;//content on the list
-    private ArrayList<String> listTime;//publish time
+    private ArrayList<String> streamId;
+    private ArrayList<String> streamWebtitle;//web title
+    private ArrayList<String> streamTitle;//title
+    private ArrayList<String> streamUrl;//url
+    private ArrayList<String> streamContent;//content should display in content fragment
+    private ArrayList<String> streamSummary;//content on the list
+    private ArrayList<String> streamTime;//publish time
 
     List<String> entryIDs = new ArrayList<String>();
 
-    private ArrayList<FeedStreamItems> listItems;
+    private ArrayList<Item> listItems;
     MarkAsRead markAsRead = new MarkAsRead();
-    LListAdapter listAdapter = null;
-    ContentFragment contentFragment;
-    Bundle bundle;
+    private LListAdapter listAdapter = null;
+    private Bundle bundle;
     private Activity activity;
     private String feedId;
 
@@ -102,11 +95,11 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         super.onCreateView(inflater, container, savedInstanceState);
 
         Log.d(TAG, "onCreateView: ");
-        View layout = inflater.inflate(R.layout.feed_list, container, false);
+        View layout = inflater.inflate(R.layout.stream_list, container, false);
         ButterKnife.bind(this, layout);
 
         mSwipeLayout.setOnRefreshListener(this);
-        listAdapter = new LListAdapter(getActivity());
+        listAdapter = new LListAdapter(activity);
 //        listView.setAdapter(listAdapter);
 //        listView.setOnItemClickListener(itemClickListener);
 
@@ -123,13 +116,13 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        listId = new ArrayList<String>();
-        listTitle = new ArrayList<String>();
-        listData = new ArrayList<String>();
-        listUrl = new ArrayList<String>();
-        listContent = new ArrayList<String>();
-        listTContent = new ArrayList<String>();
-        listTime = new ArrayList<String>();
+        streamId = new ArrayList<String>();
+        streamWebtitle = new ArrayList<String>();
+        streamTitle = new ArrayList<String>();
+        streamUrl = new ArrayList<String>();
+        streamContent = new ArrayList<String>();
+        streamSummary = new ArrayList<String>();
+        streamTime = new ArrayList<String>();
     }
 
     @Override
@@ -278,7 +271,7 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private void goContentFragment(int position) throws JSONException {
         Log.d(TAG, "goContentFragment: ");
 
-        contentFragment = new ContentFragment();
+        ContentFragment contentFragment = new ContentFragment();
         final Bundle bundle = new Bundle();
         bundle.putString("id", getId(position));
         bundle.putString("title", getTitle(position));
@@ -347,23 +340,23 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 //    }
 
     private String getId(int position) {
-        return ((listId == null) ? null : listId.get(position));
+        return ((streamId == null) ? null : streamId.get(position));
     }
 
     private String getTitle(int position) {
-        return ((listData == null) ? null : listData.get(position));
+        return ((streamTitle == null) ? null : streamTitle.get(position));
     }
 
     private String getTime(int position) {
-        return ((listTime == null) ? null : listTime.get(position));
+        return ((streamTime == null) ? null : streamTime.get(position));
     }
 
     private String getUrl(int position) {
-        return ((listUrl == null) ? null : listUrl.get(position));
+        return ((streamUrl == null) ? null : streamUrl.get(position));
     }
 
     private String getContent(int position) {
-        return ((listContent == null) ? null : listContent.get(position));
+        return ((streamContent == null) ? null : streamContent.get(position));
     }
 
     /* String Data Long */
@@ -436,25 +429,25 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         }
 
         if (sets != null) {
-            listTitle.clear();
-            listData.clear();
-            listUrl.clear();
-            listContent.clear();
-            listTContent.clear();
-            listTime.clear();
+            streamWebtitle.clear();
+            streamTitle.clear();
+            streamUrl.clear();
+            streamContent.clear();
+            streamSummary.clear();
+            streamTime.clear();
 
             arraySets = sets.toArray(new Long[sets.size()]);
             Arrays.sort(arraySets);
             for (int i = arraySets.length - 1; i >= 0; i--) {
                 FeedItem feedItem = mapFromFile.get(arraySets[i]);
-                listTitle.add(feedItem.m_webtitle);
-                listData.add(feedItem.m_title);
-                listUrl.add(feedItem.m_url);
-                listContent.add(feedItem.m_content);
-                listTContent.add(feedItem.m_tcontent);
-                listTime.add(longToString(feedItem.m_time, "MM-dd HH:mm"));
+                streamWebtitle.add(feedItem.m_webtitle);
+                streamTitle.add(feedItem.m_title);
+                streamUrl.add(feedItem.m_url);
+                streamContent.add(feedItem.m_content);
+                streamSummary.add(feedItem.m_tcontent);
+                streamTime.add(longToString(feedItem.m_time, "MM-dd HH:mm"));
             }
-            listAdapter.refreshData(listTitle, listData, listTContent, listTime);
+            listAdapter.refreshData(streamWebtitle, streamTitle, streamSummary, streamTime);
             mSwipeLayout.setRefreshing(false);
         }
     }*/
@@ -480,30 +473,30 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 //        listItems = (ArrayList<FeedStreamItems>) feedStream.getItems();
 //        //TODO clear
 //        if (listItems != null) {
-//            listId.clear();
-//            listTitle.clear();
-//            listData.clear();
-//            listContent.clear();
-//            listTContent.clear();
-//            listUrl.clear();
-//            listTime.clear();
+//            streamId.clear();
+//            streamWebtitle.clear();
+//            streamTitle.clear();
+//            streamContent.clear();
+//            streamSummary.clear();
+//            streamUrl.clear();
+//            streamTime.clear();
 //        }
 //
 //        for (FeedStreamItems listItem: listItems) {
-//            //listTitle, listData, listUrl , listContent, listTContent, listTime
-//            listId.add(listItem.getId());
-//            listTitle.add(feedStream.getTitle());
-//            listData.add(listItem.getTitle());
+//            //streamWebtitle, streamTitle, streamUrl , streamContent, streamSummary, streamTime
+//            streamId.add(listItem.getId());
+//            streamWebtitle.add(feedStream.getTitle());
+//            streamTitle.add(listItem.getTitle());
 //            if (listItem.getContent() != null)
-//                listContent.add(listItem.getContent().getContent());
+//                streamContent.add(listItem.getContent().getContent());
 //            else if (listItem.getSummary() != null)
-//                listContent.add(listItem.getSummary().getContent());
-//            listTContent.add(ServiceUpdate.Patterns.CDATA.matcher(listItem.getSummary().getContent()).replaceAll("").trim());
-////            listUrl.add(listItem.getAlternate().get(0).getHref());
-//            listUrl.add(listItem.getOriginId());
-//            listTime.add(longToString(listItem.getPublished(),"MM-dd HH:mm"));
+//                streamContent.add(listItem.getSummary().getContent());
+//            streamSummary.add(ServiceUpdate.Patterns.CDATA.matcher(listItem.getSummary().getContent()).replaceAll("").trim());
+////            streamUrl.add(listItem.getAlternate().get(0).getHref());
+//            streamUrl.add(listItem.getOriginId());
+//            streamTime.add(longToString(listItem.getPublished(),"MM-dd HH:mm"));
 //        }
-//        listAdapter.refreshData(listTitle, listData, listTContent, listTime);
+//        listAdapter.refreshData(streamWebtitle, streamTitle, streamSummary, streamTime);
 //        mSwipeLayout.setRefreshing(false);
 //    }
 

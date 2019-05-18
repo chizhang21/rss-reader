@@ -1,11 +1,12 @@
 package com.cashzhang.nozdormu.bean;
 
+import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Streams {
+public class Streams implements Serializable {
 
     @SerializedName("id")
     @Expose
@@ -28,6 +29,7 @@ public class Streams {
     @SerializedName("items")
     @Expose
     private List<Item> items = null;
+    private final static long serialVersionUID = -381602297131992324L;
 
     public String getId() {
         return id;

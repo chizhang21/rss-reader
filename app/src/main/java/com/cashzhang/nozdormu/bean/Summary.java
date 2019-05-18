@@ -1,10 +1,11 @@
 package com.cashzhang.nozdormu.bean;
 
+import java.io.Serializable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Summary {
+public class Summary implements Serializable {
 
     @SerializedName("content")
     @Expose
@@ -12,6 +13,7 @@ public class Summary {
     @SerializedName("direction")
     @Expose
     private String direction;
+    private final static long serialVersionUID = 8509519511516056509L;
 
     public String getContent() {
         return content;

@@ -1,12 +1,14 @@
-
 package com.cashzhang.nozdormu.bean;
 
+import androidx.annotation.Nullable;
+
+import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Item {
+public class Item implements Serializable {
 
     @SerializedName("id")
     @Expose
@@ -20,9 +22,16 @@ public class Item {
     @SerializedName("fingerprint")
     @Expose
     private String fingerprint;
+    @SerializedName("content")
+    @Expose
+    @Nullable
+    private Content content;
     @SerializedName("title")
     @Expose
     private String title;
+    @SerializedName("author")
+    @Expose
+    private String author;
     @SerializedName("summary")
     @Expose
     private Summary summary;
@@ -50,9 +59,7 @@ public class Item {
     @SerializedName("categories")
     @Expose
     private List<Category> categories = null;
-    @SerializedName("entities")
-    @Expose
-    private List<Entity> entities = null;
+    private final static long serialVersionUID = -5040485178574463095L;
 
     public String getId() {
         return id;
@@ -86,12 +93,28 @@ public class Item {
         this.fingerprint = fingerprint;
     }
 
+    public Content getContent() {
+        return content;
+    }
+
+    public void setContent(Content content) {
+        this.content = content;
+    }
+
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public Summary getSummary() {
@@ -166,17 +189,9 @@ public class Item {
         this.categories = categories;
     }
 
-    public List<Entity> getEntities() {
-        return entities;
-    }
-
-    public void setEntities(List<Entity> entities) {
-        this.entities = entities;
-    }
-
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("id", id).append("keywords", keywords).append("originId", originId).append("fingerprint", fingerprint).append("title", title).append("summary", summary).append("alternate", alternate).append("crawled", crawled).append("published", published).append("origin", origin).append("visual", visual).append("canonicalUrl", canonicalUrl).append("unread", unread).append("categories", categories).append("entities", entities).toString();
+        return new ToStringBuilder(this).append("id", id).append("keywords", keywords).append("originId", originId).append("fingerprint", fingerprint).append("content", content).append("title", title).append("author", author).append("summary", summary).append("alternate", alternate).append("crawled", crawled).append("published", published).append("origin", origin).append("visual", visual).append("canonicalUrl", canonicalUrl).append("unread", unread).append("categories", categories).toString();
     }
 
 }
