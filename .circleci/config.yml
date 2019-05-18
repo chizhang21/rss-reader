@@ -24,8 +24,8 @@ jobs:
           name: Run Tests
           command: ./gradlew lint test
       - run:
-          name: Run Assemble
-          command: ./gradlew assembleRelease
+          name: Run AssembleDebug
+          command: ./gradlew assembleDebug
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
           path: app/build/reports
           destination: reports
