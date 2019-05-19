@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cashzhang.nozdormu.R;
+import com.cashzhang.nozdormu.bean.Item;
 
 import java.util.ArrayList;
 
@@ -19,7 +20,7 @@ import butterknife.ButterKnife;
 public class StreamAdapter extends RecyclerView.Adapter<StreamAdapter.LabelViewHolder> {
 
     private final static String TAG = StreamAdapter.class.getSimpleName();
-    private ArrayList<String> labelList;
+    private ArrayList<Item> labelList;
     private static ClickListener clickListener;
 
     public static class LabelViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
@@ -44,7 +45,7 @@ public class StreamAdapter extends RecyclerView.Adapter<StreamAdapter.LabelViewH
         }
     }
 
-    public StreamAdapter(ArrayList<String> dataSet) {
+    public StreamAdapter(ArrayList<Item> dataSet) {
         this.labelList = dataSet;
     }
 
@@ -61,7 +62,7 @@ public class StreamAdapter extends RecyclerView.Adapter<StreamAdapter.LabelViewH
     @Override
     public void onBindViewHolder(@NonNull LabelViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: position="+position);
-        holder.content.setText(labelList.get(position));
+        holder.content.setText(labelList.get(position).getTitle());
     }
 
     @Override
@@ -74,7 +75,7 @@ public class StreamAdapter extends RecyclerView.Adapter<StreamAdapter.LabelViewH
         return labelList.size();
     }
 
-    public void refreshData(ArrayList<String> labelContent) {
+    public void refreshData(ArrayList<Item> labelContent) {
         Log.d(TAG, "refreshData: ");
         labelList = labelContent;
         notifyDataSetChanged();

@@ -20,7 +20,8 @@ import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.OnNextListener;
 import com.cashzhang.nozdormu.R;
 import com.cashzhang.nozdormu.Settings;
-import com.cashzhang.nozdormu.adapter.FeedAdapter;
+import com.cashzhang.nozdormu.adapter.StreamAdapter;
+import com.cashzhang.nozdormu.adapter.StreamAdapter;
 import com.cashzhang.nozdormu.adapter.LListAdapter;
 import com.cashzhang.nozdormu.bean.Collection;
 import com.cashzhang.nozdormu.bean.Item;
@@ -71,7 +72,7 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private Activity activity;
     private String feedId;
 
-    private FeedAdapter mAdapter;
+    private StreamAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
     @BindView(R.id.swipe_refresh)
@@ -108,7 +109,7 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(activity);
-        mAdapter = new FeedAdapter(streamItems);
+        mAdapter = new StreamAdapter(streamItems);
         mAdapter.setOnItemClickListener(itemClickListener);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mAdapter);
@@ -266,18 +267,21 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 //        getActivity().startService(intent);
     }
 
-    AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+    StreamAdapter.ClickListener itemClickListener =  new StreamAdapter.ClickListener() {
+
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            try {
-                goContentFragment(position);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        public void onItemClick(int position, View v) {
+            Log.d(TAG, "onItemClick position: " + position);
+            goContentFragment(position);
+        }
+
+        @Override
+        public void onItemLongClick(int position, View v) {
+            Log.d(TAG, "onItemLongClick pos = " + position);
         }
     };
 
-    private void goContentFragment(int position) throws JSONException {
+    private void goContentFragment(int position) {
         Log.d(TAG, "goContentFragment: ");
 
         ContentFragment contentFragment = new ContentFragment();
