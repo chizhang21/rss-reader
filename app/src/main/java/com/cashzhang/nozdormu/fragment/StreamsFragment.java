@@ -20,6 +20,7 @@ import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.OnNextListener;
 import com.cashzhang.nozdormu.R;
 import com.cashzhang.nozdormu.Settings;
+import com.cashzhang.nozdormu.adapter.FeedAdapter;
 import com.cashzhang.nozdormu.adapter.LListAdapter;
 import com.cashzhang.nozdormu.bean.Collection;
 import com.cashzhang.nozdormu.bean.Item;
@@ -38,6 +39,7 @@ import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
@@ -59,27 +61,27 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private ArrayList<String> streamContent;//content should display in content fragment
     private ArrayList<String> streamSummary;//content on the list
     private ArrayList<String> streamTime;//publish time
-
-    List<String> entryIDs = new ArrayList<String>();
-
-    private ArrayList<Item> listItems;
+    
+    private ArrayList<String> entryIDs;
+    private ArrayList<Item> streamItems;
+    
     MarkAsRead markAsRead = new MarkAsRead();
     private LListAdapter listAdapter = null;
     private Bundle bundle;
     private Activity activity;
     private String feedId;
 
+    private FeedAdapter mAdapter;
+    private RecyclerView.LayoutManager layoutManager;
+
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout mSwipeLayout;
-
     @BindView(R.id.recycler)
-    RecyclerView listView;
+    RecyclerView recyclerView;
 
     public static StreamsFragment newInstance() {
-        StreamsFragment streamsFragment = new StreamsFragment();
-        return streamsFragment;
+        return new StreamsFragment();
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -98,11 +100,21 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         View layout = inflater.inflate(R.layout.stream_list, container, false);
         ButterKnife.bind(this, layout);
 
-        mSwipeLayout.setOnRefreshListener(this);
-        listAdapter = new LListAdapter(activity);
-//        listView.setAdapter(listAdapter);
-//        listView.setOnItemClickListener(itemClickListener);
 
+        listAdapter = new LListAdapter(activity);
+//        recyclerView.setAdapter(listAdapter);
+//        recyclerView.setOnItemClickListener(itemClickListener);
+
+
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(activity);
+        mAdapter = new FeedAdapter(streamItems);
+        mAdapter.setOnItemClickListener(itemClickListener);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(mAdapter);
+
+
+        mSwipeLayout.setOnRefreshListener(this);
         return layout;
     }
 
@@ -116,29 +128,26 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        streamId = new ArrayList<String>();
-        streamWebtitle = new ArrayList<String>();
-        streamTitle = new ArrayList<String>();
-        streamUrl = new ArrayList<String>();
-        streamContent = new ArrayList<String>();
-        streamSummary = new ArrayList<String>();
-        streamTime = new ArrayList<String>();
+        streamId = new ArrayList<>();
+        streamWebtitle = new ArrayList<>();
+        streamTitle = new ArrayList<>();
+        streamUrl = new ArrayList<>();
+        streamContent = new ArrayList<>();
+        streamSummary = new ArrayList<>();
+        streamTime = new ArrayList<>();
+        entryIDs = new ArrayList<>();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
     }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated");
     }
 
     @Override
@@ -153,7 +162,7 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            onRefresh();
+//            onRefresh();
         }
     }
 
@@ -180,7 +189,7 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     private void getFeedStream(final String feedId) {
-
+//TODO here
         FeedlyApi feedlyApi = FeedlyRequest.getInstance();
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
@@ -470,9 +479,9 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
 //    private void parseFeedStream(String response) {
 //        FeedStream feedStream = JSON.parseObject(response, FeedStream.class);
-//        listItems = (ArrayList<FeedStreamItems>) feedStream.getItems();
+//        streamItems = (ArrayList<FeedStreamItems>) feedStream.getItems();
 //        //TODO clear
-//        if (listItems != null) {
+//        if (streamItems != null) {
 //            streamId.clear();
 //            streamWebtitle.clear();
 //            streamTitle.clear();
@@ -482,7 +491,7 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 //            streamTime.clear();
 //        }
 //
-//        for (FeedStreamItems listItem: listItems) {
+//        for (FeedStreamItems listItem: streamItems) {
 //            //streamWebtitle, streamTitle, streamUrl , streamContent, streamSummary, streamTime
 //            streamId.add(listItem.getId());
 //            streamWebtitle.add(feedStream.getTitle());

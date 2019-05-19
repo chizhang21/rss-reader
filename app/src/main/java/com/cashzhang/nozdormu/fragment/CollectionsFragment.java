@@ -223,43 +223,6 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
                 readCollections();
             }
         };
-
-        /*Observer<List<Collection>> observer = new Observer<List<Collection>>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                Log.d(TAG, "onSubscribe: Current Thread="+Thread.currentThread().getName());
-            }
-
-            @Override
-            public void onNext(List<Collection> collections) {
-                collectionLabelList.clear();
-                collectionIdList.clear();
-                for (Collection collection : collections) {
-                    collectionLabelList.add(collection.getLabel());
-                    collectionIdList.add(collection.getId());
-
-                    boolean writeStatus = false;
-                    try {
-                        writeStatus = writeEachCollectionToFile(collection);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    Log.d(TAG, "writeStatus: "+writeStatus);
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.d(TAG, "onError: "+e.getMessage());
-            }
-
-            @Override
-            public void onComplete() {
-                Log.d(TAG, "onComplete: Current Thread="+Thread.currentThread().getName());
-                readCollections();
-            }
-        };*/
-
         RxUtils.CustomSubscribe(feedlyApi.getCollections(headers), new CustomObserver(listener));
     }
 

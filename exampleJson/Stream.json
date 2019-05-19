@@ -1,0 +1,65 @@
+{
+    "id": "feed/http://www.oschina.net/news/rss",
+    "title": "OSCHINA 社区最新新闻",
+    "updated": 1557899429598,
+    "alternate": [
+        {
+            "href": "https://www.oschina.net/news/rss",
+            "type": "text/html"
+        }
+    ],
+    "direction": "ltr",
+    "continuation": "16ab88e4e04:1a557b0:247b6d24",
+    "items": [
+        {
+            "id": "bOtjtk584eO9/b4jujpUabNxmGwpF8BoZGfXZ11jz6w=_16ab8b69754:1af7734:d02fd57c",
+            "keywords": [
+                "综合新闻"
+            ],
+            "originId": "https://www.oschina.net/p/rdebug",
+            "fingerprint": "e119b87b",
+            "title": "RDebug   —— 基于真实流量的研发调试利器",
+            "summary": {
+                "content": "由滴滴开源，可以被用来提升 RD 研发效率、保障代码质量进而减少线上事故。",
+                "direction": "ltr"
+            },
+            "alternate": [
+                {
+                    "href": "https://www.oschina.net/p/rdebug",
+                    "type": "text/html"
+                }
+            ],
+            "crawled": 1557877135188,
+            "published": 1557876978000,
+            "origin": {
+                "streamId": "feed/http://www.oschina.net/news/rss",
+                "title": "OSCHINA 社区最新新闻",
+                "htmlUrl": "https://www.oschina.net/news/rss"
+            },
+            "visual": {
+                "url": "none"
+            },
+            "canonicalUrl": "https://www.oschina.net/p/rdebug",
+            "unread": true,
+            "categories": [
+                {
+                    "id": "user/bb7abbe1-c7c8-4817-b451-c92a5a4ecbd4/category/开发,安全",
+                    "label": "Development"
+                }
+            ],
+            "entities": [
+                {
+                    "id": "nlp/f/entity/wd:62270",
+                    "salienceLevel": "about",
+                    "label": "remote procedure call",
+                    "mentions": [
+                        {
+                            "text": "RPC"
+                        }
+                    ]
+                }
+            ]
+        }
+        
+    ]
+}
