@@ -14,18 +14,22 @@ import android.widget.AdapterView;
 
 import com.cashzhang.nozdormu.Constants;
 //import com.cashzhang.nozdormu.DialogEditFeed;
+import com.cashzhang.nozdormu.CustomObserver;
 import com.cashzhang.nozdormu.FeedlyApi;
 import com.cashzhang.nozdormu.FeedlyRequest;
 import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.OnNextListener;
 import com.cashzhang.nozdormu.R;
+import com.cashzhang.nozdormu.RxUtils;
 import com.cashzhang.nozdormu.Settings;
+import com.cashzhang.nozdormu.adapter.FragmentAdapter;
 import com.cashzhang.nozdormu.adapter.StreamAdapter;
 import com.cashzhang.nozdormu.adapter.StreamAdapter;
 import com.cashzhang.nozdormu.adapter.LListAdapter;
 import com.cashzhang.nozdormu.bean.Collection;
 import com.cashzhang.nozdormu.bean.Item;
 import com.cashzhang.nozdormu.bean.MarkAsRead;
+import com.cashzhang.nozdormu.bean.Streams;
 
 import org.json.JSONException;
 
@@ -43,6 +47,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -56,7 +61,7 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private final static String TAG = StreamsFragment.class.getSimpleName();
 
     private ArrayList<String> streamId;
-    private ArrayList<String> streamWebtitle;//web title
+    private String streamWebtitle;//web title
     private ArrayList<String> streamTitle;//title
     private ArrayList<String> streamUrl;//url
     private ArrayList<String> streamContent;//content should display in content fragment
@@ -130,7 +135,7 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         streamId = new ArrayList<>();
-        streamWebtitle = new ArrayList<>();
+//        streamWebtitle = new ArrayList<>();
         streamTitle = new ArrayList<>();
         streamUrl = new ArrayList<>();
         streamContent = new ArrayList<>();
@@ -190,33 +195,30 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     private void getFeedStream(final String feedId) {
-//TODO here
         FeedlyApi feedlyApi = FeedlyRequest.getInstance();
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
         headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
 
-        OnNextListener<List<Collection>> listener = new OnNextListener<List<Collection>>() {
+        OnNextListener<Streams> listener = new OnNextListener<Streams>() {
             @Override
-            public void onNext(List<Collection> collections) {
-//                collectionLabelList.clear();
-//                collectionIdList.clear();
-//                for (Collection collection : collections) {
+            public void onNext(Streams response) {
+                streamWebtitle=response.getTitle();
+                for (Item item : response.getItems()) {
 //                    collectionLabelList.add(collection.getLabel());
 //                    collectionIdList.add(collection.getId());
 
-                    boolean writeStatus = false;
-//                    try {
-//                        writeStatus = writeEachCollectionToFile(collection);
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
-//                    Log.d(TAG, "writeStatus: "+writeStatus);
-//                }
+                    streamId.add(item.getId());
+                    streamTitle.add(item.getTitle());
+                    streamSummary.add(item.getSummary().getContent());
+                    streamContent.add(item.getContent().getContent());
+                    streamTime.add(longToString(item.getPublished(),"MM-dd HH:mm"));
+                    streamUrl.add(item.getOriginId());
+                }
 //                readCollections();
             }
         };
-//        RxUtils.CustomSubscribe(feedlyApi.getStreams(feedId,headers), new CustomObserver(listener));
+        RxUtils.CustomSubscribe(feedlyApi.getStreams(feedId,headers), new CustomObserver(listener));
 
         /*RequestQueue mQueue = Volley.newRequestQueue(Constants.s_activity);
         //success listener
@@ -252,6 +254,8 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             }
         };
         mQueue.add(stringRequest);*/
+        //TODO adapter
+
     }
 
     public void onRefresh() {
@@ -294,13 +298,13 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         contentFragment.setArguments(bundle);
 
         final MainActivity mainActivity = (MainActivity) getActivity();
-//        mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
-//            @Override
-//            public void gotoFragment(ViewPager viewPager, FragmentAdapter adapter) {
-//                mainActivity.setBundle(bundle);
-//                viewPager.setCurrentItem(4);
-//            }
-//        });
+        mainActivity.setFragmentSwitch(new MainActivity.FragmentSwitch() {
+            @Override
+            public void gotoFragment(ViewPager viewPager, FragmentAdapter adapter) {
+                mainActivity.setBundle(bundle);
+                viewPager.setCurrentItem(4);
+            }
+        });
         mainActivity.forSkip();
 //        markAsRead(getId(position));
     }
