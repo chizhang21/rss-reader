@@ -13,7 +13,7 @@ import com.cashzhang.nozdormu.FeedlyApi;
 import com.cashzhang.nozdormu.FeedlyRequest;
 import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.ObjectIO;
-import com.cashzhang.nozdormu.OnNextListener;
+import com.cashzhang.nozdormu.CustomListener;
 import com.cashzhang.nozdormu.R;
 import com.cashzhang.nozdormu.RxUtils;
 import com.cashzhang.nozdormu.Settings;
@@ -203,7 +203,7 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
         headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
 
 
-        OnNextListener<List<Collection>> listener = new OnNextListener<List<Collection>>() {
+        CustomListener<List<Collection>> listener = new CustomListener<List<Collection>>() {
             @Override
             public void onNext(List<Collection> collections) {
                 collectionLabelList.clear();
@@ -221,6 +221,11 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
                     Log.d(TAG, "writeStatus: "+writeStatus);
                 }
                 readCollections();
+            }
+
+            @Override
+            public void onComplete() {
+
             }
         };
         RxUtils.CustomSubscribe(feedlyApi.getCollections(headers), new CustomObserver(listener));

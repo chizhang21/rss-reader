@@ -28,7 +28,7 @@
         </activity>
 
         <service
-            android:name=".service.ServiceUpdate"
+            android:name=".service.UpdateService"
             android:enabled="true"
             android:exported="true"/>
         <service

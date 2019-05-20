@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <TextView
-                    android:id="@+id/title"
+                    android:id="@+id/stream_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#363636"
@@ -80,7 +80,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/content"
+                android:id="@+id/stream_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"

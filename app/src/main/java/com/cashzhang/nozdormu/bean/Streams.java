@@ -16,7 +16,7 @@ public class Streams implements Serializable {
     private String title;
     @SerializedName("updated")
     @Expose
-    private Integer updated;
+    private Double updated;
     @SerializedName("alternate")
     @Expose
     private List<Alternate> alternate = null;
@@ -47,11 +47,11 @@ public class Streams implements Serializable {
         this.title = title;
     }
 
-    public Integer getUpdated() {
+    public Double getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Integer updated) {
+    public void setUpdated(Double updated) {
         this.updated = updated;
     }
 

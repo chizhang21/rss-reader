@@ -40,10 +40,10 @@ public class Item implements Serializable {
     private List<Alternate_> alternate = null;
     @SerializedName("crawled")
     @Expose
-    private Integer crawled;
+    private Double crawled;
     @SerializedName("published")
     @Expose
-    private Integer published;
+    private Double published;
     @SerializedName("origin")
     @Expose
     private Origin origin;
@@ -133,19 +133,19 @@ public class Item implements Serializable {
         this.alternate = alternate;
     }
 
-    public Integer getCrawled() {
+    public Double getCrawled() {
         return crawled;
     }
 
-    public void setCrawled(Integer crawled) {
+    public void setCrawled(Double crawled) {
         this.crawled = crawled;
     }
 
-    public Integer getPublished() {
+    public Double getPublished() {
         return published;
     }
 
-    public void setPublished(Integer published) {
+    public void setPublished(Double published) {
         this.published = published;
     }
 

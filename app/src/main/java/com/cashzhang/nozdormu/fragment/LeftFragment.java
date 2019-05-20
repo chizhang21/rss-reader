@@ -1,6 +1,7 @@
 package com.cashzhang.nozdormu.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,11 +16,13 @@ import com.cashzhang.nozdormu.FeedlyApi;
 import com.cashzhang.nozdormu.FeedlyRequest;
 import com.cashzhang.nozdormu.LoginActivity;
 import com.cashzhang.nozdormu.Constants;
-import com.cashzhang.nozdormu.OnNextListener;
+import com.cashzhang.nozdormu.CustomListener;
+import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.R;
 import com.cashzhang.nozdormu.RxUtils;
 import com.cashzhang.nozdormu.Settings;
 import com.cashzhang.nozdormu.bean.Profile;
+import com.cashzhang.nozdormu.service.UpdateService;
 
 import java.util.HashMap;
 
@@ -28,12 +31,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by cz21 on 2018/5/22.
@@ -46,14 +43,21 @@ public class LeftFragment extends Fragment {
     private static String accessToken = null;
     private static String refreshToken = null;
 
+    private Activity activity;
+
     @BindView(R.id.left_text)
     TextView leftText;
     @BindView(R.id.accounts_img)
     ImageView imageView;
 
     public static LeftFragment newInstance() {
-        LeftFragment leftFragment = new LeftFragment();
-        return leftFragment;
+        return new LeftFragment();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = (MainActivity) context;
     }
 
     @Nullable
@@ -114,7 +118,7 @@ public class LeftFragment extends Fragment {
         headers.put("Content-Type", "application/json");
         headers.put("X-Feedly-Access-Token", accessToken);
 
-        OnNextListener<Profile> listener = new OnNextListener<Profile>() {
+        CustomListener<Profile> listener = new CustomListener<Profile>() {
             @Override
             public void onNext(Profile profile) {
                 Log.d(TAG, "onNext: profile.email = " + profile.getEmail());
@@ -123,6 +127,11 @@ public class LeftFragment extends Fragment {
                 Settings.setEmail(profile.getEmail());
                 Settings.setGivenName(profile.getGivenName());
                 leftText.setText(Settings.getEmail());
+            }
+
+            @Override
+            public void onComplete() {
+                activity.startService(new Intent(activity, UpdateService.class));
             }
         };
         RxUtils.CustomSubscribe(feedlyApi.getProfile(headers), new CustomObserver<>(listener));

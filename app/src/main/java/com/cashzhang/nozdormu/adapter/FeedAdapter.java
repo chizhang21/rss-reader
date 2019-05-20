@@ -16,20 +16,20 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.LabelViewHolder> {
+public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder> {
 
     private final static String TAG = FeedAdapter.class.getSimpleName();
     private ArrayList<String> labelList;
     private static ClickListener clickListener;
 
-    public static class LabelViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        @BindView(R.id.label_content) TextView content;
-        public LabelViewHolder(View v) {
+    public static class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+        /*@BindView(R.id.label_content)*/ TextView content;
+        public FeedViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
             v.setOnLongClickListener(this);
-//            content = v.findViewById(R.id.label_content);
-            ButterKnife.bind(this, v);
+            content = v.findViewById(R.id.label_content);
+//            ButterKnife.bind(this, v);
         }
 
         @Override
@@ -50,16 +50,16 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.LabelViewHolde
 
     @NonNull
     @Override
-    public LabelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public FeedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_item, null, false);
-        LabelViewHolder labelViewHolder = new LabelViewHolder(v);
+        FeedViewHolder labelViewHolder = new FeedViewHolder(v);
 
         return labelViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LabelViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FeedViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: position="+position);
         holder.content.setText(labelList.get(position));
     }

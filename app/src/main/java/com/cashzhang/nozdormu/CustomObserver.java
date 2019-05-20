@@ -9,8 +9,8 @@ import io.reactivex.disposables.Disposable;
 
 public class CustomObserver<T> implements Observer<T> {
     private static final String TAG = CustomObserver.class.getSimpleName();
-    private OnNextListener<T> listener;
-    public CustomObserver (OnNextListener<T> listener){
+    private CustomListener<T> listener;
+    public CustomObserver (CustomListener<T> listener){
         this.listener = listener;
     }
 

@@ -17,20 +17,28 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StreamAdapter extends RecyclerView.Adapter<StreamAdapter.LabelViewHolder> {
+public class StreamAdapter extends RecyclerView.Adapter<StreamAdapter.StreamViewHolder> {
 
     private final static String TAG = StreamAdapter.class.getSimpleName();
-    private ArrayList<Item> labelList;
+    private ArrayList<Item> itemList;
     private static ClickListener clickListener;
 
-    public static class LabelViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        @BindView(R.id.label_content) TextView content;
-        public LabelViewHolder(View v) {
+    public static class StreamViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+
+        /*@BindView(R.id.webtitle)*/ TextView webTitle;
+        /*@BindView(R.id.timestamp)*/ TextView timestamp;
+        /*@BindView(R.id.stream_title)*/ TextView streamTitle;
+        /*@BindView(R.id.stream_content)*/ TextView streamContent;
+
+        public StreamViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
             v.setOnLongClickListener(this);
-//            content = v.findViewById(R.id.label_content);
-            ButterKnife.bind(this, v);
+            webTitle = v.findViewById(R.id.webtitle);
+            timestamp = v.findViewById(R.id.timestamp);
+            streamTitle = v.findViewById(R.id.stream_title);
+            streamContent = v.findViewById(R.id.stream_content);
+//            ButterKnife.bind(this, v);
         }
 
         @Override
@@ -46,23 +54,29 @@ public class StreamAdapter extends RecyclerView.Adapter<StreamAdapter.LabelViewH
     }
 
     public StreamAdapter(ArrayList<Item> dataSet) {
-        this.labelList = dataSet;
+        this.itemList = dataSet;
     }
 
     @NonNull
     @Override
-    public LabelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public StreamViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.stream_item, null, false);
-        LabelViewHolder labelViewHolder = new LabelViewHolder(v);
+        StreamViewHolder labelViewHolder = new StreamViewHolder(v);
 
         return labelViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LabelViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull StreamViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: position="+position);
-        holder.content.setText(labelList.get(position).getTitle());
+        holder.webTitle.setText(itemList.get(position).getOrigin().getTitle());
+        holder.streamTitle.setText(itemList.get(position).getTitle());
+        holder.timestamp.setText(itemList.get(position).getPublished().toString());
+        if (itemList.get(position).getContent() != null)
+            holder.streamContent.setText(itemList.get(position).getContent().getContent());
+        else
+            holder.streamContent.setText(itemList.get(position).getSummary().getContent());
     }
 
     @Override
@@ -72,12 +86,12 @@ public class StreamAdapter extends RecyclerView.Adapter<StreamAdapter.LabelViewH
 
     @Override
     public int getItemCount() {
-        return labelList.size();
+        return itemList.size();
     }
 
-    public void refreshData(ArrayList<Item> labelContent) {
+    public void refreshData(ArrayList<Item> items) {
         Log.d(TAG, "refreshData: ");
-        labelList = labelContent;
+        itemList = items;
         notifyDataSetChanged();
     }
 

@@ -23,13 +23,13 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.La
     private static ClickListener clickListener;
 
     public static class LabelViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        @BindView(R.id.label_content)  TextView content;
+        /*@BindView(R.id.label_content)*/ TextView content;
         public LabelViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
             v.setOnLongClickListener(this);
-//            content = v.findViewById(R.id.label_content);
-            ButterKnife.bind(this, v);
+            content = v.findViewById(R.id.label_content);
+//            ButterKnife.bind(this, v);
         }
 
         @Override

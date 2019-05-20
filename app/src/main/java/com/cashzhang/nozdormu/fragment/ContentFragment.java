@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.cashzhang.nozdormu.Constants;
 import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.R;
+import com.cashzhang.nozdormu.bean.Item;
 import com.cashzhang.nozdormu.bean.Mercury;
 
 import java.io.InputStream;
@@ -45,6 +46,7 @@ public class ContentFragment extends Fragment {
     private String time = null;
     private String url = null;
     private String content = null;
+    private Item item;
 
     Bundle bundle;
     @BindView(R.id.c_title)
@@ -101,10 +103,18 @@ public class ContentFragment extends Fragment {
             e.printStackTrace();
         }
         if (bundle != null) {
-            title = bundle.getString("title");
-            time = bundle.getString("time");
-            url = bundle.getString("url");
-            content = bundle.getString("content");
+            item = (Item) bundle.getSerializable("item_id");
+//            title = bundle.getString("title");
+            title = item.getTitle();
+//            time = bundle.getString("time");
+            time = item.getPublished().toString();
+//            url = bundle.getString("url");
+            url = item.getOriginId();
+//            content = bundle.getString("content");
+            if (item.getContent() != null)
+                content = item.getContent().getContent();
+            else
+                content = item.getSummary().getContent();
         }
 
         if (mTitle != null && mContent != null && title != null) {

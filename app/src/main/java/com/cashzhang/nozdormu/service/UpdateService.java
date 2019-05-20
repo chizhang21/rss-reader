@@ -1,14 +1,16 @@
 package com.cashzhang.nozdormu.service;
 
 import android.app.IntentService;
+import android.app.Service;
 import android.content.Intent;
+import android.os.IBinder;
 import android.text.format.Time;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.cashzhang.nozdormu.Constants;
 import com.cashzhang.nozdormu.FeedItem;
-import com.cashzhang.nozdormu.IndexItem;
-import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.ObjectIO;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -27,56 +29,37 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
-public class ServiceUpdate extends IntentService {
-    public static final String FEED_BROADCAST_ACTION = "com.cashzhang.serviceupdate.handle";
-    public static final String ITEM_LIST = "-item_list.txt";
-    private final static String TAG = ServiceUpdate.class.getSimpleName();
-    private String tmpTitle = "";
+public class UpdateService extends Service {
+    private final static String TAG = UpdateService.class.getSimpleName();
 
-    private static class Tags {
-        static final String LINK = "link";
-        static final String PUBLISHED = "published";
-        static final String PUB_DATE = "pubDate";
-        static final String TITLE = "title";
-        static final String DESCRIPTION = "description";
-        static final String CONTENT = "content";
-        static final String ENTRY = "entry";
-        static final String ITEM = "item";
-    }
 
-    public static class Patterns {
-        public static final Pattern CDATA = Pattern.compile("\\<.*?\\>");
-    }
 
-    public ServiceUpdate() {
-        super("ServiceUpdate");
+    @Override
+    public void onCreate() {
+        super.onCreate();
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, "onHandleIntent: service update");
-        /*ObjectIO reader = new ObjectIO(this, MainActivity.INDEX);
-        Iterable<IndexItem> indexItems = (Iterable<IndexItem>) reader.read();
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent, flags, startId);
 
-        if (indexItems != null) {
-            // Download and parse each feed in the index.
-            for (IndexItem indexItem : indexItems) {
-                try {
-                    parseFeed(indexItem.m_url, indexItem.m_uid);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (XmlPullParserException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        Intent broadcast = new Intent(FEED_BROADCAST_ACTION);
-        sendBroadcast(broadcast);
-        stopSelf();*/
     }
 
-    private void parseFeed(CharSequence urlString, long uid) throws XmlPullParserException, IOException {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+    @Override
+    public boolean onUnbind(Intent intent) {
+        return super.onUnbind(intent);
+    }
+
+    /*private void parseFeed(CharSequence urlString, long uid) throws XmlPullParserException, IOException {
         String contentFile = Long.toString(uid);
         Log.d(TAG, "parseFeed");
 
@@ -206,7 +189,7 @@ public class ServiceUpdate extends IntentService {
             time.setToNow();
             feedItem.m_time = time.toMillis(true);
         }
-    }
+    }*/
 }
 
 
