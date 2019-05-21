@@ -21,7 +21,7 @@ public class Visual implements Serializable {
     private Integer height;
     @SerializedName("expirationDate")
     @Expose
-    private Double expirationDate;
+    private Long expirationDate;
     @SerializedName("edgeCacheUrl")
     @Expose
     private String edgeCacheUrl;
@@ -62,11 +62,11 @@ public class Visual implements Serializable {
         this.height = height;
     }
 
-    public Double getExpirationDate() {
+    public Long getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(Double expirationDate) {
+    public void setExpirationDate(Long expirationDate) {
         this.expirationDate = expirationDate;
     }
 

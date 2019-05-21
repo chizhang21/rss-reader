@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.cashzhang.nozdormu.R;
 import com.cashzhang.nozdormu.bean.Item;
+import com.cashzhang.nozdormu.fragment.StreamsFragment;
 
 import java.util.ArrayList;
 
@@ -72,11 +73,8 @@ public class StreamAdapter extends RecyclerView.Adapter<StreamAdapter.StreamView
         Log.d(TAG, "onBindViewHolder: position="+position);
         holder.webTitle.setText(itemList.get(position).getOrigin().getTitle());
         holder.streamTitle.setText(itemList.get(position).getTitle());
-        holder.timestamp.setText(itemList.get(position).getPublished().toString());
-        if (itemList.get(position).getContent() != null)
-            holder.streamContent.setText(itemList.get(position).getContent().getContent());
-        else
-            holder.streamContent.setText(itemList.get(position).getSummary().getContent());
+        holder.timestamp.setText(StreamsFragment.longToString(itemList.get(position).getPublished(), "MM-dd HH:mm"));
+        holder.streamContent.setText(itemList.get(position).getSummary().getContent());
     }
 
     @Override

@@ -21,6 +21,7 @@ import com.cashzhang.nozdormu.adapter.FragmentAdapter;
 import com.cashzhang.nozdormu.adapter.CollectionAdapter;
 import com.cashzhang.nozdormu.bean.Collection;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -122,13 +123,15 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
         Log.d(TAG, "isVisibleToUser: " + isVisibleToUser);
         if (isVisibleToUser) {
             recyclerView.setAdapter(mAdapter);
-            getCollections();
+//            getCollections();
+            readCollections();
         }
     }
 
     public void onRefresh() {
         Log.d(TAG, "onRefresh");
-        getCollections();
+//        getCollections();
+        readCollections();
     }
 
     /*AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
@@ -186,16 +189,18 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
             objectIO.setNewFileName(label);
             objectIO.read();
         }*/
-        for (String string :
-                collectionLabelList) {
-            Log.d(TAG, "readCollections: "+string);
+        collectionLabelList.clear();
+        File[] files = new File(activity.getExternalFilesDir("collections")+"/").listFiles();
+        for (File file : files) {
+            collectionLabelList.add(file.getName());
+            Log.d(TAG, "readCollections: "+file.getName());
         }
 
         mAdapter.refreshData(collectionLabelList);
         mSwipeLayout.setRefreshing(false);
     }
 
-    public void getCollections() {
+    /*public void getCollections() {
 
         FeedlyApi feedlyApi = FeedlyRequest.getInstance();
         HashMap<String, String> headers = new HashMap<>();
@@ -236,7 +241,7 @@ public class CollectionsFragment extends Fragment implements SwipeRefreshLayout.
             return false;
         objectIO.setNewFileName(collection.getLabel());
         return objectIO.write(collection);
-    }
+    }*/
 
 
 }

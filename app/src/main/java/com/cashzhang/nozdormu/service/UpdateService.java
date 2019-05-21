@@ -2,27 +2,47 @@ package com.cashzhang.nozdormu.service;
 
 import android.app.IntentService;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.text.format.Time;
+import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.cashzhang.nozdormu.Constants;
+import com.cashzhang.nozdormu.CustomListener;
+import com.cashzhang.nozdormu.CustomObserver;
 import com.cashzhang.nozdormu.FeedItem;
+import com.cashzhang.nozdormu.FeedlyApi;
+import com.cashzhang.nozdormu.FeedlyRequest;
 import com.cashzhang.nozdormu.ObjectIO;
+import com.cashzhang.nozdormu.RxUtils;
+import com.cashzhang.nozdormu.Settings;
+import com.cashzhang.nozdormu.bean.Collection;
+import com.cashzhang.nozdormu.bean.Feed;
+import com.cashzhang.nozdormu.bean.Item;
+import com.cashzhang.nozdormu.bean.Streams;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -31,9 +51,9 @@ import java.util.regex.Pattern;
 
 public class UpdateService extends Service {
     private final static String TAG = UpdateService.class.getSimpleName();
-
-
-
+    Context m_context = this;
+    ArrayList<String> feedIdList;
+    ArrayList<String> collectionNameList;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -41,8 +61,9 @@ public class UpdateService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        feedIdList = new ArrayList<>();
+        getCollections();
         return super.onStartCommand(intent, flags, startId);
-
     }
 
     @Override
@@ -59,6 +80,80 @@ public class UpdateService extends Service {
         return super.onUnbind(intent);
     }
 
+    public void getCollections() {
+        FeedlyApi feedlyApi = FeedlyRequest.getInstance();
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json");
+        headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
+        CustomListener<List<Collection>> listener = new CustomListener<List<Collection>>() {
+            @Override
+            public void onNext(List<Collection> collections) throws IOException {
+                for (Collection collection : collections) {
+                    String collectionName = collection.getLabel();
+                    for (Feed feed : collection.getFeeds()) {
+                        String feedId = feed.getFeedId();
+                        File file = new File(m_context.getExternalFilesDir("collections/"+collectionName)+"/"+Base64.encodeToString(feedId.getBytes("UTF-8"), Base64.DEFAULT));
+                        Log.d(TAG, "Collections: filePath="+file.getAbsolutePath());
+                        if (!file.exists())
+                            file.createNewFile();
+                        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
+                        try {
+                            out.writeObject(feed);
+                        } finally {
+                            out.close();
+                        }
+                        feedIdList.add(feedId);
+                    }
+//                    collectionNameList.add(collectionName);
+                }
+            }
+            @Override
+            public void onComplete() {
+                for (String name : feedIdList) {
+                    getFeedStream(name);
+                }
+            }
+        };
+        RxUtils.CustomSubscribe(feedlyApi.getCollections(headers), new CustomObserver(listener));
+    }
+
+    private void getFeedStream(final String feedId) {
+        FeedlyApi feedlyApi = FeedlyRequest.getInstance();
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json");
+        headers.put("X-Feedly-Access-Token", Settings.getAccessToken());
+        Log.d(TAG, "accessToken: " + Settings.getAccessToken());
+        CustomListener<Streams> listener = new CustomListener<Streams>() {
+            @Override
+            public void onNext(Streams response) throws IOException {
+                Log.d(TAG, "onNext");
+                File file = new File(m_context.getExternalFilesDir("streams")+"/"+Base64.encodeToString(feedId.getBytes("UTF-8"), Base64.DEFAULT));
+                Log.d(TAG, "FeedStream: filePath="+file.getAbsolutePath());
+                if (!file.exists())
+                    file.createNewFile();
+                ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
+                try {
+                    out.writeObject(response);
+                } finally {
+                    out.close();
+                }
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
+        RxUtils.CustomSubscribe(feedlyApi.getStreams(feedId, headers), new CustomObserver(listener));
+    }
+
+    /*private boolean writeEachCollectionToFile(Collection collection) throws FileNotFoundException {
+        if (collection == null)
+            return false;
+        objectIO.setNewFileName(collection.getLabel());
+        return objectIO.write(collection);
+    }*/
     /*private void parseFeed(CharSequence urlString, long uid) throws XmlPullParserException, IOException {
         String contentFile = Long.toString(uid);
         Log.d(TAG, "parseFeed");

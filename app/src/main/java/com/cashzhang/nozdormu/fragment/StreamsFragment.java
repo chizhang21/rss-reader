@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ParseException;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.cashzhang.nozdormu.Settings;
 import com.cashzhang.nozdormu.adapter.FragmentAdapter;
 import com.cashzhang.nozdormu.adapter.StreamAdapter;
 import com.cashzhang.nozdormu.adapter.LListAdapter;
+import com.cashzhang.nozdormu.bean.Feed;
 import com.cashzhang.nozdormu.bean.Item;
 import com.cashzhang.nozdormu.bean.MarkAsRead;
 import com.cashzhang.nozdormu.bean.Streams;
@@ -28,6 +30,9 @@ import com.cashzhang.nozdormu.bean.Streams;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -175,18 +180,59 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             String tmpFeedId = bundle.getString("feed_id");
             if (tmpFeedId != null && !tmpFeedId.equals("")) feedId = tmpFeedId;
             if (feedId != null) {
-                Log.d(TAG, "StreamsFragment loadData: " + feedId);
+                Log.d(TAG, "loadData: " + feedId);
 //            readFromFile(label+".cif");
-                getFeedStream(feedId);
+//                getFeedStream(feedId);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            readFeedStream(feedId);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
 //            } else {
 //                Log.d(TAG, "loadData: feedId == null, ready read from file");
 //                readFeedStreamFile();
             }
         }
-
     }
 
-    private void getFeedStream(final String feedId) {
+    private void readFeedStream(final String feedId) throws IOException, ClassNotFoundException {
+        streamItems.clear();
+        File file = new File(activity.getExternalFilesDir("streams")+"/"+ Base64.encodeToString(feedId.getBytes("UTF-8"), Base64.DEFAULT));
+        Log.d(TAG, "readFeedStream: filePath="+file.getAbsolutePath());
+        Log.d(TAG, "readFeedStream: "+feedId);
+        ObjectInput in = new ObjectInputStream(new FileInputStream(file));
+        Streams stream = (Streams) in.readObject();
+        /*streamId.add(item.getId());
+            Log.d(TAG, "streamId: "+item.getId());
+            streamTitle.add(item.getTitle());
+            Log.d(TAG, "streamTitle: "+item.getTitle());
+            streamSummary.add(item.getSummary().getContent());
+            Log.d(TAG, "streamSummaryContent: "+item.getSummary().getContent());
+            if (item.getContent() != null)
+                streamContent.add(item.getContent().getContent());
+            streamTime.add(longToString(item.getPublished(), "MM-dd HH:mm"));
+            Log.d(TAG, "streamTime: "+longToString(item.getPublished(), "MM-dd HH:mm"));
+            streamUrl.add(item.getOriginId());
+            Log.d(TAG, "streamId: "+item.getOriginId());*/
+        streamItems.addAll(stream.getItems());
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.refreshData(streamItems);
+            }
+        });
+
+    }
+    
+    /*private void getFeedStream(final String feedId) {
         FeedlyApi feedlyApi = FeedlyRequest.getInstance();
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
@@ -221,7 +267,7 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         };
         RxUtils.CustomSubscribe(feedlyApi.getStreams(feedId,headers), new CustomObserver(listener));
 
-        /*RequestQueue mQueue = Volley.newRequestQueue(Constants.s_activity);
+        *//*RequestQueue mQueue = Volley.newRequestQueue(Constants.s_activity);
         //success listener
         final Response.Listener listener = new Response.Listener<String>() {
             @Override
@@ -254,8 +300,8 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 return headers;
             }
         };
-        mQueue.add(stringRequest);*/
-    }
+        mQueue.add(stringRequest);*//*
+    }*/
 
     public void onRefresh() {
         Log.d(TAG, "onRefresh: main fragment");

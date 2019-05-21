@@ -37,6 +37,7 @@ public class CustomObserver<T> implements Observer<T> {
 
     @Override
     public void onComplete() {
-        Log.d(TAG, "onComplete");
+        listener.onComplete();
+//        Log.d(TAG, "onComplete");
     }
 }

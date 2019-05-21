@@ -92,8 +92,9 @@ public class ContentFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         Log.d(TAG, "setUserVisibleHint() -> isVisibleToUser: " + isVisibleToUser);
-        if (isVisibleToUser)
+        if (isVisibleToUser) {
             loadData(MainActivity.getBundle());
+        }
     }
 
     public void loadData(Bundle tmpBundle) {
@@ -104,13 +105,9 @@ public class ContentFragment extends Fragment {
         }
         if (bundle != null) {
             item = (Item) bundle.getSerializable("item_id");
-//            title = bundle.getString("title");
             title = item.getTitle();
-//            time = bundle.getString("time");
             time = item.getPublished().toString();
-//            url = bundle.getString("url");
             url = item.getOriginId();
-//            content = bundle.getString("content");
             if (item.getContent() != null)
                 content = item.getContent().getContent();
             else
@@ -135,7 +132,6 @@ public class ContentFragment extends Fragment {
                                     d = Drawable.createFromStream(is, "href");
                                 DisplayMetrics dm = getActivity().getResources().getDisplayMetrics();
                                 int dwidth = dm.widthPixels - 50;
-
                                 float dheight = (float) d.getIntrinsicHeight() * (float) dwidth / (float) d.getIntrinsicWidth();
                                 int dh = (int) (dheight - 0.5);
                                 int wid = dwidth;
@@ -152,7 +148,7 @@ public class ContentFragment extends Fragment {
                         }
                     }, null);
                     try {
-                        getActivity().runOnUiThread(new Runnable() {
+                        activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 mContent.setText(sp);

@@ -21,7 +21,7 @@ public class Feed implements Serializable {
     private String title;
     @SerializedName("updated")
     @Expose
-    private Double updated;
+    private Long updated;
     @SerializedName("velocity")
     @Expose
     private Double velocity;
@@ -89,11 +89,11 @@ public class Feed implements Serializable {
         this.title = title;
     }
 
-    public Double getUpdated() {
+    public Long getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Double updated) {
+    public void setUpdated(Long updated) {
         this.updated = updated;
     }
 

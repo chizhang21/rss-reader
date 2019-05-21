@@ -16,7 +16,11 @@ import com.cashzhang.nozdormu.adapter.FragmentAdapter;
 import com.cashzhang.nozdormu.bean.Collection;
 import com.cashzhang.nozdormu.bean.Feed;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
@@ -187,18 +191,28 @@ public class FeedsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 feedTitleList.clear();
                 feedIdList.clear();
                 //begin reading data, set refreshing
-                mSwipeLayout.setRefreshing(true);
-                ObjectIO objectIO = new ObjectIO(activity, label, 1);
-                Collection collection = (Collection) objectIO.read();
-                for (Feed feed: collection.getFeeds()) {
-                    Log.d(TAG, "loadData: feedLabel="+feed.getTitle());
+//                mSwipeLayout.setRefreshing(true);
+                /*ObjectIO objectIO = new ObjectIO(activity, label, 1);
+                Collection collection = (Collection) objectIO.read();*/
+                File[] files = new File(activity.getExternalFilesDir("collections/"+label)+"/").listFiles();
+                for (File file : files) {
+                    ObjectInput in = new ObjectInputStream(new FileInputStream(file));
+                    Feed feed = (Feed) in.readObject();
                     feedTitleList.add(feed.getTitle());
                     feedIdList.add(feed.getFeedId());
                 }
+
+                /*for (Feed feed: collection.getFeeds()) {
+                    Log.d(TAG, "loadData: feedLabel="+feed.getTitle());
+                    feedTitleList.add(feed.getTitle());
+                    feedIdList.add(feed.getFeedId());
+                }*/
                 
                 mAdapter.refreshData(feedTitleList);
                 mSwipeLayout.setRefreshing(false);
             }
+        } else if (!feedTitleList.isEmpty()) {//TODO memory cache
+            mAdapter.refreshData(feedTitleList);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.cashzhang.nozdormu;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
@@ -10,6 +11,7 @@ import com.cashzhang.nozdormu.fragment.ContentFragment;
 import com.cashzhang.nozdormu.fragment.FeedsFragment;
 import com.cashzhang.nozdormu.fragment.LeftFragment;
 import com.cashzhang.nozdormu.fragment.StreamsFragment;
+import com.cashzhang.nozdormu.service.UpdateService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (Settings.getAccessToken() != null)
+            this.startService(new Intent(this, UpdateService.class));
     }
 
     @Override
