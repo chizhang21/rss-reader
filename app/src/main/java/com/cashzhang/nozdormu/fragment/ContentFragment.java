@@ -17,6 +17,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.cashzhang.nozdormu.Constants;
@@ -51,8 +53,8 @@ public class ContentFragment extends Fragment {
     Bundle bundle;
     @BindView(R.id.c_title)
     TextView mTitle;
-    @BindView(R.id.c_content)
-    TextView mContent;
+    @BindView(R.id.content_web)
+    WebView webView;
 
     Activity activity;
 
@@ -114,52 +116,19 @@ public class ContentFragment extends Fragment {
                 content = item.getSummary().getContent();
         }
 
-        if (mTitle != null && mContent != null && title != null) {
+        if (mTitle != null && webView != null && title != null) {
             mTitle.setText(title);
 
-            new Thread(new Runnable() {
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.setWebViewClient(new WebViewClient(){
                 @Override
-                public void run() {
-                    final Spanned sp = Html.fromHtml(content, new Html.ImageGetter() {
-                        @Override
-                        public Drawable getDrawable(String source) {
-                            InputStream is = null;
-                            try {
-                                is = (InputStream) new URL(source).getContent();
+                public void onPageFinished(WebView view, String url) {
 
-                                Drawable d = Drawable.createFromStream(is, "src");
-                                if (d == null)
-                                    d = Drawable.createFromStream(is, "href");
-                                DisplayMetrics dm = getActivity().getResources().getDisplayMetrics();
-                                int dwidth = dm.widthPixels - 50;
-                                float dheight = (float) d.getIntrinsicHeight() * (float) dwidth / (float) d.getIntrinsicWidth();
-                                int dh = (int) (dheight - 0.5);
-                                int wid = dwidth;
-                                int hei = dh;
-                                //fix blank line bewteen text and image
-                                int radio = (int) (hei * 0.25);
-                                d.setBounds(0, 0 - radio, wid, hei - radio);
-
-                                is.close();
-                                return d;
-                            } catch (Exception e) {
-                                return null;
-                            }
-                        }
-                    }, null);
-                    try {
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mContent.setText(sp);
-                                mContent.setMovementMethod(LinkMovementMethod.getInstance());
-                            }
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
-            }).start();
+            });
+            webView.getSettings().setSupportZoom(false);
+            webView.loadDataWithBaseURL(null, content, "text/html", "UTF-8", null);
+            webView.getSettings().setUserAgentString("Chrome/56.0.0.0 Mobile");
         }
     }
 
