@@ -8,24 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cashzhang.nozdormu.CustomObserver;
-import com.cashzhang.nozdormu.FeedlyApi;
-import com.cashzhang.nozdormu.FeedlyRequest;
 import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.ObjectIO;
-import com.cashzhang.nozdormu.CustomListener;
 import com.cashzhang.nozdormu.R;
-import com.cashzhang.nozdormu.RxUtils;
-import com.cashzhang.nozdormu.Settings;
 import com.cashzhang.nozdormu.adapter.FragmentAdapter;
 import com.cashzhang.nozdormu.adapter.CollectionAdapter;
-import com.cashzhang.nozdormu.bean.Collection;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;

@@ -11,32 +11,23 @@ import android.view.View;
 import android.view.ViewGroup;
 
 //import com.cashzhang.nozdormu.DialogEditFeed;
-import com.cashzhang.nozdormu.CustomObserver;
-import com.cashzhang.nozdormu.FeedlyApi;
-import com.cashzhang.nozdormu.FeedlyRequest;
 import com.cashzhang.nozdormu.MainActivity;
-import com.cashzhang.nozdormu.CustomListener;
 import com.cashzhang.nozdormu.R;
-import com.cashzhang.nozdormu.RxUtils;
-import com.cashzhang.nozdormu.Settings;
 import com.cashzhang.nozdormu.adapter.FragmentAdapter;
 import com.cashzhang.nozdormu.adapter.StreamAdapter;
 import com.cashzhang.nozdormu.adapter.LListAdapter;
-import com.cashzhang.nozdormu.bean.Feed;
-import com.cashzhang.nozdormu.bean.Item;
-import com.cashzhang.nozdormu.bean.MarkAsRead;
-import com.cashzhang.nozdormu.bean.Streams;
+import com.cashzhang.nozdormu.model.Item;
+import com.cashzhang.nozdormu.model.MarkAsRead;
+import com.cashzhang.nozdormu.model.Streams;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -159,7 +150,7 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         Log.d(TAG, "isVisibleToUser: " + isVisibleToUser);
         if (isVisibleToUser) {
             try {
-                loadData(MainActivity.getBundle());
+                loadData(MainActivity.bundle);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -222,7 +213,7 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             Log.d(TAG, "streamTime: "+longToString(item.getPublished(), "MM-dd HH:mm"));
             streamUrl.add(item.getOriginId());
             Log.d(TAG, "streamId: "+item.getOriginId());*/
-        streamItems.addAll(stream.getItems());
+        streamItems.addAll(stream.items);
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -306,7 +297,7 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void onRefresh() {
         Log.d(TAG, "onRefresh: main fragment");
         try {
-            loadData(MainActivity.getBundle());
+            loadData(MainActivity.bundle);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -403,7 +394,7 @@ public class StreamsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 //    }
 
     private String getId(int position) {
-        return ((streamItems == null) ? null : streamItems.get(position).getId());
+        return ((streamItems == null) ? null : streamItems.get(position).id);
     }
 
     private String getTitle(int position) {

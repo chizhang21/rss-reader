@@ -3,13 +3,8 @@ package com.cashzhang.nozdormu.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,16 +16,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
-import com.cashzhang.nozdormu.Constants;
 import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.R;
-import com.cashzhang.nozdormu.bean.Item;
-import com.cashzhang.nozdormu.bean.Mercury;
-
-import java.io.InputStream;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import com.cashzhang.nozdormu.model.Item;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -95,7 +83,7 @@ public class ContentFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         Log.d(TAG, "setUserVisibleHint() -> isVisibleToUser: " + isVisibleToUser);
         if (isVisibleToUser) {
-            loadData(MainActivity.getBundle());
+            loadData(MainActivity.bundle);
         }
     }
 
@@ -107,13 +95,13 @@ public class ContentFragment extends Fragment {
         }
         if (bundle != null) {
             item = (Item) bundle.getSerializable("item_id");
-            title = item.getTitle();
-            time = item.getPublished().toString();
-            url = item.getOriginId();
-            if (item.getContent() != null)
-                content = item.getContent().getContent();
+            title = item.title;
+            time = item.published.toString();
+            url = item.originId;
+            if (item.content != null)
+                content = item.content.content;
             else
-                content = item.getSummary().getContent();
+                content = item.summary.content;
         }
 
         if (mTitle != null && webView != null && title != null) {

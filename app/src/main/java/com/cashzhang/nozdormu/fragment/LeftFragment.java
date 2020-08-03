@@ -21,7 +21,7 @@ import com.cashzhang.nozdormu.MainActivity;
 import com.cashzhang.nozdormu.R;
 import com.cashzhang.nozdormu.RxUtils;
 import com.cashzhang.nozdormu.Settings;
-import com.cashzhang.nozdormu.bean.Profile;
+import com.cashzhang.nozdormu.model.Profile;
 import com.cashzhang.nozdormu.service.UpdateService;
 
 import java.util.HashMap;
@@ -121,11 +121,11 @@ public class LeftFragment extends Fragment {
         CustomListener<Profile> listener = new CustomListener<Profile>() {
             @Override
             public void onNext(Profile profile) {
-                Log.d(TAG, "onNext: profile.email = " + profile.getEmail());
-                Log.d(TAG, "onNext: profile.FamilyName = Mr./Ms. " + profile.getFamilyName());
-                Settings.setId(profile.getId());
-                Settings.setEmail(profile.getEmail());
-                Settings.setGivenName(profile.getGivenName());
+                Log.d(TAG, "onNext: profile.email = " + profile.email);
+                Log.d(TAG, "onNext: profile.FamilyName = Mr./Ms. " + profile.familyName);
+                Settings.setId(profile.id);
+                Settings.setEmail(profile.email);
+                Settings.setGivenName(profile.givenName);
                 leftText.setText(Settings.getEmail());
             }
 

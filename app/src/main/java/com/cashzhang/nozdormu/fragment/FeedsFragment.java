@@ -9,12 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cashzhang.nozdormu.MainActivity;
-import com.cashzhang.nozdormu.ObjectIO;
 import com.cashzhang.nozdormu.R;
 import com.cashzhang.nozdormu.adapter.FeedAdapter;
 import com.cashzhang.nozdormu.adapter.FragmentAdapter;
-import com.cashzhang.nozdormu.bean.Collection;
-import com.cashzhang.nozdormu.bean.Feed;
+import com.cashzhang.nozdormu.model.Feed;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -118,7 +116,7 @@ public class FeedsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             /*mSwipeLayout.setRefreshing(true);
             onRefresh();*/
             try {
-                loadData(MainActivity.getBundle());
+                loadData(MainActivity.bundle);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -132,7 +130,7 @@ public class FeedsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onRefresh() {
         try {
             mSwipeLayout.setRefreshing(true);
-            loadData(MainActivity.getBundle());
+            loadData(MainActivity.bundle);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -198,8 +196,8 @@ public class FeedsFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 for (File file : files) {
                     ObjectInput in = new ObjectInputStream(new FileInputStream(file));
                     Feed feed = (Feed) in.readObject();
-                    feedTitleList.add(feed.getTitle());
-                    feedIdList.add(feed.getFeedId());
+                    feedTitleList.add(feed.title);
+                    feedIdList.add(feed.feedId);
                 }
 
                 /*for (Feed feed: collection.getFeeds()) {
