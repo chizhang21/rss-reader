@@ -45,7 +45,7 @@ class UpdateService : Service() {
     val collections: Unit
         get() {
             val feedlyApi = FeedlyRequest.instance
-            val headers = HashMap<String, String>()
+            val headers = mutableMapOf<String, String?>()
             headers["Content-Type"] = "application/json"
             headers["X-Feedly-Access-Token"] = Settings.accessToken
             val listener: CustomListener<List<Collection>?> = object : CustomListener<List<Collection?>?> {
@@ -81,20 +81,20 @@ class UpdateService : Service() {
 
     private fun getFeedStream(feedId: String?) {
         val feedlyApi = FeedlyRequest.instance
-        val headers = HashMap<String, String>()
+        val headers = mutableMapOf<String, String?>()
         headers["Content-Type"] = "application/json"
         headers["X-Feedly-Access-Token"] = Settings.accessToken
         Log.d(TAG, "accessToken: " + Settings.accessToken)
         val listener: CustomListener<Streams?> = object : CustomListener<Streams?> {
             @Throws(IOException::class)
-            override fun onNext(response: Streams) {
+            override fun onNext(t: Streams?) {
                 Log.d(TAG, "onNext")
                 val file = File(context.getExternalFilesDir("streams").toString() + "/" + Base64.encodeToString(feedId!!.toByteArray(charset("UTF-8")), Base64.DEFAULT))
                 Log.d(TAG, "FeedStream: filePath=" + file.absolutePath)
                 if (!file.exists()) file.createNewFile()
                 val out = ObjectOutputStream(FileOutputStream(file))
                 try {
-                    out.writeObject(response)
+                    out.writeObject(t)
                 } finally {
                     out.close()
                 }

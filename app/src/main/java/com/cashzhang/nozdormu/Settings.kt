@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 
-object Settings : Application {
+object Settings {
     private var context: Context? = null
     val appContext: Context?
         get() = if (context != null) context else {
