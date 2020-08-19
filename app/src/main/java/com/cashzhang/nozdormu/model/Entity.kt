@@ -1,27 +1,18 @@
 package com.cashzhang.nozdormu.model
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import org.apache.commons.lang3.builder.ToStringBuilder
 
-class Entity {
+class Entity(
+
     @SerializedName("id")
-    @Expose
-    var id: String? = null
+    var id: String,
 
     @SerializedName("salienceLevel")
-    @Expose
-    var salienceLevel: String? = null
+    var salienceLevel: String,
 
     @SerializedName("label")
-    @Expose
-    var label: String? = null
+    var label: String,
 
     @SerializedName("mentions")
-    @Expose
-    var mentions: List<Mention>? = null
-
-    override fun toString(): String {
-        return ToStringBuilder(this).append("id", id).append("salienceLevel", salienceLevel).append("label", label).append("mentions", mentions).toString()
-    }
-}
+    var mentions: List<Mention>
+)

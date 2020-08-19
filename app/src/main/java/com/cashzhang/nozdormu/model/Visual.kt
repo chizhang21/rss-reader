@@ -5,40 +5,26 @@ import com.google.gson.annotations.SerializedName
 import org.apache.commons.lang3.builder.ToStringBuilder
 import java.io.Serializable
 
-class Visual : Serializable {
+class Visual(
+
     @SerializedName("processor")
-    @Expose
-    var processor: String? = null
+    var processor: String,
 
     @SerializedName("url")
-    @Expose
-    var url: String? = null
+    var url: String,
 
     @SerializedName("width")
-    @Expose
-    var width: Int? = null
+    var width: Int,
 
     @SerializedName("height")
-    @Expose
-    var height: Int? = null
+    var height: Int,
 
     @SerializedName("expirationDate")
-    @Expose
-    var expirationDate: Long? = null
+    var expirationDate: Long,
 
     @SerializedName("edgeCacheUrl")
-    @Expose
-    var edgeCacheUrl: String? = null
+    var edgeCacheUrl: String,
 
     @SerializedName("contentType")
-    @Expose
-    var contentType: String? = null
-
-    override fun toString(): String {
-        return ToStringBuilder(this).append("processor", processor).append("url", url).append("width", width).append("height", height).append("expirationDate", expirationDate).append("edgeCacheUrl", edgeCacheUrl).append("contentType", contentType).toString()
-    }
-
-    companion object {
-        private const val serialVersionUID = 4317566651350877241L
-    }
-}
+    var contentType: String,
+)

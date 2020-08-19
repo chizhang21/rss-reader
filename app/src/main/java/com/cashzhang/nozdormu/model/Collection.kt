@@ -1,40 +1,24 @@
 package com.cashzhang.nozdormu.model
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import org.apache.commons.lang3.builder.ToStringBuilder
-import java.io.Serializable
 
-class Collection : Serializable {
+data class Collection(
+
     @SerializedName("customizable")
-    @Expose
-    var customizable: Boolean? = null
+    val customizable: Boolean,
 
     @SerializedName("enterprise")
-    @Expose
-    var enterprise: Boolean? = null
+    val enterprise: Boolean,
 
     @SerializedName("feeds")
-    @Expose
-    var feeds: List<Feed>? = null
+    val feeds: List<Feed>,
 
     @SerializedName("label")
-    @Expose
-    var label: String? = null
+    val label: String?,
 
     @SerializedName("numFeeds")
-    @Expose
-    var numFeeds: Int? = null
+    val numFeeds: Int,
 
     @SerializedName("id")
-    @Expose
-    var id: String? = null
-
-    override fun toString(): String {
-        return ToStringBuilder(this).append("customizable", customizable).append("enterprise", enterprise).append("feeds", feeds).append("label", label).append("numFeeds", numFeeds).append("id", id).toString()
-    }
-
-    companion object {
-        private const val serialVersionUID = 3151212532091514L
-    }
-}
+    val id: String,
+)

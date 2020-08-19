@@ -3,17 +3,12 @@ package com.cashzhang.nozdormu
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import com.cashzhang.nozdormu.Constants.appContext
 
 object Settings {
-    private var context: Context? = null
-    val appContext: Context?
-        get() = if (context != null) context else {
-            context = Constants.s_activity
-            context
-        }
 
-    val preferences: SharedPreferences
-        get() = appContext!!.getSharedPreferences("nozdormu", 0)
+    private val preferences: SharedPreferences
+        get() = appContext.getSharedPreferences("nozdormu", 0)
 
     @JvmStatic
     var accessToken: String?

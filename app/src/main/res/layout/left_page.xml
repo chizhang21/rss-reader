@@ -1,46 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <View
-        android:id="@+id/mid_line1"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="4px" />
-    <ImageView
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:id="@+id/accounts_img"
-        android:layout_gravity="center"
-        android:src="@mipmap/add_user"/>
-    <View
-        android:id="@+id/mid_line2"
-        android:layout_width="match_parent"
-        android:layout_height="4px" />
-    <View
-        android:id="@+id/mid_line"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#696969" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:textSize="25sp"
-        android:textColor="#363636"
-        android:id="@+id/left_text"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:textSize="25sp"
-        android:textColor="#363636"
-        android:id="@+id/provider"/>
-    <View
-        android:id="@+id/mid_line3"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#696969" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/accounts_img"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/add_user" />
+
+        <TextView
+            android:id="@+id/left_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:textColor="#363636"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/provider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:textColor="#363636"
+            android:textSize="25sp" />
+
+        <View
+            android:id="@+id/mid_line"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#696969" />
+
+        <View
+            android:id="@+id/mid_line1"
+            android:layout_width="match_parent"
+            android:layout_height="4px" />
+
+        <View
+            android:id="@+id/mid_line2"
+            android:layout_width="match_parent"
+            android:layout_height="4px" />
+
+        <View
+            android:id="@+id/mid_line3"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#696969" />
+
+    </LinearLayout>
+</layout>

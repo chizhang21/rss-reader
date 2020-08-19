@@ -1,15 +1,21 @@
 package com.cashzhang.nozdormu.model
 
-import java.io.Serializable
+import com.google.gson.annotations.SerializedName
 
-class Token : Serializable {
-    var access_token: String? = null
-    var refresh_token: String? = null
-    var plan: String? = null
-    var expires_in: String? = null
-    var id: String? = null
+class Token(
 
-    override fun toString(): String {
-        return "access_token: $access_token refresh_token: $refresh_token id: $id"
-    }
-}
+    @SerializedName("access_token")
+    var access_token: String,
+
+    @SerializedName("text")
+    var refresh_token: String,
+
+    @SerializedName("text")
+    var plan: String,
+
+    @SerializedName("text")
+    var expires_in: String,
+
+    @SerializedName("text")
+    var id: String,
+)

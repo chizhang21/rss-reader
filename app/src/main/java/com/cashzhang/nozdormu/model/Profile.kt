@@ -1,17 +1,27 @@
 package com.cashzhang.nozdormu.model
 
-class Profile {
-    var id: String? = null
-    var client: String? = null
-    var email: String? = null
-    var picture: String? = null
-    var givenName: String? = null
-    var familyName: String? = null
-    var gender: String? = null
+import com.google.gson.annotations.SerializedName
 
-    override fun toString(): String {
-        return ("Profile{id=" + id + " client=" + client + " email=" + email
-                + " pictureAddr=" + picture + " givenName=" + givenName
-                + " familyName=" + familyName + " gender=" + gender)
-    }
-}
+data class Profile(
+
+    @SerializedName("id")
+    var id: String,
+
+    @SerializedName("client")
+    var client: String,
+
+    @SerializedName("email")
+    var email: String,
+
+    @SerializedName("picture")
+    var picture: String,
+
+    @SerializedName("givenName")
+    var givenName: String,
+
+    @SerializedName("familyName")
+    var familyName: String,
+
+    @SerializedName("gender")
+    var gender: String,
+)

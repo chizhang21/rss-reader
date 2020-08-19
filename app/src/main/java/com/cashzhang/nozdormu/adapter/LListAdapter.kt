@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
 import com.cashzhang.nozdormu.R
 import java.util.*
 
@@ -60,7 +58,7 @@ class LListAdapter(context: Context?) : BaseAdapter() {
         return i.toLong()
     }
 
-    override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
         val component: Component
         if (convertView == null) {
@@ -74,11 +72,7 @@ class LListAdapter(context: Context?) : BaseAdapter() {
         component.title!!.text = if (arrayListData == null) null else arrayListData!![position]
         component.content!!.text = if (arrayListContent == null) null else arrayListContent!![position]
         component.timestamp!!.text = if (arrayListTime == null) null else arrayListTime!![position]
-        return convertView
-    }
-
-    companion object {
-        private val TAG = LListAdapter::class.java.simpleName
+        return convertView!!
     }
 
     init {

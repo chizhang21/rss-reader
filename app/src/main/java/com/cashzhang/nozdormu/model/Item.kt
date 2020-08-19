@@ -1,80 +1,54 @@
 package com.cashzhang.nozdormu.model
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import org.apache.commons.lang3.builder.ToStringBuilder
-import java.io.Serializable
 
-class Item : Serializable {
+data class Item(
+
     @SerializedName("id")
-    @Expose
-    var id: String? = null
+    var id: String,
 
     @SerializedName("keywords")
-    @Expose
-    var keywords: List<String>? = null
+    var keywords: List<String>,
 
     @SerializedName("originId")
-    @Expose
-    var originId: String? = null
+    var originId: String,
 
     @SerializedName("fingerprint")
-    @Expose
-    var fingerprint: String? = null
+    var fingerprint: String,
 
     @SerializedName("content")
-    @Expose
-    var content: Content? = null
+    var content: Content,
 
     @SerializedName("title")
-    @Expose
-    var title: String? = null
+    var title: String,
 
     @SerializedName("author")
-    @Expose
-    var author: String? = null
+    var author: String,
 
     @SerializedName("summary")
-    @Expose
-    var summary: Summary? = null
+    var summary: Summary,
 
     @SerializedName("alternate")
-    @Expose
-    var alternate: List<Alternate_>? = null
+    var alternate: List<Alternate>,
 
     @SerializedName("crawled")
-    @Expose
-    var crawled: Long? = null
+    var crawled: Long,
 
     @SerializedName("published")
-    @Expose
-    var published: Long? = null
+    var published: Long,
 
     @SerializedName("origin")
-    @Expose
-    var origin: Origin? = null
+    var origin: Origin,
 
     @SerializedName("visual")
-    @Expose
-    var visual: Visual? = null
+    var visual: Visual,
 
     @SerializedName("canonicalUrl")
-    @Expose
-    var canonicalUrl: String? = null
+    var canonicalUrl: String,
 
     @SerializedName("unread")
-    @Expose
-    var unread: Boolean? = null
+    var unread: Boolean,
 
     @SerializedName("categories")
-    @Expose
-    var categories: List<Category>? = null
-
-    override fun toString(): String {
-        return ToStringBuilder(this).append("id", id).append("keywords", keywords).append("originId", originId).append("fingerprint", fingerprint).append("content", content).append("title", title).append("author", author).append("summary", summary).append("alternate", alternate).append("crawled", crawled).append("published", published).append("origin", origin).append("visual", visual).append("canonicalUrl", canonicalUrl).append("unread", unread).append("categories", categories).toString()
-    }
-
-    companion object {
-        private const val serialVersionUID = -5040485178574463095L
-    }
-}
+    var categories: List<Category>,
+)

@@ -1,11 +1,7 @@
 package com.cashzhang.nozdormu
 
-import android.content.res.Resources
-import android.widget.ListView
-import androidx.fragment.app.FragmentManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.cashzhang.nozdormu.fragment.FeedsFragment
-import com.cashzhang.nozdormu.fragment.StreamsFragment
+import android.app.Application
+import android.content.Context
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
@@ -29,30 +25,13 @@ object Constants {
     const val CLIENT_ID = "&client_id=feedly"
     const val REDIRECT_URI = "&redirect_uri=https://cloud.feedly.com/feedly.html"
     const val SCOPE = "&scope=https://cloud.feedly.com/subscriptions"
-    var s_activity: MainActivity? = null
-    var s_resources: Resources? = null
-    var s_fragmentFeeds: StreamsFragment? = null
-    var s_fragmentSecCateg: FeedsFragment? = null
-    var s_fragmentManager: FragmentManager? = null
-    var s_listView: ListView? = null
-    var s_swipeSLayout: SwipeRefreshLayout? = null
-    var s_swipeCLayout: SwipeRefreshLayout? = null
-    var s_swipeMLayout: SwipeRefreshLayout? = null
-    fun saveInitialConstants(activity: MainActivity) {
-        s_activity = activity
-        s_resources = activity.resources
-        //        s_listView = activity.findViewById(R.id.l_list);
-        s_fragmentManager = activity.supportFragmentManager
-    }
 
-    fun getFragmentView(streamsFragment: StreamsFragment?) {
-        s_fragmentFeeds = streamsFragment
-        s_swipeMLayout = s_fragmentFeeds!!.view!!.findViewById(R.id.swipe_refresh)
-    }
+    @Volatile
+    lateinit var appContext: Context
+        private set
 
-    fun getSecCatesFragmentView(feedsFragment: FeedsFragment?) {
-        s_fragmentSecCateg = feedsFragment
-        s_swipeSLayout = s_fragmentSecCateg!!.view!!.findViewById(R.id.swipe_refresh)
+    fun initApplication(application: Application) {
+        appContext = application
     }
 
     @Throws(IOException::class, XmlPullParserException::class)
